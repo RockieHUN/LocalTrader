@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">LocalTrader</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Authentication -->
+    <string name="registration_text"> Regisztráció </string>
+    <string name="firstname_text"> Vezetéknév </string>
+    <string name="lastname_text"> Keresztnév </string>
+    <string name="email_text"> E-mail </string>
+    <string name="password_text"> Jelszó </string>
+    <string name="passwordAgain_text"> Jelszó ismét </string>
+    <string name="registrationDescription">A regisztrációhoz kérjük adja meg az adatait</string>
+    <string name="isAccountExists"> Van már fiókja? </string>
+    <string name="isAccountExists2"> Jelentkezzen be! </string>
+    <string name="next"> Tovább </string>
+
 </resources>
