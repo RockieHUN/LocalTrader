@@ -10,9 +10,12 @@
     <string name="email_text"> E-mail </string>
     <string name="password_text"> Jelszó </string>
     <string name="passwordAgain_text"> Jelszó ismét </string>
-    <string name="registrationDescription">A regisztrációhoz kérjük adja meg az adatait</string>
+    <string name="registrationDescription">A regisztrációhoz kérjük adja meg az adatait.</string>
     <string name="isAccountExists"> Van már fiókja? </string>
     <string name="isAccountExists2"> Jelentkezzen be! </string>
     <string name="next"> Tovább </string>
+    <string name="profilePicture_text"> Profilkép beállítása</string>
+    <string name="prfilePicture_description"> Beállíthat egy profilképet. Ezt a későbbiekben is megteheti a profilon.</string>
+    <string name="skip">Kihagyás</string>
 
 </resources>
