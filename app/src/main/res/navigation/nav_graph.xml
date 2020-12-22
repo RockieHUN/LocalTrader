@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/registerFragment">
+    app:startDestination="@id/timeLineFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -12,7 +12,8 @@
         tools:layout="@layout/fragment_splash" >
         <action
             android:id="@+id/action_splashFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/from_right" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -22,8 +23,10 @@
         <action
             android:id="@+id/action_registerFragment_to_finishRegistrationFragment"
             app:destination="@id/finishRegistrationFragment"
-            app:enterAnim="@anim/registration"
-            app:exitAnim="@anim/registration" />
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -32,7 +35,11 @@
         android:id="@+id/finishRegistrationFragment"
         android:name="com.example.localtrader.authentication.FinishRegistrationFragment"
         android:label="fragment_finish_registration"
-        tools:layout="@layout/fragment_finish_registration" />
+        tools:layout="@layout/fragment_finish_registration" >
+        <action
+            android:id="@+id/action_finishRegistrationFragment_to_timeLineFragment"
+            app:destination="@id/timeLineFragment" />
+    </fragment>
     <fragment
         tools:layout="@layout/fragment_login"
         android:id="@+id/loginFragment"
@@ -42,4 +49,9 @@
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/timeLineFragment"
+        android:name="com.example.localtrader.main_screens.fragments.TimeLineFragment"
+        android:label="fragment_time_line"
+        tools:layout="@layout/fragment_time_line" />
 </navigation>

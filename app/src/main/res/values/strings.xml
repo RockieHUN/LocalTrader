@@ -22,4 +22,16 @@
     <string name="isAccountNotExists"> Nincs még fiókja? </string>
     <string name="isAccountNotExists2"> Hozzon létre egyet! </string>
 
+
+    <!-- Timeline -->
+    <string name="RON"> RON </string>
+    <string name="timeline_greeting1"> Jó reggelt </string>
+    <string name="timeline_greeting2"> Jó napot </string>
+    <string name="timeline_greeting3"> Jó estét </string>
+    <string name="header_conversation">Összeállítottuk önnek a felfedezési listáját!</string>
+    <string name="recommended_products"> Ajánlott termékek </string>
+    <string name="popular_firms"> Népszerű vállalkozók </string>
+    <string name="exclamation_mark">!</string>
+
+
 </resources>
