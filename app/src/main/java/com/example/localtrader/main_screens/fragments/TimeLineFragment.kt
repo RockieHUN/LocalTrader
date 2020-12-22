@@ -30,6 +30,8 @@ class TimeLineFragment : Fragment(), RecommendedProductsAdapter.OnItemClickListe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpVisuals()
+
         val adapter = RecommendedProductsAdapter(this)
         binding.recycleRecommendedProducts.adapter = adapter
         val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -37,9 +39,16 @@ class TimeLineFragment : Fragment(), RecommendedProductsAdapter.OnItemClickListe
         binding.recycleRecommendedProducts.setHasFixedSize(true)
     }
 
+    private fun setUpVisuals()
+    {
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+    }
+
     override fun onItemClick(position: Int) {
         return
     }
+
+
 
 
 }

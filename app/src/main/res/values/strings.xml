@@ -22,6 +22,12 @@
     <string name="isAccountNotExists"> Nincs még fiókja? </string>
     <string name="isAccountNotExists2"> Hozzon létre egyet! </string>
 
+    <!-- Bottom nav menu -->
+    <string name="mainIcon"> Kezdőlap </string>
+    <string name="favoritesIcon"> Kedvencek </string>
+    <string name="ordersIcon"> Rendelések </string>
+    <string name="profileIcon"> Profil </string>
+
 
     <!-- Timeline -->
     <string name="RON"> RON </string>

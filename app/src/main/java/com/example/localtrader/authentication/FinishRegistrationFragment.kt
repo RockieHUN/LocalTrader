@@ -22,5 +22,16 @@ class FinishRegistrationFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_finish_registration, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
+        setUpVisuals()
+    }
+
+
+
+    private fun setUpVisuals()
+    {
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+    }
 }

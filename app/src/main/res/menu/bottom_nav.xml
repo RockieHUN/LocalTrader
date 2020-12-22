@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:icon="@drawable/ic_baseline_home_24"
+        android:id="@+id/timeLineFragment"
+        android:title="@string/profileIcon"
+        app:showAsAction="ifRoom" />
+    <item
+        android:icon="@drawable/ic_baseline_favorite_24"
+        android:title="@string/favoritesIcon"
+        app:showAsAction="ifRoom" />
+    <item
+        android:icon="@drawable/ic_order_history"
+        android:title="@string/ordersIcon"
+        app:showAsAction="ifRoom" />
+    <item
+        android:icon="@drawable/ic_baseline_account_circle_24"
+        android:title="@string/profileIcon"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -29,10 +29,16 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpVisuals()
+
         binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
     }
 
+    private fun setUpVisuals()
+    {
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+    }
 
 }
