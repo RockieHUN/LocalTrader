@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/timeLineFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -13,7 +13,8 @@
         <action
             android:id="@+id/action_splashFragment_to_registerFragment"
             app:destination="@id/registerFragment"
-            app:enterAnim="@anim/from_right" />
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -29,7 +30,11 @@
             app:popExitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
+            app:destination="@id/loginFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
     </fragment>
     <fragment
         android:id="@+id/finishRegistrationFragment"
@@ -38,7 +43,9 @@
         tools:layout="@layout/fragment_finish_registration" >
         <action
             android:id="@+id/action_finishRegistrationFragment_to_timeLineFragment"
-            app:destination="@id/timeLineFragment" />
+            app:destination="@id/timeLineFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_login"
@@ -47,11 +54,56 @@
         android:label="LoginFragment" >
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
+            app:destination="@id/registerFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right"
+            app:popEnterAnim="@anim/from_right"
+            app:popExitAnim="@anim/to_left" />
     </fragment>
     <fragment
         android:id="@+id/timeLineFragment"
         android:name="com.example.localtrader.main_screens.fragments.TimeLineFragment"
         android:label="fragment_time_line"
         tools:layout="@layout/fragment_time_line" />
+    <fragment
+        tools:layout="@layout/fragment_profile"
+        android:id="@+id/profileFragment"
+        android:name="com.example.localtrader.main_screens.fragments.ProfileFragment"
+        android:label="ProfileFragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_timeLineFragment"
+            app:destination="@id/timeLineFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_profileFragment_to_createBusinessFirstFragment"
+            app:destination="@id/createBusinessFirstFragment" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_client_orders"
+        android:id="@+id/clientOrdersFragment"
+        android:name="com.example.localtrader.main_screens.fragments.ClientOrdersFragment"
+        android:label="ClientOrdersFragment" >
+        <action
+            android:id="@+id/action_clientOrdersFragment_to_timeLineFragment"
+            app:destination="@id/timeLineFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        tools:layout="@layout/fragment_favorites"
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.localtrader.main_screens.fragments.FavoritesFragment"
+        android:label="FavoritesFragment" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_timeLineFragment"
+            app:destination="@id/timeLineFragment"
+            app:enterAnim="@anim/from_left"
+            app:exitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/createBusinessFirstFragment"
+        android:name="com.example.localtrader.business.fragments.CreateBusinessFirstFragment"
+        android:label="fragment_create_business_first"
+        tools:layout="@layout/fragment_create_business_first" />
 </navigation>

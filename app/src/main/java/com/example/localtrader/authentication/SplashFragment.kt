@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import java.util.*
 
 
 class SplashFragment : Fragment() {
@@ -32,6 +34,12 @@ class SplashFragment : Fragment() {
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+            }
+        }, 2000)
     }
 
 

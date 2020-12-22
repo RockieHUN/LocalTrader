@@ -5,10 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.databinding.FragmentFinishRegistrationBinding
 
 class FinishRegistrationFragment : Fragment() {
 
+    private lateinit var binding : FragmentFinishRegistrationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,14 +22,16 @@ class FinishRegistrationFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_finish_registration, container, false)
+
+        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_finish_registration,container,false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         setUpVisuals()
+        setUpListeners()
     }
 
 
@@ -33,5 +39,12 @@ class FinishRegistrationFragment : Fragment() {
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+    }
+
+    private fun setUpListeners()
+    {
+        binding.submitButton.setOnClickListener{
+            findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
+        }
     }
 }

@@ -19,6 +19,7 @@
                 android:orientation="vertical">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
+                    android:background="@color/primary"
                     android:id="@+id/timeline_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
@@ -41,7 +42,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="20dp"
                         android:text="Ákos"
-                        android:textColor="@color/primary"
+                        android:textColor="@color/white"
                         android:textSize="24sp"
                         app:layout_constraintStart_toEndOf="@id/greeting"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +64,7 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="5dp"
                         android:text="@string/header_conversation"
-                        android:textColor="@color/primary"
+                        android:textColor="@color/white"
                         android:textSize="16sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/greeting" />
@@ -72,8 +73,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:background="@null"
                         app:iconifiedByDefault="false"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/header_conversation" />
@@ -128,6 +131,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycle_popular_businesses"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginTop="5dp"
@@ -138,6 +142,12 @@
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <!--JUST PLACEHOLDER -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"/>
 
 
             </LinearLayout>

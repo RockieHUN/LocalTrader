@@ -11,9 +11,9 @@
 
 
 
-    <color name="primary">#BA68C8 </color>
+    <color name="primary">#f1bb64 </color>
     <color name="complementary" > #21ec9e </color>
     <color name="analogous">#f164e0</color>
-    <color name="triadic">#f1bb64</color>
+    <color name="triadic">#BA68C8</color>
 
 </resources>

@@ -3,6 +3,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+
     <!-- Authentication -->
     <string name="registration_text"> Regisztráció </string>
     <string name="firstname_text"> Vezetéknév </string>
@@ -36,8 +37,17 @@
     <string name="timeline_greeting3"> Jó estét </string>
     <string name="header_conversation">Összeállítottuk önnek a felfedezési listáját!</string>
     <string name="recommended_products"> Ajánlott termékek </string>
-    <string name="popular_firms"> Népszerű vállalkozók </string>
+    <string name="popular_firms"> Népszerű vállalkozások </string>
     <string name="exclamation_mark">!</string>
 
+    <!-- Profile -->
+    <string name="my_firm"> Vállalkozásom </string>
+    <string name="logout"> Kijelentkezés </string>
+
+    <!-- Creating business -->
+    <string name="createBusinessHeader1"> Vállakozás profilja </string>
+    <string name="createBusinessText1"> Adja meg a vállalkozás nevét és társítson hozzá egy logót, amelyről majd felismerik a vásárlók, valamint egy rövid leírást.</string>
+    <string name="business_name"> Vállalkozás neve</string>
+    <string name="business_description"> Leírás </string>
 
 </resources>
