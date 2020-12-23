@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentTimeLineBinding
@@ -82,6 +83,10 @@ class TimeLineFragment : Fragment(),
                 }, 2000)
                 callbackCounter++
             } else requireActivity().finish()
+        }
+
+        binding.floatingButton.setOnClickListener {
+            findNavController().navigate(R.id.action_timeLineFragment_to_businessOrdersFragment)
         }
     }
 

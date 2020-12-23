@@ -64,7 +64,15 @@
         android:id="@+id/timeLineFragment"
         android:name="com.example.localtrader.main_screens.fragments.TimeLineFragment"
         android:label="fragment_time_line"
-        tools:layout="@layout/fragment_time_line" />
+        tools:layout="@layout/fragment_time_line" >
+        <action
+            android:id="@+id/action_timeLineFragment_to_businessOrdersFragment"
+            app:destination="@id/businessOrdersFragment"
+            app:enterAnim="@anim/from_top"
+            app:exitAnim="@anim/to_bottom"
+            app:popEnterAnim="@anim/from_bottom"
+            app:popExitAnim="@anim/to_top" />
+    </fragment>
     <fragment
         tools:layout="@layout/fragment_profile"
         android:id="@+id/profileFragment"
@@ -123,4 +131,9 @@
         android:name="com.example.localtrader.business.fragments.CreateBusinessSecondFragment"
         android:label="fragment_create_business_second"
         tools:layout="@layout/fragment_create_business_second" />
+    <fragment
+        tools:layout="@layout/fragment_business_orders"
+        android:id="@+id/businessOrdersFragment"
+        android:name="com.example.localtrader.business.fragments.BusinessOrdersFragment"
+        android:label="BusinessOrdersFragment" />
 </navigation>
