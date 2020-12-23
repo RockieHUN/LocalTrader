@@ -49,5 +49,13 @@
     <string name="createBusinessText1"> Adja meg a vállalkozás nevét és társítson hozzá egy logót, amelyről majd felismerik a vásárlók, valamint egy rövid leírást.</string>
     <string name="business_name"> Vállalkozás neve</string>
     <string name="business_description"> Leírás </string>
+    <string name="categories"> Kategóriák: </string>
+    <string name="createBusinessHeader2"> Elérhetőségek </string>
+    <string name="createBusinessText2"> Megadhatja a vállalkozás elérhetőségeit.</string>
+    <string name="telephone">Telefonszám</string>
+    <string name="location">Város</string>
+    <string name="facebookURL">Facebook link</string>
+    <string name="instagramURL">Instagram link</string>
+    <string name="create">Létrehoz</string>
 
 </resources>

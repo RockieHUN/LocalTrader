@@ -77,7 +77,11 @@
             app:exitAnim="@anim/to_right" />
         <action
             android:id="@+id/action_profileFragment_to_createBusinessFirstFragment"
-            app:destination="@id/createBusinessFirstFragment" />
+            app:destination="@id/createBusinessFirstFragment"
+            app:enterAnim="@anim/from_bottom"
+            app:exitAnim="@anim/to_top"
+            app:popEnterAnim="@anim/from_top"
+            app:popExitAnim="@anim/to_bottom" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_client_orders"
@@ -105,5 +109,18 @@
         android:id="@+id/createBusinessFirstFragment"
         android:name="com.example.localtrader.business.fragments.CreateBusinessFirstFragment"
         android:label="fragment_create_business_first"
-        tools:layout="@layout/fragment_create_business_first" />
+        tools:layout="@layout/fragment_create_business_first" >
+        <action
+            android:id="@+id/action_createBusinessFirstFragment_to_createBusinessSecondFragment"
+            app:destination="@id/createBusinessSecondFragment"
+            app:enterAnim="@anim/from_right"
+            app:exitAnim="@anim/to_left"
+            app:popEnterAnim="@anim/from_left"
+            app:popExitAnim="@anim/to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/createBusinessSecondFragment"
+        android:name="com.example.localtrader.business.fragments.CreateBusinessSecondFragment"
+        android:label="fragment_create_business_second"
+        tools:layout="@layout/fragment_create_business_second" />
 </navigation>

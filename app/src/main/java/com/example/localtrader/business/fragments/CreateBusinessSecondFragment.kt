@@ -1,47 +1,38 @@
-package com.example.localtrader.main_screens.fragments
+package com.example.localtrader.business.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
-import com.example.localtrader.databinding.FragmentProfileBinding
+import java.util.*
 
 
-class ProfileFragment : Fragment() {
-
-    private lateinit var binding : FragmentProfileBinding
+class CreateBusinessSecondFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container, false)
-        return binding.root
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_create_business_second, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpListeners()
-
+        setUpVisuals()
     }
 
-    private fun setUpListeners()
+    private fun setUpVisuals()
     {
-        binding.myBusinessButton.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_createBusinessFirstFragment)
-        }
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+
     }
-
-
 }
