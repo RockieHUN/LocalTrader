@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/businessProfileFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -136,4 +136,13 @@
         android:id="@+id/businessOrdersFragment"
         android:name="com.example.localtrader.business.fragments.BusinessOrdersFragment"
         android:label="BusinessOrdersFragment" />
+    <fragment
+        tools:layout="@layout/fragment_statistics"
+        android:id="@+id/statisticsFragment"
+        android:name="com.example.localtrader.business.fragments.StatisticsFragment"
+        android:label="StatisticsFragment" />
+    <fragment
+        android:id="@+id/businessProfileFragment"
+        android:name="com.example.localtrader.business.fragments.BusinessProfileFragment"
+        android:label="BusinessProfileFragment" />
 </navigation>
