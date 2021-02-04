@@ -5,10 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentFinishRegistrationBinding
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class FinishRegistrationFragment : Fragment() {
 
@@ -44,6 +48,9 @@ class FinishRegistrationFragment : Fragment() {
     private fun setUpListeners()
     {
         binding.submitButton.setOnClickListener{
+            findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
         }
     }

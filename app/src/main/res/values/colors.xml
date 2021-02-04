@@ -10,7 +10,7 @@
 
 
 
-
+    <color name="error_view">#ed443e</color>
     <color name="primary">#f1bb64 </color>
     <color name="complementary" > #21ec9e </color>
     <color name="analogous">#f164e0</color>

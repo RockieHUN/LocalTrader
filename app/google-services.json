@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "512088991736",
+    "firebase_url": "https://local-trader-2-0-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "local-trader-2-0",
+    "storage_bucket": "local-trader-2-0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:512088991736:android:704577642181cabb69980d",
+        "android_client_info": {
+          "package_name": "com.example.localtrader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "512088991736-jif4r4sog4jmlbahnkv1i61vtg0sirg1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB9FfS1PE-jz9_SEYGD5L2k0J-2x-7GZMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "512088991736-jif4r4sog4jmlbahnkv1i61vtg0sirg1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
