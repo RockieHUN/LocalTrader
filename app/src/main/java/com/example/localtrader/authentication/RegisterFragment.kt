@@ -1,5 +1,7 @@
 package com.example.localtrader.authentication
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Patterns
 import androidx.fragment.app.Fragment
@@ -13,6 +15,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.Utils.MySharedPref
 import com.example.localtrader.authentication.Models.RegistrationUser
 import com.example.localtrader.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -28,7 +31,9 @@ class RegisterFragment : Fragment() {
 
     private lateinit var binding : FragmentRegisterBinding
     private lateinit var auth : FirebaseAuth
+
     private val registrationViewModel : RegistrationViewModel by activityViewModels()
+
     private lateinit var data : RegistrationUser
     private var errorMessage = "none";
 
@@ -61,18 +66,25 @@ class RegisterFragment : Fragment() {
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+        binding.circularProgress.visibility = View.GONE
     }
 
     private fun setUpListeners()
     {
         //navigation
         binding.submitButton.setOnClickListener{
+
+            binding.submitButton.visibility = View.GONE
+            binding.circularProgress.visibility = View.VISIBLE
+
             if (dataIsValid())
             {
                 register()
             }
             else
             {
+                binding.submitButton.visibility = View.VISIBLE
+                binding.circularProgress.visibility = View.GONE
                 lifecycleScope.launch {
                     animateError()
                 }
@@ -96,6 +108,7 @@ class RegisterFragment : Fragment() {
         }
     }
 
+    //Show the error with animation
     private suspend fun animateError()
     {
         binding.errorMessage.text = errorMessage
@@ -112,6 +125,8 @@ class RegisterFragment : Fragment() {
 
     }
 
+
+    //check if input data is valid
     private fun dataIsValid () : Boolean
     {
         //get inputData
@@ -162,21 +177,27 @@ class RegisterFragment : Fragment() {
 
     }
 
-
+    //register the user and save data to sharedPref
     private fun register()
     {
+
         auth.createUserWithEmailAndPassword(data.email!!, data.password!!)
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful)
                 {
+                    //save to shared preferences, then navigate forward
+                    MySharedPref.saveToSharedPref(requireContext(), data.email!!, data.password!!)
                     findNavController().navigate(R.id.action_registerFragment_to_finishRegistrationFragment)
                 }
                 else
                 {
+                    binding.submitButton.visibility = View.VISIBLE
+                    binding.circularProgress.visibility = View.GONE
                     errorMessage = "A regisztráció ismeretlen okból nem sikerült. Próbálja újra később"
                 }
             }
     }
+
 
 
 }

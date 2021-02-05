@@ -7,14 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.Utils.MySharedPref
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.util.*
 
 
 class SplashFragment : Fragment() {
+    private lateinit var auth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        auth = Firebase.auth
     }
 
     override fun onCreateView(
@@ -29,18 +34,38 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpVisuals()
+        tryToLogin()
     }
 
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
-
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-            }
-        }, 2000)
     }
 
+
+    private fun tryToLogin()
+    {
+        val credentials = MySharedPref.getFromSharedPref(requireContext())
+
+        if (credentials.containsKey("email") && credentials.containsKey("password"))
+        {
+            auth.signInWithEmailAndPassword(credentials["email"]!!, credentials["password"]!!)
+                .addOnCompleteListener{ task ->
+                    if (task.isSuccessful)
+                    {
+                        findNavController().navigate(R.id.action_splashFragment_to_timeLineFragment)
+                    }
+                    else
+                    {
+                        findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                    }
+                }
+        }
+        else
+        {
+            findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+        }
+
+    }
 
 }
