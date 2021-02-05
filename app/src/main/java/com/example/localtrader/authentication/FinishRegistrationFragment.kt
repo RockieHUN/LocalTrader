@@ -1,5 +1,7 @@
 package com.example.localtrader.authentication
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -52,6 +54,27 @@ class FinishRegistrationFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
+        }
+
+        binding.profilePicture.setOnClickListener{
+            pickImageFromGallery()
+        }
+    }
+
+    private fun pickImageFromGallery() {
+        //Intent to pick image
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(intent, 1)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            val imageUri = data.data!!
+            binding.profilePicture.setImageURI(imageUri)
+            binding.submitButton.text = "Befejezés"
         }
     }
 }

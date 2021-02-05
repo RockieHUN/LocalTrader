@@ -143,12 +143,12 @@ class RegisterFragment : Fragment() {
             errorMessage = "A jelszavak nem egyeznek!"
             return false
         }
-        if (firstname.length < 2 || firstname.length > 20)
+        if (firstname.length < 2 || firstname.length > 40)
         {
             errorMessage = "Helytelen vezetéknév"
             return false
         }
-        if (lastname.length < 2 || lastname.length > 20)
+        if (lastname.length < 2 || lastname.length > 40)
         {
             errorMessage = "Helytelen keresztnév"
             return false

@@ -31,5 +31,13 @@ class MySharedPref {
 
             return map
         }
+
+        fun clearSharedPref(context: Context)
+        {
+            val sharedPref = context.getSharedPreferences("credentials", Context.MODE_PRIVATE)
+            val editor = sharedPref.edit()
+            editor.clear()
+            editor.apply()
+        }
     }
 }

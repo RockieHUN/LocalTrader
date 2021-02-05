@@ -8,16 +8,21 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.Utils.MySharedPref
 import com.example.localtrader.databinding.FragmentProfileBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.ktx.Firebase
 
 
 class ProfileFragment : Fragment() {
 
     private lateinit var binding : FragmentProfileBinding
+    private lateinit var auth : FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -41,7 +46,19 @@ class ProfileFragment : Fragment() {
         binding.myBusinessButton.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_createBusinessFirstFragment)
         }
+
+        binding.logoutButton.setOnClickListener {
+            logout()
+        }
     }
 
+
+    private fun logout()
+    {
+        MySharedPref.clearSharedPref(requireContext())
+        auth = Firebase.auth
+        auth.signOut()
+        findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+    }
 
 }
