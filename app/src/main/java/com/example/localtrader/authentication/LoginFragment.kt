@@ -24,16 +24,18 @@ import kotlin.concurrent.timerTask
 
 class LoginFragment : Fragment() {
 
-    private lateinit var auth : FirebaseAuth
-    private lateinit var binding : FragmentLoginBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var binding: FragmentLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         auth = Firebase.auth
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         return binding.root
@@ -48,14 +50,12 @@ class LoginFragment : Fragment() {
 
     }
 
-    private fun setUpVisuals()
-    {
+    private fun setUpVisuals() {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         binding.circularProgress.visibility = View.GONE
     }
 
-    private fun setUpListeners()
-    {
+    private fun setUpListeners() {
         binding.backButton.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
@@ -65,7 +65,7 @@ class LoginFragment : Fragment() {
         }
 
 
-        binding.toLogin.setOnClickListener{
+        binding.toLogin.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
 
@@ -75,38 +75,32 @@ class LoginFragment : Fragment() {
     }
 
 
-    private fun login()
-    {
+    private fun login() {
 
-        binding.circularProgress.visibility = View.VISIBLE
-        binding.submitButton.visibility = View.GONE
+        startLoading()
 
         val email = binding.email.text.toString()
         val password = binding.password.text.toString()
 
-        if (email.isEmpty() || password.isEmpty())
-        {
-            binding.circularProgress.visibility = View.GONE
-            binding.submitButton.visibility = View.VISIBLE
+        if (email.isEmpty() || password.isEmpty()) {
+            stopLoading()
 
-            lifecycleScope.launch{
+            lifecycleScope.launch {
                 animateError("Kérjük, hogy töltsön ki minden mezőt!")
             }
             return
         }
 
         auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener{ task->
+            .addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
                     MySharedPref.saveToSharedPref(requireContext(), email, password)
                     findNavController().navigate(R.id.action_loginFragment_to_timeLineFragment)
-                }
-                else{
+                } else {
 
-                    binding.circularProgress.visibility = View.GONE
-                    binding.submitButton.visibility = View.VISIBLE
-                    lifecycleScope.launch{
+                    stopLoading()
+                    lifecycleScope.launch {
                         animateError("Hibás e-mail vagy jelszó!")
                     }
                 }
@@ -114,8 +108,7 @@ class LoginFragment : Fragment() {
     }
 
     //Show the error with animation
-    private suspend fun animateError(errorMessage : String)
-    {
+    private suspend fun animateError(errorMessage: String) {
         binding.errorMessage.text = errorMessage
         val view = binding.errorMessageView
 
@@ -128,6 +121,16 @@ class LoginFragment : Fragment() {
             .translationYBy(-200f)
             .duration = 400L
 
+    }
+
+    private fun startLoading() {
+        binding.circularProgress.visibility = View.VISIBLE
+        binding.submitButton.visibility = View.GONE
+    }
+
+    private fun stopLoading() {
+        binding.circularProgress.visibility = View.GONE
+        binding.submitButton.visibility = View.VISIBLE
     }
 
 }

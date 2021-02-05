@@ -74,8 +74,7 @@ class RegisterFragment : Fragment() {
         //navigation
         binding.submitButton.setOnClickListener{
 
-            binding.submitButton.visibility = View.GONE
-            binding.circularProgress.visibility = View.VISIBLE
+           startLoading()
 
             if (dataIsValid())
             {
@@ -83,8 +82,7 @@ class RegisterFragment : Fragment() {
             }
             else
             {
-                binding.submitButton.visibility = View.VISIBLE
-                binding.circularProgress.visibility = View.GONE
+                stopLoading()
                 lifecycleScope.launch {
                     animateError()
                 }
@@ -199,5 +197,14 @@ class RegisterFragment : Fragment() {
     }
 
 
+    private fun startLoading() {
+        binding.circularProgress.visibility = View.VISIBLE
+        binding.submitButton.visibility = View.GONE
+    }
+
+    private fun stopLoading() {
+        binding.circularProgress.visibility = View.GONE
+        binding.submitButton.visibility = View.VISIBLE
+    }
 
 }
