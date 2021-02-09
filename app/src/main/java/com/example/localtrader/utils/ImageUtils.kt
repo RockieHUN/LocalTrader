@@ -1,4 +1,4 @@
-package com.example.localtrader.Utils
+package com.example.localtrader.utils
 
 import android.app.Activity
 import android.graphics.Bitmap

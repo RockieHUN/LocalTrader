@@ -1,8 +1,7 @@
 package com.example.localtrader.authentication
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,11 +14,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
-import com.example.localtrader.Utils.MySharedPref
+import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.authentication.Models.RegistrationUser
+import com.example.localtrader.authentication.Models.User
 import com.example.localtrader.databinding.FragmentRegisterBinding
+import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -31,17 +34,22 @@ class RegisterFragment : Fragment() {
 
     private lateinit var binding : FragmentRegisterBinding
     private lateinit var auth : FirebaseAuth
+    private lateinit var db : FirebaseFirestore
 
-    private val registrationViewModel : RegistrationViewModel by activityViewModels()
+    private val userViewModel : UserViewModel by activityViewModels()
 
     private lateinit var data : RegistrationUser
-    private var errorMessage = "none";
+    private var errorMessage = "none"
+
+    private var pwShown = false
+    private var pwAgainShown = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         auth = Firebase.auth
+        db = Firebase.firestore
     }
 
     override fun onCreateView(
@@ -71,7 +79,7 @@ class RegisterFragment : Fragment() {
 
     private fun setUpListeners()
     {
-        //navigation
+        //checking input and registering
         binding.submitButton.setOnClickListener{
 
            startLoading()
@@ -90,10 +98,12 @@ class RegisterFragment : Fragment() {
             }
         }
 
+        //navigate to login screen
         binding.toLogin.setOnClickListener{
             findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
         }
 
+        //callback
         var callbackCounter = 0
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             if (callbackCounter == 0) {
@@ -103,6 +113,31 @@ class RegisterFragment : Fragment() {
                 }, 2000)
                 callbackCounter++
             } else requireActivity().finish()
+        }
+
+        //show passwords
+        binding.showPasswordButton.setOnClickListener {
+            if (pwShown)
+            {
+                binding.password.transformationMethod = null
+                pwShown= false
+            }
+            else{
+                binding.password.transformationMethod = PasswordTransformationMethod()
+                pwShown = true
+            }
+        }
+
+        binding.showPasswordAgainButton.setOnClickListener {
+            if (pwAgainShown)
+            {
+                binding.passwordAgain.transformationMethod = null
+                pwAgainShown= false
+            }
+            else{
+                binding.passwordAgain.transformationMethod = PasswordTransformationMethod()
+                pwAgainShown = true
+            }
         }
     }
 
@@ -183,6 +218,9 @@ class RegisterFragment : Fragment() {
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful)
                 {
+                    //save additional info to FireStore
+                    saveToFireStore()
+
                     //save to shared preferences, then navigate forward
                     MySharedPref.saveToSharedPref(requireContext(), data.email!!, data.password!!)
                     findNavController().navigate(R.id.action_registerFragment_to_finishRegistrationFragment)
@@ -194,6 +232,19 @@ class RegisterFragment : Fragment() {
                     errorMessage = "A regisztráció ismeretlen okból nem sikerült. Próbálja újra később"
                 }
             }
+    }
+
+    fun saveToFireStore()
+    {
+
+        //save to FireStore
+        val newUser = User(data.firstname!! , data.lastname!!, data.email!!)
+        db.collection("users")
+            .document(auth.currentUser!!.uid)
+            .set(newUser)
+
+        //add to viewModel
+        userViewModel.user = newUser
     }
 
 

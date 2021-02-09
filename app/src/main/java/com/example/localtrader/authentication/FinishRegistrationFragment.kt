@@ -8,39 +8,45 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
-import com.example.localtrader.Utils.ImageUtils
+import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.databinding.FragmentFinishRegistrationBinding
+import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.concurrent.timerTask
 
 class FinishRegistrationFragment : Fragment() {
 
     private lateinit var binding: FragmentFinishRegistrationBinding
     private lateinit var storage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
+    private lateinit var firestore : FirebaseFirestore
+
     private var isImageSelected = false
     private lateinit var profileImageUri: Uri
+
+    private val userViewModel : UserViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         storage = Firebase.storage
         auth = Firebase.auth
+        firestore = Firebase.firestore
+
     }
 
     override fun onCreateView(
@@ -62,6 +68,13 @@ class FinishRegistrationFragment : Fragment() {
 
         setUpVisuals()
         setUpListeners()
+        setName()
+    }
+
+    private fun setName()
+    {
+        binding.firstName.text = userViewModel.user!!.firstname
+        binding.lastName.text = userViewModel.user!!.lastname
     }
 
 
@@ -79,6 +92,9 @@ class FinishRegistrationFragment : Fragment() {
                 findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
             } else {
                 uploadImage(profileImageUri)
+                firestore.collection("users")
+                    .document("users")
+                    .update("profileImage","Users/${auth.uid}/profilePicture")
             }
 
         }
@@ -117,23 +133,12 @@ class FinishRegistrationFragment : Fragment() {
             val reference = storage.reference
             val path = reference.child("Users/${auth.uid}/profilePicture")
 
-            /*path.putFile(imageUri).addOnCompleteListener{ task ->
-                if (task.isSuccessful) {
-                    findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
-                }
-                else{
-                    lifecycleScope.launch{
-                        animateError("Nem sikerült feltölteni a képek. Próbálja újra később")
-                    }
-                    binding.submitButton.text = "Kihagyás"
-                }
-            } */
-
             val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
 
             resizedImage.observe(viewLifecycleOwner, { byteArray ->
                 path.putBytes(byteArray).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+
                         findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
                     } else {
                         lifecycleScope.launch {
