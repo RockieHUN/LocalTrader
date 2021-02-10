@@ -54,8 +54,8 @@
     <string name="createBusinessText2"> Megadhatja a vállalkozás elérhetőségeit.</string>
     <string name="telephone">Telefonszám</string>
     <string name="location">Város</string>
-    <string name="facebookURL">Facebook link</string>
-    <string name="instagramURL">Instagram link</string>
+    <string name="facebookURL">Facebook link (opcionális)</string>
+    <string name="instagramURL">Instagram link (opcionális)</string>
     <string name="create">Létrehoz</string>
 
     <!-- Statistics -->

@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.databinding.FragmentLoginBinding
+import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -23,6 +25,7 @@ class LoginFragment : Fragment() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: FragmentLoginBinding
+    private val userViewModel : UserViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +95,7 @@ class LoginFragment : Fragment() {
             .addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
+                    userViewModel.loadUserData(auth.currentUser!!.uid)
                     MySharedPref.saveToSharedPref(requireContext(), email, password)
                     findNavController().navigate(R.id.action_loginFragment_to_timeLineFragment)
                 } else {

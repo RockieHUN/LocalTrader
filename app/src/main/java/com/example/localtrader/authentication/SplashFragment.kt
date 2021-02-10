@@ -5,9 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.utils.MySharedPref
+import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -15,6 +17,7 @@ import com.google.firebase.ktx.Firebase
 
 class SplashFragment : Fragment() {
     private lateinit var auth : FirebaseAuth
+    private val userViewModel : UserViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +55,7 @@ class SplashFragment : Fragment() {
                 .addOnCompleteListener{ task ->
                     if (task.isSuccessful)
                     {
+                        userViewModel.loadUserData(auth.currentUser!!.uid)
                         findNavController().navigate(R.id.action_splashFragment_to_timeLineFragment)
                     }
                     else
@@ -66,5 +70,6 @@ class SplashFragment : Fragment() {
         }
 
     }
+
 
 }

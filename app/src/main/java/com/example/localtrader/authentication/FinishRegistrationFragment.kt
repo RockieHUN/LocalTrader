@@ -73,8 +73,8 @@ class FinishRegistrationFragment : Fragment() {
 
     private fun setName()
     {
-        binding.firstName.text = userViewModel.user!!.firstname
-        binding.lastName.text = userViewModel.user!!.lastname
+        binding.firstName.text = userViewModel.user.value!!.firstname
+        binding.lastName.text = userViewModel.user.value!!.lastname
     }
 
 

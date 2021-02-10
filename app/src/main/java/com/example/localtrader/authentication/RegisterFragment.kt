@@ -15,8 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.utils.MySharedPref
-import com.example.localtrader.authentication.Models.RegistrationUser
-import com.example.localtrader.authentication.Models.User
+import com.example.localtrader.authentication.models.RegistrationUser
+import com.example.localtrader.authentication.models.User
 import com.example.localtrader.databinding.FragmentRegisterBinding
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -236,7 +236,6 @@ class RegisterFragment : Fragment() {
 
     fun saveToFireStore()
     {
-
         //save to FireStore
         val newUser = User(data.firstname!! , data.lastname!!, data.email!!)
         db.collection("users")
@@ -244,7 +243,7 @@ class RegisterFragment : Fragment() {
             .set(newUser)
 
         //add to viewModel
-        userViewModel.user = newUser
+        userViewModel.user.value = newUser
     }
 
 

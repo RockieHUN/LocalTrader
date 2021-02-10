@@ -1,5 +1,6 @@
 package com.example.localtrader.main_screens.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -9,26 +10,34 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentTimeLineBinding
 import com.example.localtrader.main_screens.adapters.PopularBusinessesAdapter
 import com.example.localtrader.main_screens.adapters.RecommendedProductsAdapter
+import com.example.localtrader.viewmodels.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import java.util.*
 import kotlin.concurrent.timerTask
 
 class TimeLineFragment : Fragment(),
     RecommendedProductsAdapter.OnItemClickListener,
     PopularBusinessesAdapter.OnItemClickListener
-
 {
-
     private lateinit var binding : FragmentTimeLineBinding
+    private lateinit var auth : FirebaseAuth
+
+    private val userViewModel : UserViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        auth = Firebase.auth
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +50,8 @@ class TimeLineFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showUserData()
+
         setUpVisuals()
         setUpListeners()
 
@@ -48,6 +59,19 @@ class TimeLineFragment : Fragment(),
         recyclePopularBusinesses()
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        showUserData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        userViewModel.removeAllObserver(viewLifecycleOwner)
+    }
+
+
+    //set recommended products recycle view
     private fun recycleRecommendedProducts()
     {
         val adapter = RecommendedProductsAdapter(this)
@@ -57,6 +81,7 @@ class TimeLineFragment : Fragment(),
         binding.recycleRecommendedProducts.setHasFixedSize(true)
     }
 
+    //set recommended products recycle view
     private fun recyclePopularBusinesses()
     {
         val adapter = PopularBusinessesAdapter(this)
@@ -85,10 +110,25 @@ class TimeLineFragment : Fragment(),
             } else requireActivity().finish()
         }
 
-        binding.floatingButton.setOnClickListener {
-            findNavController().navigate(R.id.action_timeLineFragment_to_businessOrdersFragment)
-        }
     }
+
+    private fun showUserData()
+    {
+        userViewModel.downloadUri.observe(viewLifecycleOwner,  { uri ->
+            Glide.with(requireContext())
+                .load(uri)
+                .placeholder(R.drawable.ic_baseline_account_circle_24)
+                .circleCrop()
+                .into(binding.profilePicture)
+        })
+
+        userViewModel.user.observe(viewLifecycleOwner, {
+            val lastname = userViewModel.user.value?.lastname
+
+            binding.lastName.text = lastname
+        })
+    }
+
 
     override fun onItemClick(position: Int) {
         return

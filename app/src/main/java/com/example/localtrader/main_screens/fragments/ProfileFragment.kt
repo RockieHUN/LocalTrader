@@ -94,7 +94,7 @@ class ProfileFragment : Fragment() {
     {
         val uid = auth.currentUser!!.uid
 
-        val user = userViewModel.user
+        val user = userViewModel.user.value
         if  (user == null)
         {
            fireStore.collection("users")
@@ -108,28 +108,20 @@ class ProfileFragment : Fragment() {
         else
         {
             binding.userName.text = "${user?.firstname} ${user?.lastname}"
-            binding.userEmail.text = user?.email
+            binding.userEmail.text = user.email
         }
 
-
-
-
-
         //load profile image
-        val imageReference = storage.reference.child("users/${uid}/profilePicture")
 
-        imageReference.downloadUrl.addOnSuccessListener { uri ->
+        if (userViewModel.downloadUri.value != null)
+        {
             Glide.with(requireContext())
-                .load(uri)
+                .load(userViewModel.downloadUri.value)
+                .placeholder(R.drawable.ic_baseline_account_circle_24)
                 .centerCrop()
                 .into(binding.profilePicture)
         }
 
-       /* imageReference.getBytes(ONE_MEGABYTE)
-            .addOnSuccessListener{ byteArray ->
-                val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                binding.profilePicture.setImageBitmap(bitmap)
-        }*/
     }
 
     private fun logout()

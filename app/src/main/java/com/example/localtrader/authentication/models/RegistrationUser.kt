@@ -1,4 +1,4 @@
-package com.example.localtrader.authentication.Models
+package com.example.localtrader.authentication.models
 
 data class RegistrationUser(
     var firstname : String?,
