@@ -94,7 +94,7 @@ class FinishRegistrationFragment : Fragment() {
                 uploadImage(profileImageUri)
                 firestore.collection("users")
                     .document("users")
-                    .update("profileImage","Users/${auth.uid}/profilePicture")
+                    .update("profileImage","users/${auth.uid}/profilePicture")
             }
 
         }
@@ -131,7 +131,7 @@ class FinishRegistrationFragment : Fragment() {
 
         if (currentUser != null) {
             val reference = storage.reference
-            val path = reference.child("Users/${auth.uid}/profilePicture")
+            val path = reference.child("users/${auth.uid}/profilePicture")
 
             val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
 
