@@ -25,6 +25,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -138,11 +139,11 @@ class FinishRegistrationFragment : Fragment() {
             resizedImage.observe(viewLifecycleOwner, { byteArray ->
                 path.putBytes(byteArray).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-
+                        userViewModel.getDownloadUri(currentUser.uid)
                         findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
                     } else {
                         lifecycleScope.launch {
-                            animateError("Nem sikerült feltölteni a képek. Próbálja újra később")
+                            animateError("Nem sikerült feltölteni a képet. Próbálja újra később")
                         }
                         binding.submitButton.text = "Kihagyás"
                         stopLoading()
@@ -150,8 +151,8 @@ class FinishRegistrationFragment : Fragment() {
                 }
             })
 
-            lifecycleScope.launch {
-                resizedImage.value = ImageUtils.convertProfileImage(requireActivity(), imageUri)
+            lifecycleScope.launch(Dispatchers.IO) {
+                resizedImage.postValue(ImageUtils.convertProfileImage(requireActivity(), imageUri))
             }
 
         }

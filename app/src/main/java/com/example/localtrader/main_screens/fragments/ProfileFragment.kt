@@ -13,8 +13,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
+import com.example.localtrader.business.models.Business
 import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.databinding.FragmentProfileBinding
+import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -34,6 +36,7 @@ class ProfileFragment : Fragment() {
 
 
     private val userViewModel : UserViewModel by activityViewModels()
+    private val creationViewModel : CreateBusinessViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,7 +130,7 @@ class ProfileFragment : Fragment() {
     private fun logout()
     {
         MySharedPref.clearSharedPref(requireContext())
-
+        creationViewModel.business = Business()
         auth.signOut()
         findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
     }

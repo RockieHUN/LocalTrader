@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category_list">
+        <item> Ékszerek </item>
+        <item> Öltözékek </item>
+        <item> Dekorációk </item>
+        <item> Egyéb </item>
+    </string-array>
+</resources>

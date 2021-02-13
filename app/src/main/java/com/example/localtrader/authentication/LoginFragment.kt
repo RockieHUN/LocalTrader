@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.databinding.FragmentLoginBinding
+import com.example.localtrader.utils.Animations
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -86,7 +87,7 @@ class LoginFragment : Fragment() {
             stopLoading()
 
             lifecycleScope.launch {
-                animateError("Kérjük, hogy töltsön ki minden mezőt!")
+                Animations.animateError(binding.errorMessageView,"Kérjük, hogy töltsön ki minden mezőt!")
             }
             return
         }
@@ -102,27 +103,13 @@ class LoginFragment : Fragment() {
 
                     stopLoading()
                     lifecycleScope.launch {
-                        animateError("Hibás e-mail vagy jelszó!")
+                        Animations.animateError(binding.errorMessageView,"Hibás e-mail vagy jelszó!")
                     }
                 }
             }
     }
 
-    //Show the error with animation
-    private suspend fun animateError(errorMessage: String) {
-        binding.errorMessage.text = errorMessage
-        val view = binding.errorMessageView
 
-        view.animate()
-            .translationYBy(200f)
-            .duration = 400L
-
-        delay(4000)
-        view.animate()
-            .translationYBy(-200f)
-            .duration = 400L
-
-    }
 
     private fun startLoading() {
         binding.circularProgress.visibility = View.VISIBLE

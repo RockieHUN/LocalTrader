@@ -40,6 +40,15 @@ class UserViewModel : ViewModel() {
         downloadUri.removeObservers(owner)
     }
 
+    fun getDownloadUri(uid : String)
+    {
+        storage.reference.child("users/${uid}/profilePicture")
+            .downloadUrl
+            .addOnSuccessListener { uri ->
+                downloadUri.value = uri
+            }
+    }
+
 
 
 }

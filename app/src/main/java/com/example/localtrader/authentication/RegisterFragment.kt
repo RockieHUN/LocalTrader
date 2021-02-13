@@ -18,6 +18,7 @@ import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.authentication.models.RegistrationUser
 import com.example.localtrader.authentication.models.User
 import com.example.localtrader.databinding.FragmentRegisterBinding
+import com.example.localtrader.utils.Animations
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -92,7 +93,7 @@ class RegisterFragment : Fragment() {
             {
                 stopLoading()
                 lifecycleScope.launch {
-                    animateError()
+                    Animations.animateError(binding.errorMessageView, errorMessage)
                 }
 
             }
@@ -141,22 +142,7 @@ class RegisterFragment : Fragment() {
         }
     }
 
-    //Show the error with animation
-    private suspend fun animateError()
-    {
-        binding.errorMessage.text = errorMessage
-        val view = binding.errorMessageView
 
-        view.animate()
-            .translationYBy(200f)
-            .duration = 400L
-
-        delay(4000)
-        view.animate()
-            .translationYBy(-200f)
-            .duration = 400L
-
-    }
 
 
     //check if input data is valid
