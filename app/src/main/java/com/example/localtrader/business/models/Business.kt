@@ -9,7 +9,7 @@ data class Business (
     var description : String = "",
     var email : String ="",
     var telephone : String = "",
-    var city : String = "",
+    var location : String = "",
     var facebook_link : String = "",
     var instagram_link : String= ""
         )
