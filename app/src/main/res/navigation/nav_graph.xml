@@ -99,6 +99,9 @@
         <action
             android:id="@+id/action_profileFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_businessProfileFragment"
+            app:destination="@id/businessProfileFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_client_orders"
@@ -161,5 +164,9 @@
         tools:layout="@layout/fragment_business_profile"
         android:id="@+id/businessProfileFragment"
         android:name="com.example.localtrader.business.fragments.BusinessProfileFragment"
-        android:label="BusinessProfileFragment" />
+        android:label="BusinessProfileFragment" >
+        <action
+            android:id="@+id/action_businessProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

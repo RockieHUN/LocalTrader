@@ -41,7 +41,9 @@
     <string name="exclamation_mark">!</string>
 
     <!-- Profile -->
-    <string name="my_firm"> Vállalkozásom </string>
+    <string name="my_business"> Vállalkozásom </string>
+    <string name="create_business"> Új vállalkozás</string>
+
     <string name="logout"> Kijelentkezés </string>
 
     <!-- Creating business -->

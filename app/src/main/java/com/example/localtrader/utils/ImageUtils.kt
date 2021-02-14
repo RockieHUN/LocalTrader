@@ -36,7 +36,7 @@ class ImageUtils {
         }
 
 
-        suspend fun uriToScaledBitmap(activity: Activity, uri : Uri) : Bitmap{
+        suspend fun uriToScaledBitmap(activity: Activity, uri : Uri, maxRes : Int) : Bitmap{
 
             val inputStream = activity.contentResolver.openInputStream(uri)
             val byteArray = inputStream?.readBytes()
@@ -46,7 +46,6 @@ class ImageUtils {
             val height = bitmap.height
             val width = bitmap.width
 
-            val maxRes = 1080
             //if the image is too big, resize
             if (height > maxRes || width >maxRes) bitmap = resizeImage(bitmap, maxRes)
 
@@ -61,10 +60,11 @@ class ImageUtils {
         }
 
 
-        suspend fun convertProfileImage(activity: Activity, imageUri : Uri) : ByteArray
+        suspend fun resizeImageTo(activity: Activity, imageUri : Uri, maxRes : Int) : ByteArray
         {
-            val scaledBitmap = uriToScaledBitmap(activity, imageUri)
+            val scaledBitmap = uriToScaledBitmap(activity, imageUri, maxRes)
             return bitmapToByteArray(scaledBitmap)
         }
+
     }
 }

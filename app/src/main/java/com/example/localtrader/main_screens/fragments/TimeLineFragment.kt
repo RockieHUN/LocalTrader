@@ -22,6 +22,7 @@ import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -44,6 +45,7 @@ class TimeLineFragment : Fragment(),
                               savedInstanceState: Bundle?): View? {
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_time_line,container,false)
+        setGreeting()
         return binding.root
     }
 
@@ -95,6 +97,7 @@ class TimeLineFragment : Fragment(),
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
+
     }
 
     private fun setUpListeners()
@@ -134,7 +137,26 @@ class TimeLineFragment : Fragment(),
         return
     }
 
+    private fun setGreeting()
+    {
+        val greeting = binding.greeting
+        val time = LocalDateTime.now()
 
+        val minute = time.hour * 60 + time.minute
+
+        if (minute in 300..719)
+        {
+            greeting.text = resources.getText(R.string.timeline_greeting1)
+        }
+        else if (minute in 720..1019)
+        {
+            greeting.text = resources.getText(R.string.timeline_greeting2)
+        }
+        else if (minute > 1019 || minute < 300)
+        {
+            greeting.text = resources.getText(R.string.timeline_greeting3)
+        }
+    }
 
 
 }

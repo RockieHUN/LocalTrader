@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
@@ -36,6 +38,7 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         super.onViewCreated(view, savedInstanceState)
 
         createRecycle()
+        setUpListeners()
     }
 
 
@@ -47,6 +50,13 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         binding.recycleView.layoutManager = horizontalLayout
         binding.recycleView.setHasFixedSize(true)
 
+    }
+
+    private fun setUpListeners()
+    {
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            findNavController().navigate(R.id.action_businessProfileFragment_to_profileFragment)
+        }
     }
 
     override fun onItemClick(position: Int) {

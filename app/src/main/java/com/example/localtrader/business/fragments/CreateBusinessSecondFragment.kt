@@ -12,13 +12,14 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.findFragment
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentCreateBusinessSecondBinding
-import com.example.localtrader.utils.Animations
-import com.example.localtrader.utils.MySharedPref
-import com.example.localtrader.utils.Secrets
+import com.example.localtrader.utils.*
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.android.gms.common.api.Status
@@ -50,6 +51,8 @@ class CreateBusinessSecondFragment : Fragment() {
     private val creationViewModel: CreateBusinessViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
 
+    private lateinit var uid : String
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,12 +82,14 @@ class CreateBusinessSecondFragment : Fragment() {
 
         if (auth.currentUser == null)
         {
-            if (auth.currentUser == null)
-            {
-                MySharedPref.clearSharedPref(requireContext())
-                findNavController().navigate(R.id.action_createBusinessSecondFragment_to_loginFragment)
-            }
+            MySharedPref.clearSharedPref(requireContext())
+            findNavController().navigate(R.id.action_createBusinessSecondFragment_to_loginFragment)
         }
+        else
+        {
+            uid = auth.currentUser!!.uid
+        }
+
 
         val user = userViewModel.user.value
         if (user != null) {
@@ -120,7 +125,10 @@ class CreateBusinessSecondFragment : Fragment() {
                 creationViewModel.business.email = email
                 creationViewModel.business.telephone = telephone
                 creationViewModel.business.location = location
-                saveDataToDatabase()
+
+                val business = creationViewModel.convert(uid)
+                userViewModel.userBusiness.value = business
+                saveDataToDatabase(business)
             }
         }
     }
@@ -140,19 +148,34 @@ class CreateBusinessSecondFragment : Fragment() {
         }
     }
 
-    private fun saveDataToDatabase()
+    private fun saveDataToDatabase(business : Business)
     {
-        val uid = auth.currentUser!!.uid
+
+
+        //save business data to firestore
         database.collection("businesses")
             .document(uid)
-            .set(creationViewModel.business)
+            .set(business)
             .addOnSuccessListener {
 
                 val reference = storage.reference
                 val path = reference.child("businesses/${uid}/logo")
-                //TODO : RESIZE IMAGE AND UPLOAD
-                findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
 
+                //save image to storage
+                val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
+
+                resizedImage.observe(viewLifecycleOwner,{ byteArray ->
+                    path.putBytes(byteArray)
+                    findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
+                })
+
+                //resize image
+                lifecycleScope.launch {
+                    resizedImage.value = ImageUtils.resizeImageTo(
+                        requireActivity(),
+                        creationViewModel.business.imageUri!!,
+                        Constants.businessProfileSize)
+                }
             }
     }
 

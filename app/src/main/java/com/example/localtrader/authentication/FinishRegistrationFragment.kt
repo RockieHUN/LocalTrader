@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.databinding.FragmentFinishRegistrationBinding
+import com.example.localtrader.utils.Constants
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -152,7 +153,7 @@ class FinishRegistrationFragment : Fragment() {
             })
 
             lifecycleScope.launch(Dispatchers.IO) {
-                resizedImage.postValue(ImageUtils.convertProfileImage(requireActivity(), imageUri))
+                resizedImage.postValue(ImageUtils.resizeImageTo(requireActivity(), imageUri, Constants.userProfileSize))
             }
 
         }

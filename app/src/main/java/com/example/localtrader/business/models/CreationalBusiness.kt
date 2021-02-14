@@ -1,7 +1,9 @@
 package com.example.localtrader.business.models
 
-class Business (
-    var ownerUid : String = "",
+import android.net.Uri
+
+data class CreationalBusiness (
+    var imageUri : Uri? = null,
     var name : String = "",
     var category : String ="",
     var description : String = "",
@@ -10,4 +12,4 @@ class Business (
     var location : String = "",
     var facebook_link : String = "",
     var instagram_link : String= ""
-)
+        )

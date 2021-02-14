@@ -1,6 +1,5 @@
 package com.example.localtrader.main_screens.fragments
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -13,7 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
-import com.example.localtrader.business.models.Business
+import com.example.localtrader.business.models.CreationalBusiness
 import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.databinding.FragmentProfileBinding
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
@@ -34,9 +33,12 @@ class ProfileFragment : Fragment() {
     private lateinit var fireStore : FirebaseFirestore
     private lateinit var storage : FirebaseStorage
 
+    private lateinit var uid : String
+    private var businessExists = 0  // 0: not loaded, 1: exists, -1: not exists
 
     private val userViewModel : UserViewModel by activityViewModels()
     private val creationViewModel : CreateBusinessViewModel by activityViewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,8 +46,9 @@ class ProfileFragment : Fragment() {
         auth = Firebase.auth
         fireStore = Firebase.firestore
         storage = Firebase.storage
-    }
 
+        uid = auth.currentUser!!.uid
+    }
 
 
     override fun onCreateView(
@@ -54,9 +57,8 @@ class ProfileFragment : Fragment() {
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container, false)
-
         loadProfileData()
-
+        hasBusiness()
         return binding.root
     }
 
@@ -64,7 +66,6 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpListeners()
-
     }
 
     override fun onResume() {
@@ -75,13 +76,27 @@ class ProfileFragment : Fragment() {
             MySharedPref.clearSharedPref(requireContext())
             findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
+        hasBusiness()
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        userViewModel.removeBusinessObservers(viewLifecycleOwner)
     }
 
 
     private fun setUpListeners()
     {
         binding.myBusinessButton.setOnClickListener {
-            findNavController().navigate(R.id.action_profileFragment_to_createBusinessFirstFragment)
+            if (businessExists == -1 )
+            {
+                findNavController().navigate(R.id.action_profileFragment_to_createBusinessFirstFragment)
+            }
+            if (businessExists == 1)
+            {
+                findNavController().navigate(R.id.action_profileFragment_to_businessProfileFragment)
+            }
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -93,10 +108,24 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun hasBusiness() {
+        userViewModel.userBusiness.observe(viewLifecycleOwner, { business ->
+            if (business != null) {
+                binding.myBusinessButton.text = resources.getText(R.string.my_business)
+                businessExists = 1
+            }
+            else {
+                binding.myBusinessButton.text = resources.getText(R.string.create_business)
+                businessExists = -1
+            }
+        })
+    }
+
     private fun loadProfileData()
     {
-        val uid = auth.currentUser!!.uid
+        uid = auth.currentUser!!.uid
 
+        //load user information
         val user = userViewModel.user.value
         if  (user == null)
         {
@@ -115,7 +144,6 @@ class ProfileFragment : Fragment() {
         }
 
         //load profile image
-
         if (userViewModel.downloadUri.value != null)
         {
             Glide.with(requireContext())
@@ -124,13 +152,13 @@ class ProfileFragment : Fragment() {
                 .centerCrop()
                 .into(binding.profilePicture)
         }
-
     }
+
 
     private fun logout()
     {
         MySharedPref.clearSharedPref(requireContext())
-        creationViewModel.business = Business()
+        creationViewModel.business = CreationalBusiness()
         auth.signOut()
         findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
     }
