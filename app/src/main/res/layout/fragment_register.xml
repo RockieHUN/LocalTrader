@@ -397,6 +397,7 @@
         android:id="@+id/error_message_view"
         android:layout_width="match_parent"
         android:background="@color/error_view"
+        android:padding="10dp"
         android:layout_height="wrap_content"
         android:minHeight="100dp"
         app:layout_constraintEnd_toEndOf="parent"

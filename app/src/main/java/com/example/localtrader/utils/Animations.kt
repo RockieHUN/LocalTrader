@@ -9,19 +9,34 @@ class Animations {
 
     companion object{
 
+        private var isVisible : Boolean = false
+
         suspend fun animateError(layout : ConstraintLayout, errorMessage : String)
         {
-            val textView = layout.findViewById<TextView>(R.id.error_message)
-            textView.text = errorMessage
+            if (!isVisible){
+                synchronized(this)
+                {
+                    isVisible = true
+                }
 
-            layout.animate()
-                .translationYBy(200f)
-                .duration = 400L
+                val textView = layout.findViewById<TextView>(R.id.error_message)
+                textView.text = errorMessage
 
-            delay(4000)
-            layout.animate()
-                .translationYBy(-200f)
-                .duration = 400L
+                layout.animate()
+                    .translationYBy(200f)
+                    .duration = 400L
+
+                delay(4000)
+                layout.animate()
+                    .translationYBy(-200f)
+                    .duration = 400L
+
+                delay(2000)
+                synchronized(this)
+                {
+                    isVisible = false
+                }
+            }
 
         }
     }

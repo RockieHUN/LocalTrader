@@ -7,22 +7,36 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
 import com.example.localtrader.main_screens.adapters.PopularBusinessesAdapter
+import com.example.localtrader.viewmodels.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
 
 
 class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickListener {
 
     private lateinit var binding : FragmentBusinessProfileBinding
+    private lateinit var auth : FirebaseAuth
+    private lateinit var storage : FirebaseStorage
+
+    private val userViewModel : UserViewModel by activityViewModels()
+    private lateinit var uid : String
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        auth = Firebase.auth
+        storage = Firebase.storage
     }
 
     override fun onCreateView(
@@ -39,6 +53,25 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
 
         createRecycle()
         setUpListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (auth.currentUser == null)
+        {
+            findNavController().navigate(R.id.action_businessProfileFragment_to_loginFragment)
+        }
+        else{
+            uid = auth.currentUser!!.uid
+        }
+
+        setBusinessData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        userViewModel.removeBusinessObservers(viewLifecycleOwner)
     }
 
 
@@ -63,5 +96,22 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         return
     }
 
+
+    private fun setBusinessData()
+    {
+        userViewModel.userBusiness.observe(viewLifecycleOwner, { business ->
+            if (business != null)
+            {
+                binding.businessName.text = business.name
+                binding.businessCategory.text = business.category
+                binding.businessDescription.text = business.description
+
+
+                val id = uid
+                //TODO: load image
+            }
+
+        })
+    }
 
 }

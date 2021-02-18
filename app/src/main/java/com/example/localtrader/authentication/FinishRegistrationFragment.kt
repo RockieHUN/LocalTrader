@@ -73,11 +73,7 @@ class FinishRegistrationFragment : Fragment() {
         setName()
     }
 
-    private fun setName()
-    {
-        binding.firstName.text = userViewModel.user.value!!.firstname
-        binding.lastName.text = userViewModel.user.value!!.lastname
-    }
+
 
 
     private fun setUpVisuals() {
@@ -122,6 +118,8 @@ class FinishRegistrationFragment : Fragment() {
         if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             val imageUri = data.data!!
             binding.profilePicture.setImageURI(imageUri)
+
+            //save uri to a class variable
             profileImageUri = imageUri
             isImageSelected = true
             binding.submitButton.text = "Befejezés"
@@ -137,9 +135,12 @@ class FinishRegistrationFragment : Fragment() {
 
             val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
 
+            //after the image is resized, upload to storage
             resizedImage.observe(viewLifecycleOwner, { byteArray ->
+
                 path.putBytes(byteArray).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
+
                         userViewModel.getDownloadUri(currentUser.uid)
                         findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
                     } else {
@@ -152,6 +153,7 @@ class FinishRegistrationFragment : Fragment() {
                 }
             })
 
+            //resize image and put to a LiveData variable
             lifecycleScope.launch(Dispatchers.IO) {
                 resizedImage.postValue(ImageUtils.resizeImageTo(requireActivity(), imageUri, Constants.userProfileSize))
             }
@@ -172,6 +174,12 @@ class FinishRegistrationFragment : Fragment() {
             .translationYBy(-200f)
             .duration = 400L
 
+    }
+
+    private fun setName()
+    {
+        binding.firstName.text = userViewModel.user.value!!.firstname
+        binding.lastName.text = userViewModel.user.value!!.lastname
     }
 
     private fun startLoading() {

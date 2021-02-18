@@ -47,6 +47,17 @@ class SplashFragment : Fragment() {
 
     private fun tryToLogin()
     {
+
+        if (auth.currentUser != null)
+        {
+            userViewModel.loadUserData(auth.currentUser!!.uid)
+            findNavController().navigate(R.id.action_splashFragment_to_timeLineFragment)
+        }
+        else{
+            findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+        }
+
+        /*
         val credentials = MySharedPref.getFromSharedPref(requireContext())
 
         if (credentials.containsKey("email") && credentials.containsKey("password"))
@@ -56,7 +67,7 @@ class SplashFragment : Fragment() {
                     if (task.isSuccessful)
                     {
                         userViewModel.loadUserData(auth.currentUser!!.uid)
-                        findNavController().navigate(R.id.action_splashFragment_to_timeLineFragment)
+
                     }
                     else
                     {
@@ -67,7 +78,7 @@ class SplashFragment : Fragment() {
         else
         {
             findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-        }
+        }*/
 
     }
 

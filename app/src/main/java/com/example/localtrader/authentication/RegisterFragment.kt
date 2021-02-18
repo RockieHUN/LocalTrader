@@ -156,7 +156,6 @@ class RegisterFragment : Fragment() {
         val passwordAgain = binding.passwordAgain.text.toString()
 
 
-
         //check data
         if (password != passwordAgain){
             errorMessage = "A jelszavak nem egyeznek!"
@@ -192,8 +191,6 @@ class RegisterFragment : Fragment() {
 
         data = RegistrationUser(firstname,lastname,email,password,passwordAgain)
         return true
-
-
     }
 
     //register the user and save data to sharedPref

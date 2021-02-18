@@ -32,6 +32,7 @@ import com.google.android.libraries.places.widget.listener.PlaceSelectionListene
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -100,6 +101,7 @@ class CreateBusinessSecondFragment : Fragment() {
 
     private fun setUpVisuals() {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+        binding.circularProgress.visibility = View.GONE
     }
 
     private fun setUpListeners()
@@ -114,6 +116,8 @@ class CreateBusinessSecondFragment : Fragment() {
         val email = binding.emailInput.text.toString()
         val telephone = binding.telephoneInput.text.toString()
         val location = binding.locationInput.text.toString()
+        val facebook = binding.facebookInput.text.toString()
+        val instagram = binding.instagramInput.text.toString()
 
         val error = validateData(email, telephone, location)
 
@@ -125,6 +129,8 @@ class CreateBusinessSecondFragment : Fragment() {
                 creationViewModel.business.email = email
                 creationViewModel.business.telephone = telephone
                 creationViewModel.business.location = location
+                creationViewModel.business.facebook_link = facebook
+                creationViewModel.business.instagram_link = instagram
 
                 val business = creationViewModel.convert(uid)
                 userViewModel.userBusiness.value = business
@@ -150,33 +156,68 @@ class CreateBusinessSecondFragment : Fragment() {
 
     private fun saveDataToDatabase(business : Business)
     {
-
+        startLoading()
 
         //save business data to firestore
         database.collection("businesses")
-            .document(uid)
-            .set(business)
-            .addOnSuccessListener {
+            .add(business)
+            .addOnSuccessListener { documentReference ->
 
-                val reference = storage.reference
-                val path = reference.child("businesses/${uid}/logo")
+                //set businessId to owner
+                database.collection("users")
+                    .document(uid)
+                    .update("businessId",documentReference.id)
+                    .addOnSuccessListener {
 
-                //save image to storage
-                val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
+                        //save logo to storage
+                        val reference = storage.reference
+                        val path = reference.child("businesses/${documentReference.id}/logo")
 
-                resizedImage.observe(viewLifecycleOwner,{ byteArray ->
-                    path.putBytes(byteArray)
-                    findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
-                })
+                        val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
 
-                //resize image
-                lifecycleScope.launch {
-                    resizedImage.value = ImageUtils.resizeImageTo(
-                        requireActivity(),
-                        creationViewModel.business.imageUri!!,
-                        Constants.businessProfileSize)
-                }
+                        resizedImage.observe(viewLifecycleOwner,{ byteArray ->
+                            path.putBytes(byteArray).addOnSuccessListener {
+                                stopLoading()
+                                findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
+                            }
+                                .addOnFailureListener{ e->
+                                    Firebase.crashlytics.log("$e")
+                                    stopLoading()
+                                    findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
+                                }
+
+
+                        })
+
+                        //resize image
+                        lifecycleScope.launch {
+                            resizedImage.value = ImageUtils.resizeImageTo(
+                                requireActivity(),
+                                creationViewModel.business.imageUri!!,
+                                Constants.businessProfileSize)
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        //if setting businessId to owner fails
+                        Firebase.crashlytics.log("$e ${documentReference.id}")
+                    }
+
             }
+            .addOnFailureListener { e->
+                //if setting business fails
+                Firebase.crashlytics.log("$e $business")
+            }
+    }
+
+
+    private fun startLoading() {
+        binding.circularProgress.visibility = View.VISIBLE
+        binding.submitButton.visibility = View.GONE
+    }
+
+    private fun stopLoading() {
+        binding.circularProgress.visibility = View.GONE
+        binding.submitButton.visibility = View.VISIBLE
     }
 
    /* private fun startAutocompleteActivity()
