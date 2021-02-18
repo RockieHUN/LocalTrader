@@ -169,6 +169,9 @@ class CreateBusinessSecondFragment : Fragment() {
                     .update("businessId",documentReference.id)
                     .addOnSuccessListener {
 
+                        //save businessId to viewModel
+                        userViewModel.user.value!!.businessId = documentReference.id
+
                         //save logo to storage
                         val reference = storage.reference
                         val path = reference.child("businesses/${documentReference.id}/logo")

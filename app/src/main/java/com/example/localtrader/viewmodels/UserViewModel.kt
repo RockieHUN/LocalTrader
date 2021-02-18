@@ -1,6 +1,7 @@
 package com.example.localtrader.viewmodels
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,13 +25,13 @@ class UserViewModel : ViewModel() {
     fun loadUserData(uid : String)
     {
         loadUser(uid)
-        loadBusiness(uid)
+        //loadBusiness(uid)
     }
 
-    private fun loadBusiness(uid : String)
+    fun loadBusiness(businessId : String)
     {
         firestore.collection("businesses")
-            .document(uid)
+            .document(businessId)
             .get()
             .addOnSuccessListener { document ->
                 userBusiness.value = document.toObject<Business>()
@@ -62,6 +63,11 @@ class UserViewModel : ViewModel() {
     fun removeBusinessObservers(owner : LifecycleOwner)
     {
         userBusiness.removeObservers(owner)
+    }
+
+    fun removeUserObservers(owner : LifecycleOwner)
+    {
+        user.removeObservers(owner)
     }
 
     fun getDownloadUri(uid : String)

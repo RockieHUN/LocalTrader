@@ -17,9 +17,9 @@
         android:icon="@drawable/ic_order_history"
         android:title="@string/ordersIcon"
         app:showAsAction="ifRoom" />
-    <item
+    <!--item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_baseline_account_circle_24"
         android:title="@string/profileIcon"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="ifRoom" /-->
 </menu>

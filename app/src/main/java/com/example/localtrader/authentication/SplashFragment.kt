@@ -39,6 +39,11 @@ class SplashFragment : Fragment() {
         tryToLogin()
     }
 
+    override fun onPause() {
+        super.onPause()
+        userViewModel.removeUserObservers(viewLifecycleOwner)
+    }
+
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
@@ -50,8 +55,11 @@ class SplashFragment : Fragment() {
 
         if (auth.currentUser != null)
         {
+            userViewModel.user.observe(viewLifecycleOwner, {
+                findNavController().navigate(R.id.action_splashFragment_to_timeLineFragment)
+            })
             userViewModel.loadUserData(auth.currentUser!!.uid)
-            findNavController().navigate(R.id.action_splashFragment_to_timeLineFragment)
+
         }
         else{
             findNavController().navigate(R.id.action_splashFragment_to_registerFragment)

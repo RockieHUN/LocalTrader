@@ -34,7 +34,6 @@ class ProfileFragment : Fragment() {
     private lateinit var storage : FirebaseStorage
 
     private lateinit var uid : String
-    private var businessExists = 0  // 0: not loaded, 1: exists, -1: not exists
 
     private val userViewModel : UserViewModel by activityViewModels()
     private val creationViewModel : CreateBusinessViewModel by activityViewModels()
@@ -76,7 +75,6 @@ class ProfileFragment : Fragment() {
             MySharedPref.clearSharedPref(requireContext())
             findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
-        hasBusiness()
     }
 
 
@@ -89,12 +87,12 @@ class ProfileFragment : Fragment() {
     private fun setUpListeners()
     {
         binding.myBusinessButton.setOnClickListener {
-            if (businessExists == -1 )
+            val businessId = userViewModel.user.value?.businessId
+            if (businessId == "")
             {
                 findNavController().navigate(R.id.action_profileFragment_to_createBusinessFirstFragment)
             }
-            if (businessExists == 1)
-            {
+            else{
                 findNavController().navigate(R.id.action_profileFragment_to_businessProfileFragment)
             }
         }
@@ -109,16 +107,13 @@ class ProfileFragment : Fragment() {
     }
 
     private fun hasBusiness() {
-        userViewModel.userBusiness.observe(viewLifecycleOwner, { business ->
-            if (business != null) {
-                binding.myBusinessButton.text = resources.getText(R.string.my_business)
-                businessExists = 1
-            }
-            else {
-                binding.myBusinessButton.text = resources.getText(R.string.create_business)
-                businessExists = -1
-            }
-        })
+        val businessId = userViewModel.user.value?.businessId
+        if (businessId != "") {
+            binding.myBusinessButton.text = resources.getText(R.string.my_business)
+        }
+        else {
+            binding.myBusinessButton.text = resources.getText(R.string.create_business)
+        }
     }
 
     private fun loadProfileData()

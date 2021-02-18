@@ -96,9 +96,13 @@ class LoginFragment : Fragment() {
             .addOnCompleteListener { task ->
 
                 if (task.isSuccessful) {
+
+                    userViewModel.user.observe(viewLifecycleOwner, {
+                        findNavController().navigate(R.id.action_loginFragment_to_timeLineFragment)
+                    })
                     userViewModel.loadUserData(auth.currentUser!!.uid)
-                    MySharedPref.saveToSharedPref(requireContext(), email, password)
-                    findNavController().navigate(R.id.action_loginFragment_to_timeLineFragment)
+                    ///MySharedPref.saveToSharedPref(requireContext(), email, password)
+
                 } else {
 
                     stopLoading()

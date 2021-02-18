@@ -1,6 +1,7 @@
 package com.example.localtrader.business.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,8 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_business_profile, container, false)
+
+        setBusinessData()
         return binding.root
     }
 
@@ -65,8 +68,6 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         else{
             uid = auth.currentUser!!.uid
         }
-
-        setBusinessData()
     }
 
     override fun onPause() {
@@ -99,6 +100,7 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
 
     private fun setBusinessData()
     {
+        val businessId = userViewModel.user.value!!.businessId
         userViewModel.userBusiness.observe(viewLifecycleOwner, { business ->
             if (business != null)
             {
@@ -107,11 +109,19 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
                 binding.businessDescription.text = business.description
 
 
-                val id = uid
-                //TODO: load image
-            }
+                storage.reference.child("businesses/${businessId}/logo")
+                    .downloadUrl
+                    .addOnSuccessListener { uri ->
 
+                        Glide.with(requireActivity())
+                            .load(uri)
+                            .centerCrop()
+                            .into(binding.businessProfilePicture)
+                    }
+            }
         })
+
+        userViewModel.loadBusiness(businessId)
     }
 
 }

@@ -113,6 +113,10 @@ class TimeLineFragment : Fragment(),
             } else requireActivity().finish()
         }
 
+        binding.profilePicture.setOnClickListener {
+            findNavController().navigate(R.id.action_timeLineFragment_to_profileFragment)
+        }
+
     }
 
     private fun showUserData()
