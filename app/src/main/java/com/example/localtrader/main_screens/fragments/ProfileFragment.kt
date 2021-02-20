@@ -15,6 +15,7 @@ import com.example.localtrader.R
 import com.example.localtrader.business.models.CreationalBusiness
 import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.databinding.FragmentProfileBinding
+import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -37,6 +38,7 @@ class ProfileFragment : Fragment() {
 
     private val userViewModel : UserViewModel by activityViewModels()
     private val creationViewModel : CreateBusinessViewModel by activityViewModels()
+    private val businessViewModel : BusinessViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +66,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setUpVisuals()
         setUpListeners()
     }
 
@@ -83,16 +86,22 @@ class ProfileFragment : Fragment() {
         userViewModel.removeBusinessObservers(viewLifecycleOwner)
     }
 
+    private fun setUpVisuals()
+    {
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
+    }
 
     private fun setUpListeners()
     {
         binding.myBusinessButton.setOnClickListener {
             val businessId = userViewModel.user.value?.businessId
-            if (businessId == "")
+            if (businessId == "" || businessId == null)
             {
                 findNavController().navigate(R.id.action_profileFragment_to_createBusinessFirstFragment)
             }
             else{
+                businessViewModel.businessId = businessId
+                businessViewModel.businessOwner = auth.currentUser!!.uid
                 findNavController().navigate(R.id.action_profileFragment_to_businessProfileFragment)
             }
         }
@@ -152,7 +161,6 @@ class ProfileFragment : Fragment() {
 
     private fun logout()
     {
-        MySharedPref.clearSharedPref(requireContext())
         creationViewModel.business = CreationalBusiness()
         auth.signOut()
         findNavController().navigate(R.id.action_profileFragment_to_loginFragment)

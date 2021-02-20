@@ -14,10 +14,12 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
+import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentTimeLineBinding
 import com.example.localtrader.main_screens.adapters.PopularBusinessesAdapter
 import com.example.localtrader.main_screens.adapters.RecommendedProductsAdapter
 import com.example.localtrader.main_screens.repositories.TimeLineRepository
+import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -34,6 +36,7 @@ class TimeLineFragment : Fragment(),
     private lateinit var auth : FirebaseAuth
 
     private val userViewModel : UserViewModel by activityViewModels()
+    private val businessViewModel : BusinessViewModel by activityViewModels()
     private lateinit var repository : TimeLineRepository
 
 
@@ -41,7 +44,6 @@ class TimeLineFragment : Fragment(),
         super.onCreate(savedInstanceState)
 
         auth = Firebase.auth
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -64,7 +66,6 @@ class TimeLineFragment : Fragment(),
         recycleRecommendedProducts()
         recycleRecommendedBusinesses()
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -90,7 +91,6 @@ class TimeLineFragment : Fragment(),
     //set recommended products recycle view
     private fun recycleRecommendedBusinesses()
     {
-
 
         repository.recommendedBusinesses.observe(viewLifecycleOwner,{ businesses ->
 
@@ -126,7 +126,6 @@ class TimeLineFragment : Fragment(),
         binding.profilePicture.setOnClickListener {
             findNavController().navigate(R.id.action_timeLineFragment_to_profileFragment)
         }
-
     }
 
     private fun showUserData()
@@ -147,10 +146,6 @@ class TimeLineFragment : Fragment(),
     }
 
 
-    override fun onItemClick(position: Int) {
-        return
-    }
-
     private fun setGreeting()
     {
         val greeting = binding.greeting
@@ -170,6 +165,17 @@ class TimeLineFragment : Fragment(),
         {
             greeting.text = resources.getText(R.string.timeline_greeting3)
         }
+    }
+
+    override fun onItemClick(position: Int) {
+        return
+    }
+
+    override fun myOnItemClick(business: Business) {
+        businessViewModel.businessOwner = business.ownerUid
+        businessViewModel.businessId = business.businessId
+        businessViewModel.originFragment = 2
+        findNavController().navigate(R.id.action_timeLineFragment_to_businessProfileFragment)
     }
 
 

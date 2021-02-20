@@ -28,16 +28,6 @@ class UserViewModel : ViewModel() {
         //loadBusiness(uid)
     }
 
-    fun loadBusiness(businessId : String)
-    {
-        firestore.collection("businesses")
-            .document(businessId)
-            .get()
-            .addOnSuccessListener { document ->
-                userBusiness.value = document.toObject<Business>()
-            }
-    }
-
     private fun loadUser(uid : String)
     {
         firestore.collection("users")

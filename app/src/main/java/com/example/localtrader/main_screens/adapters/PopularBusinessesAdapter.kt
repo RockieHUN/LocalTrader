@@ -37,7 +37,8 @@ class PopularBusinessesAdapter(
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClick(position)
+                //listener.onItemClick(position)
+                listener.myOnItemClick(items[position])
             }
         }
 
@@ -45,6 +46,7 @@ class PopularBusinessesAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
+        fun myOnItemClick (business: Business)
     }
 
 
@@ -59,14 +61,6 @@ class PopularBusinessesAdapter(
 
     override fun onBindViewHolder(holder: PopularBusinessesAdapter.DataViewHolder, position: Int) {
         val currentItem = items[position]
-
-        Log.d("****", items.size.toString())
-        Log.d("****", position.toString())
-        Log.d("****", currentItem.name)
-        Log.d("****", currentItem.category)
-        Log.d("****", currentItem.businessId)
-        Log.d("****", currentItem.email)
-
 
         holder.businessNameView.text = currentItem.name
         holder.businessCategoryView.text = currentItem.category

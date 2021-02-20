@@ -16,4 +16,6 @@
     <color name="analogous">#f164e0</color>
     <color name="triadic">#BA68C8</color>
 
+    <color name="blue_button">#1fabde</color>
+
 </resources>

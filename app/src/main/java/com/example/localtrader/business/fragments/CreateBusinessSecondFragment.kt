@@ -20,6 +20,7 @@ import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentCreateBusinessSecondBinding
 import com.example.localtrader.utils.*
+import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.android.gms.common.api.Status
@@ -51,6 +52,7 @@ class CreateBusinessSecondFragment : Fragment() {
 
     private val creationViewModel: CreateBusinessViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
+    private val businessViewModel : BusinessViewModel by activityViewModels()
 
     private lateinit var uid: String
 
@@ -133,7 +135,7 @@ class CreateBusinessSecondFragment : Fragment() {
                 creationViewModel.business.instagram_link = instagram
 
                 val business = creationViewModel.convert(uid)
-                userViewModel.userBusiness.value = business
+                //userViewModel.userBusiness.value = business
                 saveDataToDatabase(business)
             }
         }
@@ -185,6 +187,10 @@ class CreateBusinessSecondFragment : Fragment() {
                                 resizedImage.observe(viewLifecycleOwner, { byteArray ->
                                     path.putBytes(byteArray).addOnSuccessListener {
                                         stopLoading()
+
+                                        //pass data to business viewModel
+                                        businessViewModel.businessId = documentReference.id
+                                        businessViewModel.businessOwner = auth.currentUser!!.uid
                                         findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
                                     }
                                         .addOnFailureListener { e ->

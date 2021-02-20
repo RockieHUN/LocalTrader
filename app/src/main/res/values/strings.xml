@@ -60,9 +60,14 @@
     <string name="instagramURL">Instagram link (opcionális)</string>
     <string name="create">Létrehoz</string>
 
+    <!-- Business profile -->
+    <string name="add_new_product"> Új termék </string>
+
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>
     <string name="monthlySale_count"> Havi eladások </string>
+
+
 
 
 
