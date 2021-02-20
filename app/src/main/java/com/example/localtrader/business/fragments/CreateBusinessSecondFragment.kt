@@ -45,14 +45,14 @@ import java.util.*
 class CreateBusinessSecondFragment : Fragment() {
 
     private lateinit var binding: FragmentCreateBusinessSecondBinding
-    private lateinit var auth : FirebaseAuth
-    private lateinit var database : FirebaseFirestore
-    private lateinit var storage : FirebaseStorage
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseFirestore
+    private lateinit var storage: FirebaseStorage
 
     private val creationViewModel: CreateBusinessViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
 
-    private lateinit var uid : String
+    private lateinit var uid: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +67,12 @@ class CreateBusinessSecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_business_second, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_create_business_second,
+            container,
+            false
+        )
         return binding.root
     }
 
@@ -81,13 +86,10 @@ class CreateBusinessSecondFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (auth.currentUser == null)
-        {
+        if (auth.currentUser == null) {
             MySharedPref.clearSharedPref(requireContext())
             findNavController().navigate(R.id.action_createBusinessSecondFragment_to_loginFragment)
-        }
-        else
-        {
+        } else {
             uid = auth.currentUser!!.uid
         }
 
@@ -104,15 +106,13 @@ class CreateBusinessSecondFragment : Fragment() {
         binding.circularProgress.visibility = View.GONE
     }
 
-    private fun setUpListeners()
-    {
+    private fun setUpListeners() {
         binding.submitButton.setOnClickListener {
             submitData()
         }
     }
 
-    private fun submitData()
-    {
+    private fun submitData() {
         val email = binding.emailInput.text.toString()
         val telephone = binding.telephoneInput.text.toString()
         val location = binding.locationInput.text.toString()
@@ -121,11 +121,11 @@ class CreateBusinessSecondFragment : Fragment() {
 
         val error = validateData(email, telephone, location)
 
-        when (error){
+        when (error) {
             1 -> showErrorMessage("Helytelen e-mail!!")
             2 -> showErrorMessage("Helytelen telefonszám!")
             3 -> showErrorMessage(" Helytelen település!")
-            0 ->{
+            0 -> {
                 creationViewModel.business.email = email
                 creationViewModel.business.telephone = telephone
                 creationViewModel.business.location = location
@@ -139,23 +139,20 @@ class CreateBusinessSecondFragment : Fragment() {
         }
     }
 
-    private fun validateData(email : String, telephone : String, location : String) : Int
-    {
+    private fun validateData(email: String, telephone: String, location: String): Int {
         return if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) 1
         else if (!Patterns.PHONE.matcher(telephone).matches()) 2
         else if (location.isEmpty()) 3
         else 0
     }
 
-    private fun showErrorMessage(msg : String)
-    {
+    private fun showErrorMessage(msg: String) {
         lifecycleScope.launch {
             Animations.animateError(binding.errorMessageView, msg)
         }
     }
 
-    private fun saveDataToDatabase(business : Business)
-    {
+    private fun saveDataToDatabase(business: Business) {
         startLoading()
 
         //save business data to firestore
@@ -166,39 +163,50 @@ class CreateBusinessSecondFragment : Fragment() {
                 //set businessId to owner
                 database.collection("users")
                     .document(uid)
-                    .update("businessId",documentReference.id)
+                    .update("businessId", documentReference.id)
                     .addOnSuccessListener {
 
                         //save businessId to viewModel
                         userViewModel.user.value!!.businessId = documentReference.id
 
-                        //save logo to storage
-                        val reference = storage.reference
-                        val path = reference.child("businesses/${documentReference.id}/logo")
+                        //add businessId filed to business
+                        database.collection("businesses")
+                            .document(documentReference.id)
+                            .update("businessId", documentReference.id)
+                            .addOnSuccessListener {
 
-                        val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
+                                //save logo to storage
+                                val reference = storage.reference
+                                val path =
+                                    reference.child("businesses/${documentReference.id}/logo")
 
-                        resizedImage.observe(viewLifecycleOwner,{ byteArray ->
-                            path.putBytes(byteArray).addOnSuccessListener {
-                                stopLoading()
-                                findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
-                            }
-                                .addOnFailureListener{ e->
-                                    Firebase.crashlytics.log("$e")
-                                    stopLoading()
-                                    findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
+                                val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
+
+                                resizedImage.observe(viewLifecycleOwner, { byteArray ->
+                                    path.putBytes(byteArray).addOnSuccessListener {
+                                        stopLoading()
+                                        findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
+                                    }
+                                        .addOnFailureListener { e ->
+                                            Firebase.crashlytics.log("$e")
+                                            stopLoading()
+                                            findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
+                                        }
+                                })
+
+                                //resize image
+                                lifecycleScope.launch {
+                                    resizedImage.value = ImageUtils.resizeImageTo(
+                                        requireActivity(),
+                                        creationViewModel.business.imageUri!!,
+                                        Constants.businessProfileSize
+                                    )
                                 }
-
-
-                        })
-
-                        //resize image
-                        lifecycleScope.launch {
-                            resizedImage.value = ImageUtils.resizeImageTo(
-                                requireActivity(),
-                                creationViewModel.business.imageUri!!,
-                                Constants.businessProfileSize)
-                        }
+                            }
+                            .addOnFailureListener { e->
+                                //if setting the businessId filed to business fails
+                                Firebase.crashlytics.log("$e")
+                            }
                     }
                     .addOnFailureListener { e ->
                         //if setting businessId to owner fails
@@ -206,7 +214,7 @@ class CreateBusinessSecondFragment : Fragment() {
                     }
 
             }
-            .addOnFailureListener { e->
+            .addOnFailureListener { e ->
                 //if setting business fails
                 Firebase.crashlytics.log("$e $business")
             }
@@ -223,38 +231,38 @@ class CreateBusinessSecondFragment : Fragment() {
         binding.submitButton.visibility = View.VISIBLE
     }
 
-   /* private fun startAutocompleteActivity()
-    {
-        Places.initialize(requireContext(), Secrets.placesKey)
-        Places.createClient(requireContext())
+    /* private fun startAutocompleteActivity()
+     {
+         Places.initialize(requireContext(), Secrets.placesKey)
+         Places.createClient(requireContext())
 
-        val fields = listOf(Place.Field.ID, Place.Field.NAME)
-        val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-            .build(requireContext())
-        startActivityForResult(intent, 1)
-    }
+         val fields = listOf(Place.Field.ID, Place.Field.NAME)
+         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
+             .build(requireContext())
+         startActivityForResult(intent, 1)
+     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == 1) {
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    data?.let {
-                        val place = Autocomplete.getPlaceFromIntent(data)
-                        Log.d("*********", "Place: ${place.name}, ${place.id}")
-                        binding.locationInput.text = place.name
-                    }
-                }
-                AutocompleteActivity.RESULT_ERROR -> {
-                    Log.d("********","Error")
-                }
-                Activity.RESULT_CANCELED -> {
-                    Log.d("******","CANCELLLED")
-                }
-            }
-            return
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }*/
+     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+         if (requestCode == 1) {
+             when (resultCode) {
+                 Activity.RESULT_OK -> {
+                     data?.let {
+                         val place = Autocomplete.getPlaceFromIntent(data)
+                         Log.d("*********", "Place: ${place.name}, ${place.id}")
+                         binding.locationInput.text = place.name
+                     }
+                 }
+                 AutocompleteActivity.RESULT_ERROR -> {
+                     Log.d("********","Error")
+                 }
+                 Activity.RESULT_CANCELED -> {
+                     Log.d("******","CANCELLLED")
+                 }
+             }
+             return
+         }
+         super.onActivityResult(requestCode, resultCode, data)
+     }*/
 
 
 }

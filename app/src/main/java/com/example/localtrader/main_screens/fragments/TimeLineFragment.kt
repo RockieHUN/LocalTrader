@@ -1,12 +1,11 @@
 package com.example.localtrader.main_screens.fragments
 
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
@@ -18,6 +17,7 @@ import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentTimeLineBinding
 import com.example.localtrader.main_screens.adapters.PopularBusinessesAdapter
 import com.example.localtrader.main_screens.adapters.RecommendedProductsAdapter
+import com.example.localtrader.main_screens.repositories.TimeLineRepository
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -34,11 +34,14 @@ class TimeLineFragment : Fragment(),
     private lateinit var auth : FirebaseAuth
 
     private val userViewModel : UserViewModel by activityViewModels()
+    private lateinit var repository : TimeLineRepository
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         auth = Firebase.auth
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -46,6 +49,7 @@ class TimeLineFragment : Fragment(),
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_time_line,container,false)
         setGreeting()
+        repository = TimeLineRepository(viewLifecycleOwner)
         return binding.root
     }
 
@@ -58,7 +62,7 @@ class TimeLineFragment : Fragment(),
         setUpListeners()
 
         recycleRecommendedProducts()
-        recyclePopularBusinesses()
+        recycleRecommendedBusinesses()
     }
 
 
@@ -84,8 +88,13 @@ class TimeLineFragment : Fragment(),
     }
 
     //set recommended products recycle view
-    private fun recyclePopularBusinesses()
+    private fun recycleRecommendedBusinesses()
     {
+        repository.recommendedBusinesses.observe(viewLifecycleOwner,{ businesses ->
+            Log.d("******",businesses.toString())
+        })
+        repository.getRecommendedBusinesses()
+
         val adapter = PopularBusinessesAdapter(this)
         binding.recyclePopularBusinesses.adapter = adapter
         val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
