@@ -56,6 +56,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/cardView3" />
 
             <TextView
+                android:id="@+id/business_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

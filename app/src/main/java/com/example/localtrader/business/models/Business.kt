@@ -1,5 +1,7 @@
 package com.example.localtrader.business.models
 
+import android.net.Uri
+
 class Business (
     var businessId : String ="",
     var ownerUid : String = "",

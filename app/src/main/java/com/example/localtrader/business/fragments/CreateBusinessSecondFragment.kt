@@ -169,7 +169,7 @@ class CreateBusinessSecondFragment : Fragment() {
                         //save businessId to viewModel
                         userViewModel.user.value!!.businessId = documentReference.id
 
-                        //add businessId filed to business
+                        //add businessId field to business
                         database.collection("businesses")
                             .document(documentReference.id)
                             .update("businessId", documentReference.id)

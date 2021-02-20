@@ -15,7 +15,7 @@ class TimeLineRepository (
 
     private var firestore : FirebaseFirestore = Firebase.firestore
 
-    val recommendedBusinesses : MutableLiveData<List<Business>> = MutableLiveData()
+    val recommendedBusinesses : MutableLiveData<MutableList<Business>> = MutableLiveData()
 
 
     fun getRecommendedBusinesses()

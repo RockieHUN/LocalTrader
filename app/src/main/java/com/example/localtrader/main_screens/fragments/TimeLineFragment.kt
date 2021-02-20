@@ -90,16 +90,17 @@ class TimeLineFragment : Fragment(),
     //set recommended products recycle view
     private fun recycleRecommendedBusinesses()
     {
+
+
         repository.recommendedBusinesses.observe(viewLifecycleOwner,{ businesses ->
-            Log.d("******",businesses.toString())
+
+            val adapter = PopularBusinessesAdapter(this,businesses, requireActivity())
+            binding.recyclePopularBusinesses.adapter = adapter
+            val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.recyclePopularBusinesses.layoutManager = horizontalLayout
+            binding.recyclePopularBusinesses.setHasFixedSize(true)
         })
         repository.getRecommendedBusinesses()
-
-        val adapter = PopularBusinessesAdapter(this)
-        binding.recyclePopularBusinesses.adapter = adapter
-        val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.recyclePopularBusinesses.layoutManager = horizontalLayout
-        binding.recyclePopularBusinesses.setHasFixedSize(true)
 
     }
 

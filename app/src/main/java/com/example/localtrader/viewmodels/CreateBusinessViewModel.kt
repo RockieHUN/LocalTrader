@@ -10,15 +10,15 @@ class CreateBusinessViewModel : ViewModel() {
     fun convert(uid : String) : Business
     {
         return Business(
-            uid,
-            business.name,
-            business.category,
-            business.description,
-            business.email,
-            business.telephone,
-            business.location,
-            business.facebook_link,
-            business.instagram_link
+            ownerUid = uid,
+            name = business.name,
+            category = business.category,
+            description = business.description,
+            email = business.email,
+            telephone = business.telephone,
+            location = business.location,
+            facebook_link = business.facebook_link,
+            instagram_link = business.instagram_link
         )
     }
 }
