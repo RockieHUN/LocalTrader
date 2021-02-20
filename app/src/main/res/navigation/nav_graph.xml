@@ -187,6 +187,10 @@
     <fragment
         tools:layout="@layout/fragment_create_product"
         android:id="@+id/createProductFragment"
-        android:name="com.example.localtrader.product.CreateProductFragment"
-        android:label="CreateProductFragment" />
+        android:name="com.example.localtrader.product.fragments.CreateProductFragment"
+        android:label="CreateProductFragment" >
+        <action
+            android:id="@+id/action_createProductFragment_to_businessProfileFragment"
+            app:destination="@id/businessProfileFragment" />
+    </fragment>
 </navigation>

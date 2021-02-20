@@ -59,10 +59,17 @@ class ImageUtils {
             return stream.toByteArray()
         }
 
-
-        suspend fun resizeImageTo(activity: Activity, imageUri : Uri, maxRes : Int) : ByteArray
+        //resize uri and return the bytearray
+        suspend fun resizeImageUriTo(activity: Activity, imageUri : Uri, maxRes : Int) : ByteArray
         {
             val scaledBitmap = uriToScaledBitmap(activity, imageUri, maxRes)
+            return bitmapToByteArray(scaledBitmap)
+        }
+
+        //resize bitmap and return the bytearray
+        suspend fun resizeImageBitmapTo(activity: Activity, imageBitmap : Bitmap, maxRes : Int) : ByteArray
+        {
+            val scaledBitmap = resizeImage(imageBitmap, maxRes)
             return bitmapToByteArray(scaledBitmap)
         }
 

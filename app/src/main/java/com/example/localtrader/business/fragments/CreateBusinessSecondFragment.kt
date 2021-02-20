@@ -1,9 +1,6 @@
 package com.example.localtrader.business.fragments
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -11,8 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.findFragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -23,14 +18,6 @@ import com.example.localtrader.utils.*
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.android.gms.common.api.Status
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
@@ -40,7 +27,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.launch
-import java.util.*
 
 
 class CreateBusinessSecondFragment : Fragment() {
@@ -94,7 +80,6 @@ class CreateBusinessSecondFragment : Fragment() {
         } else {
             uid = auth.currentUser!!.uid
         }
-
 
         val user = userViewModel.user.value
         if (user != null) {
@@ -202,10 +187,10 @@ class CreateBusinessSecondFragment : Fragment() {
 
                                 //resize image
                                 lifecycleScope.launch {
-                                    resizedImage.value = ImageUtils.resizeImageTo(
+                                    resizedImage.value = ImageUtils.resizeImageUriTo(
                                         requireActivity(),
                                         creationViewModel.business.imageUri!!,
-                                        Constants.businessProfileSize
+                                        Constants.BUSINESS_PROFILE_SIZE
                                     )
                                 }
                             }

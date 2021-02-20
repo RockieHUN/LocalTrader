@@ -1,4 +1,4 @@
-package com.example.localtrader.product
+package com.example.localtrader.product.models
 
 data class Product (
     var productId : String = "",

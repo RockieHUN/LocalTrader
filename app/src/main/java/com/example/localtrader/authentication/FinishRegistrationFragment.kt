@@ -155,7 +155,7 @@ class FinishRegistrationFragment : Fragment() {
 
             //resize image and put to a LiveData variable
             lifecycleScope.launch(Dispatchers.IO) {
-                resizedImage.postValue(ImageUtils.resizeImageTo(requireActivity(), imageUri, Constants.userProfileSize))
+                resizedImage.postValue(ImageUtils.resizeImageUriTo(requireActivity(), imageUri, Constants.USER_PROFILE_SIZE))
             }
 
         }
