@@ -180,5 +180,13 @@
         <action
             android:id="@+id/action_businessProfileFragment_to_timeLineFragment"
             app:destination="@id/timeLineFragment" />
+        <action
+            android:id="@+id/action_businessProfileFragment_to_createProductFragment"
+            app:destination="@id/createProductFragment" />
     </fragment>
+    <fragment
+        tools:layout="@layout/fragment_create_product"
+        android:id="@+id/createProductFragment"
+        android:name="com.example.localtrader.product.CreateProductFragment"
+        android:label="CreateProductFragment" />
 </navigation>

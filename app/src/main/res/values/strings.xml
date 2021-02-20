@@ -63,12 +63,17 @@
     <!-- Business profile -->
     <string name="add_new_product"> Új termék </string>
 
+
+    <!-- Creating product -->
+    <string name="adding_product_header"> Termék feltöltése </string>
+    <string name="adding_product_description"> Egy termék feltöltéséhez válasszon vagy készítsen egy képet és adja meg a hozzá tartozó adatokat!</string>
+    <string name="product_name"> Termék neve</string>
+    <string name="product_description"> Termék leírása</string>
+    <string name="product_price"> Termék ára </string>
+
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>
     <string name="monthlySale_count"> Havi eladások </string>
-
-
-
 
 
     <string name="placeholderText">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>
