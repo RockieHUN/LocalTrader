@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.localtrader.R
-import com.example.localtrader.main_screens.adapters.PopularBusinessesAdapter
 
 class BusinessOrdersAdapter (
     private  val listener : OnItemClickListener

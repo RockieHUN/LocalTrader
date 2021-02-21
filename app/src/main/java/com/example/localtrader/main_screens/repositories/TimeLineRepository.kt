@@ -4,6 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.example.localtrader.business.models.Business
+import com.example.localtrader.product.models.Product
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
@@ -16,6 +17,7 @@ class TimeLineRepository (
     private var firestore : FirebaseFirestore = Firebase.firestore
 
     val recommendedBusinesses : MutableLiveData<MutableList<Business>> = MutableLiveData()
+    val popularProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
 
 
     fun getRecommendedBusinesses()
@@ -58,6 +60,17 @@ class TimeLineRepository (
                 }
             }
     }
+
+    fun getPopularProducts(){
+        firestore.collection("products")
+            .whereNotEqualTo("productId","")
+            .limit(6)
+            .get()
+            .addOnSuccessListener { documents ->
+                popularProducts.value = documents.toObjects<Product>().toMutableList()
+            }
+    }
+
 
     fun removeBusinessObservers(owner : LifecycleOwner)
     {

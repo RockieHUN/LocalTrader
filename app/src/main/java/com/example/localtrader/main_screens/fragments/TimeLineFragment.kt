@@ -1,7 +1,6 @@
 package com.example.localtrader.main_screens.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,10 +15,11 @@ import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentTimeLineBinding
-import com.example.localtrader.main_screens.adapters.PopularBusinessesAdapter
-import com.example.localtrader.main_screens.adapters.RecommendedProductsAdapter
+import com.example.localtrader.main_screens.adapters.RecommendedBusinessesAdapter
+import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
 import com.example.localtrader.main_screens.repositories.TimeLineRepository
 import com.example.localtrader.viewmodels.BusinessViewModel
+import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -29,14 +29,15 @@ import java.util.*
 import kotlin.concurrent.timerTask
 
 class TimeLineFragment : Fragment(),
-    RecommendedProductsAdapter.OnItemClickListener,
-    PopularBusinessesAdapter.OnItemClickListener
+    PopularProductsAdapter.OnItemClickListener,
+    RecommendedBusinessesAdapter.OnItemClickListener
 {
     private lateinit var binding : FragmentTimeLineBinding
     private lateinit var auth : FirebaseAuth
 
     private val userViewModel : UserViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
+
     private lateinit var repository : TimeLineRepository
 
 
@@ -63,7 +64,7 @@ class TimeLineFragment : Fragment(),
         setUpVisuals()
         setUpListeners()
 
-        recycleRecommendedProducts()
+        recyclePopularProducts()
         recycleRecommendedBusinesses()
     }
 
@@ -79,29 +80,29 @@ class TimeLineFragment : Fragment(),
 
 
     //set recommended products recycle view
-    private fun recycleRecommendedProducts()
+    private fun recyclePopularProducts()
     {
-        val adapter = RecommendedProductsAdapter(this)
-        binding.recycleRecommendedProducts.adapter = adapter
-        val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.recycleRecommendedProducts.layoutManager = horizontalLayout
-        binding.recycleRecommendedProducts.setHasFixedSize(true)
+        repository.popularProducts.observe(viewLifecycleOwner,{ products ->
+            val adapter = PopularProductsAdapter(this, requireActivity(), products)
+            binding.recycleRecommendedProducts.adapter = adapter
+            val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.recycleRecommendedProducts.layoutManager = horizontalLayout
+            binding.recycleRecommendedProducts.setHasFixedSize(true)
+        })
+        repository.getPopularProducts()
     }
 
     //set recommended products recycle view
     private fun recycleRecommendedBusinesses()
     {
-
         repository.recommendedBusinesses.observe(viewLifecycleOwner,{ businesses ->
-
-            val adapter = PopularBusinessesAdapter(this,businesses, requireActivity())
+            val adapter = RecommendedBusinessesAdapter(this,businesses, requireActivity())
             binding.recyclePopularBusinesses.adapter = adapter
             val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             binding.recyclePopularBusinesses.layoutManager = horizontalLayout
             binding.recyclePopularBusinesses.setHasFixedSize(true)
         })
         repository.getRecommendedBusinesses()
-
     }
 
     private fun setUpVisuals()

@@ -1,7 +1,6 @@
 package com.example.localtrader.business.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,8 +14,8 @@ import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
-import com.example.localtrader.main_screens.adapters.PopularBusinessesAdapter
 import com.example.localtrader.viewmodels.BusinessViewModel
+import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -33,6 +32,7 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
 
     private val userViewModel : UserViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
+    private val productViewModel : ProductViewModel by activityViewModels()
     private lateinit var uid : String
     
 
@@ -48,7 +48,8 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_business_profile, container, false)
-
+        hideEditingTools()
+        showEditingTools()
         setBusinessData()
         return binding.root
     }
@@ -57,7 +58,7 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         super.onViewCreated(view, savedInstanceState)
 
         setUpVisuals()
-        createRecycle()
+        loadBusinessProducts()
         setUpListeners()
     }
 
@@ -78,17 +79,6 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         userViewModel.removeBusinessObservers(viewLifecycleOwner)
     }
 
-
-    private fun createRecycle()
-    {
-        val adapter = BusinessProfileAdapter(this)
-        binding.recycleView.adapter = adapter
-        val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.recycleView.layoutManager = horizontalLayout
-        binding.recycleView.setHasFixedSize(true)
-
-    }
-
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
@@ -106,6 +96,32 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         return
     }
 
+    private fun hideEditingTools(){
+        binding.newProductButton.visibility = View.GONE
+    }
+
+    private fun showEditingTools()
+    {
+        businessViewModel.business.observe(viewLifecycleOwner,{ business ->
+            if (business.ownerUid == auth.currentUser!!.uid){
+                binding.newProductButton.visibility = View.VISIBLE
+            }
+        })
+    }
+
+    private fun loadBusinessProducts() {
+        val businessId = businessViewModel.businessId
+
+        productViewModel.businessProducts.observe(viewLifecycleOwner,{ productList ->
+            val adapter = BusinessProfileAdapter(this,requireActivity(), productList)
+            binding.recycleView.adapter = adapter
+            val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            binding.recycleView.layoutManager = horizontalLayout
+            binding.recycleView.setHasFixedSize(true)
+        })
+
+        productViewModel.loadBusinessProducts(businessId)
+    }
 
     private fun setBusinessData()
     {

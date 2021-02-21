@@ -1,5 +1,6 @@
 package com.example.localtrader.viewmodels
 
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.localtrader.business.models.Business
@@ -29,6 +30,9 @@ class BusinessViewModel : ViewModel() {
             }
     }
 
+    fun removeBusinessObservers(owner : LifecycleOwner){
+        business.removeObservers(owner)
+    }
 
 }
 
