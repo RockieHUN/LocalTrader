@@ -1,6 +1,8 @@
 package com.example.localtrader.business.fragments
 
+import android.graphics.BlurMaskFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +13,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
@@ -48,8 +54,6 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_business_profile, container, false)
-        hideEditingTools()
-        showEditingTools()
         setBusinessData()
         return binding.root
     }
@@ -72,6 +76,9 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         else{
             uid = auth.currentUser!!.uid
         }
+
+        hideEditingTools()
+
     }
 
     override fun onPause() {
@@ -102,11 +109,10 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
 
     private fun showEditingTools()
     {
-        businessViewModel.business.observe(viewLifecycleOwner,{ business ->
-            if (business.ownerUid == auth.currentUser!!.uid){
-                binding.newProductButton.visibility = View.VISIBLE
-            }
-        })
+        if (businessViewModel.business.value!!.ownerUid == auth.currentUser!!.uid){
+            binding.newProductButton.visibility = View.VISIBLE
+        }
+
     }
 
     private fun loadBusinessProducts() {
@@ -129,6 +135,8 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         businessViewModel.business.observe(viewLifecycleOwner, { business ->
             if (business != null)
             {
+                showEditingTools()
+
                 binding.businessName.text = business.name
                 binding.businessCategory.text = business.category
                 binding.businessDescription.text = business.description
@@ -140,7 +148,14 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
                         Glide.with(requireActivity())
                             .load(uri)
                             .centerCrop()
+                            .into(binding.blurImage)
+
+                        Glide.with(requireActivity())
+                            .load(uri)
+                            .centerCrop()
                             .into(binding.businessProfilePicture)
+
+
                     }
             }
         })

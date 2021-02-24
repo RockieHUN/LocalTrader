@@ -62,6 +62,8 @@
 
     <!-- Business profile -->
     <string name="add_new_product"> Új termék </string>
+    <string name="business_rating"> Értékelés </string>
+    <string name="business_product_number"> Termékszám </string>
 
 
     <!-- Creating product -->

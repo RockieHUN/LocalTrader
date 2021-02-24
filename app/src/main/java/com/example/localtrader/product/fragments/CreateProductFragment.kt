@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,6 +27,7 @@ import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -96,7 +98,7 @@ class CreateProductFragment : Fragment() {
             try {
                 startActivityForResult(takePictureIntent, 1)
             } catch (e: ActivityNotFoundException) {
-                // display error state to the user
+                animateError("Ismeretlen hiba merült fel. Próbálja úrja később");
             }
         }
     }
@@ -174,6 +176,10 @@ class CreateProductFragment : Fragment() {
                                         stopLoading()
                                         findNavController().navigate(R.id.action_createProductFragment_to_businessProfileFragment)
                                     }
+                                    .addOnFailureListener{ e->
+                                        Firebase.crashlytics.log("$e")
+                                        stopLoading()
+                                    }
                             })
 
                             //resize the bitmap
@@ -199,6 +205,16 @@ class CreateProductFragment : Fragment() {
                                 }
                             }
                         }
+                            //add product id
+                        .addOnFailureListener {  e->
+                            stopLoading()
+                            Firebase.crashlytics.log("$e")
+                        }
+                }
+                    //saving product to firebase
+                .addOnFailureListener { e->
+                    stopLoading()
+                    Firebase.crashlytics.log("$e")
                 }
 
         }
@@ -206,22 +222,24 @@ class CreateProductFragment : Fragment() {
 
     private fun dataIsValid(productName : String, productDescription : String) : Boolean{
         if (g_imageUri == null && g_imageBitmap == null){
+            stopLoading()
             animateError("A kép feltöltése kötelező!")
             return false
         }
 
         if (productName.length < 3){
+            stopLoading()
             animateError("A termék nevének legalább 3 karakterből kell állnia!")
             return false
         }
 
         if (productDescription.length < 30){
+            stopLoading()
             animateError("A termék leírásának legalább 30 karakterből kell állnia!")
             return false
         }
         return true
     }
-
 
     private fun animateError(msg : String){
         lifecycleScope.launch {
