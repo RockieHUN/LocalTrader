@@ -27,6 +27,7 @@ class BusinessProfileAdapter (
 
         val productImageView = itemView.findViewById<ImageView>(R.id.product_image)
         val productNameView = itemView.findViewById<TextView>(R.id.product_name)
+        val productPriceView = itemView.findViewById<TextView>(R.id.product_price)
 
         init {
             itemView.setOnClickListener(this)
@@ -57,6 +58,7 @@ class BusinessProfileAdapter (
         val currentItem = items[position]
 
         holder.productNameView.text = currentItem.name
+        holder.productPriceView.text = "${currentItem.price} RON"
 
         storage.reference.child("products/${currentItem.productId}/image")
             .downloadUrl

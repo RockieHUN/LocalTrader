@@ -24,6 +24,7 @@ import com.example.localtrader.product.models.Product
 import com.example.localtrader.utils.Animations
 import com.example.localtrader.utils.Constants
 import com.example.localtrader.utils.ImageUtils
+import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -40,6 +41,7 @@ class CreateProductFragment : Fragment() {
     private lateinit var binding : FragmentCreateProductBinding
 
     private val userViewModel : UserViewModel by activityViewModels()
+    private val businessViewModel : BusinessViewModel by activityViewModels()
     private lateinit var auth : FirebaseAuth
     private lateinit var firestore : FirebaseFirestore
     private lateinit var storage : FirebaseStorage
@@ -73,6 +75,7 @@ class CreateProductFragment : Fragment() {
 
     private fun setUpVisuals()
     {
+        binding.priceInput.setText(R.string.product_starter_price)
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         binding.circularProgress.visibility = View.GONE
     }
@@ -153,7 +156,8 @@ class CreateProductFragment : Fragment() {
                businessId = userViewModel.user.value!!.businessId,
                name = productName,
                description = productDescription,
-               price = price
+               price = price,
+               businessName = businessViewModel.business.value!!.name
            )
 
             firestore.collection("products")

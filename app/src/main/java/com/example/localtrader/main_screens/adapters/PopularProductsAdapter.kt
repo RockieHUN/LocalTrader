@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
+import com.example.localtrader.business.models.Business
 import com.example.localtrader.product.models.Product
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
@@ -28,7 +29,7 @@ class PopularProductsAdapter (
 
         val productImageView = itemView.findViewById<ImageView>(R.id.product_image)
         val productNameView = itemView.findViewById<TextView>(R.id.product_name)
-        val productPriceView = itemView.findViewById<TextView>(R.id.product_price)
+        val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
 
         init{
             itemView.setOnClickListener(this)
@@ -37,7 +38,7 @@ class PopularProductsAdapter (
        override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION){
-                listener.onItemClick(position)
+                listener.myPopProductOnItemClick(items[position])
             }
         }
 
@@ -45,6 +46,7 @@ class PopularProductsAdapter (
 
     interface OnItemClickListener{
         fun onItemClick(position: Int)
+        fun myPopProductOnItemClick (product : Product)
     }
 
 
@@ -57,7 +59,7 @@ class PopularProductsAdapter (
         val currentItem = items[position]
 
         holder.productNameView.text = currentItem.name
-        holder.productPriceView.text = currentItem.price.toString()
+        holder.businessNameView.text = currentItem.businessName
 
         storage.reference.child("products/${currentItem.productId}/image")
             .downloadUrl.addOnSuccessListener { uri ->

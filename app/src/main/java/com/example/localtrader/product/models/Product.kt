@@ -6,5 +6,6 @@ data class Product (
     var businessId : String = "",
     var name : String = "",
     var price : Double = 0.0,
-    var description : String =""
+    var description : String ="",
+    var businessName : String = ""
         )

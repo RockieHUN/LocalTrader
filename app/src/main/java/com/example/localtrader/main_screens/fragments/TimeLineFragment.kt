@@ -18,6 +18,8 @@ import com.example.localtrader.databinding.FragmentTimeLineBinding
 import com.example.localtrader.main_screens.adapters.RecommendedBusinessesAdapter
 import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
 import com.example.localtrader.main_screens.repositories.TimeLineRepository
+import com.example.localtrader.product.fragments.ProductProfileFragment
+import com.example.localtrader.product.models.Product
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
@@ -37,6 +39,7 @@ class TimeLineFragment : Fragment(),
 
     private val userViewModel : UserViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
+    private val productViewModel : ProductViewModel by activityViewModels()
 
     private lateinit var repository : TimeLineRepository
 
@@ -78,7 +81,6 @@ class TimeLineFragment : Fragment(),
         userViewModel.removeAllObserver(viewLifecycleOwner)
     }
 
-
     //set recommended products recycle view
     private fun recyclePopularProducts()
     {
@@ -109,6 +111,11 @@ class TimeLineFragment : Fragment(),
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
 
+    }
+
+    private fun showDialog(){
+        val dialog = ProductProfileFragment()
+        dialog.show(requireActivity().supportFragmentManager, null)
     }
 
     private fun setUpListeners()
@@ -146,7 +153,6 @@ class TimeLineFragment : Fragment(),
         })
     }
 
-
     private fun setGreeting()
     {
         val greeting = binding.greeting
@@ -172,12 +178,15 @@ class TimeLineFragment : Fragment(),
         return
     }
 
-    override fun myOnItemClick(business: Business) {
+    override fun myPopProductOnItemClick(product: Product) {
+        productViewModel.product = product
+        showDialog()
+    }
+
+    override fun myRecBusinessOnItemClick(business: Business) {
         businessViewModel.businessOwner = business.ownerUid
         businessViewModel.businessId = business.businessId
         businessViewModel.originFragment = 2
         findNavController().navigate(R.id.action_timeLineFragment_to_businessProfileFragment)
     }
-
-
 }

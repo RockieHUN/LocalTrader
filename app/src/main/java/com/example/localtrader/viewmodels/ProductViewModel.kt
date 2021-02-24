@@ -10,6 +10,7 @@ import com.google.firebase.ktx.Firebase
 class ProductViewModel : ViewModel() {
 
     val businessProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
+    var product : Product = Product()
 
     private val firestore = Firebase.firestore
 

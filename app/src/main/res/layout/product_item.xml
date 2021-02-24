@@ -52,30 +52,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:layout_marginBottom="5dp"
-                        app:layout_constraintBottom_toBottomOf="@id/product_image"
-                        app:layout_constraintEnd_toEndOf="@id/product_image">
-
-                        <TextView
-                            android:id="@+id/product_price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="40"
-                            android:textColor="@color/triadic"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/RON"
-                            android:textColor="@color/triadic"
-                            android:textStyle="bold" />
-                    </LinearLayout>
-
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -98,7 +74,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/image_holder" />
 
             <TextView
-                android:id="@+id/firm_name"
+                android:id="@+id/business_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"

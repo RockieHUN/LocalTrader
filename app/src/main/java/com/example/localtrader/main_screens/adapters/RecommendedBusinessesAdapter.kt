@@ -37,7 +37,7 @@ class RecommendedBusinessesAdapter(
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 //listener.onItemClick(position)
-                listener.myOnItemClick(items[position])
+                listener.myRecBusinessOnItemClick(items[position])
             }
         }
 
@@ -45,7 +45,7 @@ class RecommendedBusinessesAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
-        fun myOnItemClick (business: Business)
+        fun myRecBusinessOnItemClick (business: Business)
     }
 
 
