@@ -97,6 +97,10 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         binding.newProductButton.setOnClickListener{
             findNavController().navigate(R.id.action_businessProfileFragment_to_createProductFragment)
         }
+
+        binding.moreButton.setOnClickListener {
+            findNavController().navigate(R.id.action_businessProfileFragment_to_productGridFragment)
+        }
     }
 
     override fun onItemClick(position: Int) {

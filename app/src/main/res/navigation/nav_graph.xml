@@ -183,6 +183,9 @@
         <action
             android:id="@+id/action_businessProfileFragment_to_createProductFragment"
             app:destination="@id/createProductFragment" />
+        <action
+            android:id="@+id/action_businessProfileFragment_to_productGridFragment"
+            app:destination="@id/productGridFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_create_product"
@@ -193,4 +196,9 @@
             android:id="@+id/action_createProductFragment_to_businessProfileFragment"
             app:destination="@id/businessProfileFragment" />
     </fragment>
+    <fragment
+        tools:layout="@layout/fragment_product_grid"
+        android:id="@+id/productGridFragment"
+        android:name="com.example.localtrader.product.fragments.ProductGridFragment"
+        android:label="ProductGridFragment" />
 </navigation>
