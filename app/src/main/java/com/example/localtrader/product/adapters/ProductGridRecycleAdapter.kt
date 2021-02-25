@@ -1,4 +1,4 @@
-package com.example.localtrader.product
+package com.example.localtrader.product.adapters
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 class ProductGridRecycleAdapter (
-    private  val listener : ProductGridRecycleAdapter.OnItemClickListener,
+    private  val listener : OnItemClickListener,
     private val activity: Activity,
     private val items : List<Product>
         ) : RecyclerView.Adapter<ProductGridRecycleAdapter.DataViewHolder>(){
@@ -31,7 +31,7 @@ class ProductGridRecycleAdapter (
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClick(position)
+                listener.myOnItemClick(items[position])
             }
         }
 
@@ -39,18 +39,19 @@ class ProductGridRecycleAdapter (
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
+        fun myOnItemClick(product : Product)
     }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): ProductGridRecycleAdapter.DataViewHolder {
+    ): DataViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.product_grid_item, parent, false)
         return DataViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: ProductGridRecycleAdapter.DataViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
         val currentItem = items[position]
 
         storage.reference.child("products/${currentItem.productId}/image")

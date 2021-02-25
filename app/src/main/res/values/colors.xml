@@ -20,4 +20,8 @@
 
     <color name="darken">#6F000000</color>
 
+    <color name="green_modal"> #02db3c</color>
+    <color name="blue_modal"> #02b7db</color>
+    <color name="red_modal"> #db0235</color>
+
 </resources>

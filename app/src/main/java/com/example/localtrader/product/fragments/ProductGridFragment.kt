@@ -7,26 +7,33 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
-import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentProductGridBinding
-import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
-import com.example.localtrader.product.ProductGridRecycleAdapter
+import com.example.localtrader.product.adapters.ProductGridRecycleAdapter
+import com.example.localtrader.product.models.Product
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class ProductGridFragment : Fragment(),
         ProductGridRecycleAdapter.OnItemClickListener
 {
+
     private lateinit var binding : FragmentProductGridBinding
+    private lateinit var auth : FirebaseAuth
+
     private val productViewModel : ProductViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        auth = Firebase.auth
 
     }
 
@@ -58,6 +65,19 @@ class ProductGridFragment : Fragment(),
 
     override fun onItemClick(position: Int) {
         return
+    }
+
+    override fun myOnItemClick(product: Product) {
+        productViewModel.product = product
+        if (product.ownerId == auth.currentUser?.uid){
+            findNavController().navigate(R.id.action_productGridFragment_to_productBottomModalFragment)
+        }
+        else{
+            val dialog = ProductProfileFragment()
+            dialog.show(requireActivity().supportFragmentManager, null)
+        }
+
+
     }
 
 

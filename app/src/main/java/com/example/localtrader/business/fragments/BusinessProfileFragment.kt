@@ -20,6 +20,8 @@ import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
+import com.example.localtrader.product.fragments.ProductProfileFragment
+import com.example.localtrader.product.models.Product
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
@@ -103,10 +105,6 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         }
     }
 
-    override fun onItemClick(position: Int) {
-        return
-    }
-
     private fun hideEditingTools(){
         binding.newProductButton.visibility = View.GONE
     }
@@ -180,5 +178,16 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(id)
         }
+    }
+
+
+    override fun onItemClick(position: Int) {
+        return
+    }
+
+    override fun myOnClickListener(product: Product) {
+        productViewModel.product = product
+        val dialog = ProductProfileFragment()
+        dialog.show(requireActivity().supportFragmentManager, null)
     }
 }

@@ -77,6 +77,11 @@
     <!-- Product Profile -->
     <string name="order_button"> Rendelés </string>
 
+    <!-- Modal dialog -->
+    <string name="view"> Megtekintés </string>
+    <string name="share"> Megosztás </string>
+    <string name="delete"> Törlés </string>
+
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>
     <string name="monthlySale_count"> Havi eladások </string>

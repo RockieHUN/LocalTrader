@@ -200,5 +200,18 @@
         tools:layout="@layout/fragment_product_grid"
         android:id="@+id/productGridFragment"
         android:name="com.example.localtrader.product.fragments.ProductGridFragment"
-        android:label="ProductGridFragment" />
+        android:label="ProductGridFragment" >
+        <action
+            android:id="@+id/action_productGridFragment_to_productBottomModalFragment"
+            app:destination="@id/productBottomModalFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/productBottomModalFragment"
+        android:name="com.example.localtrader.product.fragments.ProductBottomModalFragment"
+        android:label="fragment_product_bottom_modal"
+        tools:layout="@layout/fragment_product_bottom_modal" >
+        <action
+            android:id="@+id/action_productBottomModalFragment_to_productGridFragment"
+            app:destination="@id/productGridFragment" />
+    </dialog>
 </navigation>
