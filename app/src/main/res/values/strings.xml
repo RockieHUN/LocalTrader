@@ -81,6 +81,9 @@
     <string name="view"> Megtekintés </string>
     <string name="share"> Megosztás </string>
     <string name="delete"> Törlés </string>
+    <string name="delete_confirmation"> Bíztosan törli ez a terméket? </string>
+    <string name="yes"> Igen </string>
+    <string name="no"> Nem </string>
 
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>

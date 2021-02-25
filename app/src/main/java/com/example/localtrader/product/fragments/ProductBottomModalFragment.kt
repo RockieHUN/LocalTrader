@@ -58,19 +58,9 @@ class ProductBottomModalFragment : BottomSheetDialogFragment() {
 
     private fun deleteProduct()
     {
-        val productId = productViewModel.product.productId
-        firestore.collection("products")
-            .document(productId)
-            .delete()
-            .addOnSuccessListener {
-
-                storage.reference.child("products/${productId}/image")
-                    .delete()
-                    .addOnSuccessListener {
-                        this.dismiss()
-                    }
-
-            }
+       val dialog = DeleteProductDialogFragment()
+        dialog.show(requireActivity().supportFragmentManager, null)
+        this.dismiss()
     }
 
 
