@@ -85,6 +85,13 @@
     <string name="yes"> Igen </string>
     <string name="no"> Nem </string>
 
+    <!-- Create order -->
+    <string name="create_order_header"> Rendelés feladása </string>
+    <string name="create_order_description"> Válassza ki a kívánt mennyiséget majd küldje el a megrendelést. Ezt követően a vállalkozó elfogadja
+    ezt és mi értesítést küldünk önnek.</string>
+    <string name="additional_comment"> Megjegyzés (Opcionális) </string>
+    <string name="send"> Küldés </string>
+
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>
     <string name="monthlySale_count"> Havi eladások </string>

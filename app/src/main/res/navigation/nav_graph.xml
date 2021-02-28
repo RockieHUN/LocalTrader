@@ -84,6 +84,9 @@
         <action
             android:id="@+id/action_timeLineFragment_to_businessProfileFragment"
             app:destination="@id/businessProfileFragment" />
+        <action
+            android:id="@+id/action_timeLineFragment_to_createOrderFragment"
+            app:destination="@id/createOrderFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_profile"
@@ -214,4 +217,9 @@
             android:id="@+id/action_productBottomModalFragment_to_productGridFragment"
             app:destination="@id/productGridFragment" />
     </dialog>
+    <fragment
+        tools:layout="@layout/fragment_create_order"
+        android:id="@+id/createOrderFragment"
+        android:name="com.example.localtrader.orders.CreateOrderFragment"
+        android:label="CreateOrderFragment" />
 </navigation>

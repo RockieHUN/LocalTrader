@@ -57,9 +57,6 @@ class LoginFragment : Fragment() {
     }
 
     private fun setUpListeners() {
-        binding.backButton.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-        }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
