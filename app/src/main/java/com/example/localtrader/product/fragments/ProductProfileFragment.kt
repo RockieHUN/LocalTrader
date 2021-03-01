@@ -14,7 +14,9 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentProductProfileBinding
+import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
+import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -24,11 +26,12 @@ class ProductProfileFragment : DialogFragment() {
     private lateinit var storage : FirebaseStorage
 
     private val productViewModel : ProductViewModel by activityViewModels()
+    private val navigationViewModel : NavigationViewModel by activityViewModels()
+    private val userViewModel : UserViewModel by activityViewModels()
 
     private var isLayerVisible : Boolean = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
 
         storage = Firebase.storage
     }
@@ -52,12 +55,19 @@ class ProductProfileFragment : DialogFragment() {
         }
 
         binding.orderButton.setOnClickListener {
-            //TODO : CONTINUE
+            this.dismiss()
+            when(navigationViewModel.origin){
+                1 -> findNavController().navigate(R.id.action_timeLineFragment_to_createOrderFragment)
+                2 -> findNavController().navigate(R.id.action_businessProfileFragment_to_createOrderFragment)
+                3 -> findNavController().navigate(R.id.action_productGridFragment_to_createOrderFragment)
+            }
         }
     }
 
     private fun setUpVisuals(){
-        //binding.infoLayout.visibility = View.GONE
+        if (userViewModel.user.value!!.businessId == productViewModel.product.businessId){
+            binding.orderButton.visibility = View.GONE
+        }
     }
 
     private fun setProductData()

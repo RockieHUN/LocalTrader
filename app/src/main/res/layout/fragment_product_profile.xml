@@ -36,7 +36,9 @@
                 android:alpha="0.8"
                 android:background="@color/black"
                 android:padding="10dp"
-                app:layout_constraintBottom_toBottomOf="@id/product_image">
+                app:layout_constraintBottom_toBottomOf="@id/product_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
                     android:id="@+id/product_description"
@@ -46,7 +48,15 @@
                     android:text="description placeholder"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    app:layout_constraintBottom_toTopOf="@+id/order_button"
+                    app:layout_constraintBottom_toTopOf="@+id/constraintLayout11"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout11"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 

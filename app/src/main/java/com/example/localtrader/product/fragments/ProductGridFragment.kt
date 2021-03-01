@@ -14,6 +14,7 @@ import com.example.localtrader.databinding.FragmentProductGridBinding
 import com.example.localtrader.product.adapters.ProductGridRecycleAdapter
 import com.example.localtrader.product.models.Product
 import com.example.localtrader.viewmodels.BusinessViewModel
+import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -29,12 +30,13 @@ class ProductGridFragment : Fragment(),
 
     private val productViewModel : ProductViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
+    private val navigationViewModel : NavigationViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         auth = Firebase.auth
-
+        navigationViewModel.origin = 3
     }
 
     override fun onCreateView(
@@ -76,8 +78,6 @@ class ProductGridFragment : Fragment(),
             val dialog = ProductProfileFragment()
             dialog.show(requireActivity().supportFragmentManager, null)
         }
-
-
     }
 
 
