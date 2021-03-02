@@ -227,5 +227,9 @@
         tools:layout="@layout/fragment_create_order"
         android:id="@+id/createOrderFragment"
         android:name="com.example.localtrader.orders.fragments.CreateOrderFragment"
-        android:label="CreateOrderFragment" />
+        android:label="CreateOrderFragment" >
+        <action
+            android:id="@+id/action_createOrderFragment_to_businessOrdersFragment"
+            app:destination="@id/businessOrdersFragment" />
+    </fragment>
 </navigation>

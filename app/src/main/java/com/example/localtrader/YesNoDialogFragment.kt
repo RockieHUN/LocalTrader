@@ -2,6 +2,7 @@ package com.example.localtrader
 
 import android.app.AlertDialog
 import android.app.Dialog
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,8 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import java.lang.ClassCastException
 
-class YesNoDialogFragment(val message : String) : DialogFragment() {
+class YesNoDialogFragment(
+    val message : String,
+    var listener : NoticeDialogListener
+) : DialogFragment() {
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,16 +39,21 @@ class YesNoDialogFragment(val message : String) : DialogFragment() {
             builder.setMessage(message)
                 .setPositiveButton(R.string.yes
                 ) { dialog, id ->
-                    // FIRE ZE MISSILES!
+                    listener.onDialogPositiveClick(this)
                 }
                 .setNegativeButton(R.string.no
                 ) { dialog, id ->
-                    // User cancelled the dialog
+                    listener.onDialogNegativeClick(this)
                 }
             // Create the AlertDialog object and return it
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
+
+    interface NoticeDialogListener {
+        fun onDialogPositiveClick(dialog : DialogFragment)
+        fun onDialogNegativeClick(dialog : DialogFragment)
+    }
 
 }
