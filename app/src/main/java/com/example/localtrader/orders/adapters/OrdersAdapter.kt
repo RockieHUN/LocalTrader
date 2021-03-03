@@ -1,4 +1,4 @@
-package com.example.localtrader.business.adapters
+package com.example.localtrader.orders.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.localtrader.R
 
-class BusinessOrdersAdapter (
+class OrdersAdapter (
     private  val listener : OnItemClickListener
-): RecyclerView.Adapter<BusinessOrdersAdapter.DataViewHolder>() {
+): RecyclerView.Adapter<OrdersAdapter.DataViewHolder>() {
 
     private val items = mutableListOf<Int>(1, 2, 3, 4, 5, 6)
 
@@ -34,13 +34,13 @@ class BusinessOrdersAdapter (
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): BusinessOrdersAdapter.DataViewHolder {
+    ): DataViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.business_order_item, parent, false)
         return DataViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: BusinessOrdersAdapter.DataViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
         val currentItem = items[position]
     }
 

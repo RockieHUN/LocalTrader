@@ -91,8 +91,11 @@
     ezt és mi értesítést küldünk önnek.</string>
     <string name="additional_comment"> Megjegyzés (Opcionális) </string>
     <string name="send"> Küldés </string>
-    <string name="create_order_verification">A rendelést elküldjük a vállalkozónak. Miután a vállalkozó elfogadta ezt,
-    értesítést küldünk önnek. Bíztosan elküldi a rendelést?</string>
+    <string name="create_order_verification">A rendelést elküldjük a vállalkozónak. Miután a vállalkozó elfogadta ezt, értesítést küldünk önnek. Bíztosan elküldi a rendelést?</string>
+
+    <!--Orders -->
+    <string name="client_orders"> Saját rendelések</string>
+    <string name="business_orders"> Vállalkozás rendelései </string>
 
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>

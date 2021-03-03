@@ -5,7 +5,7 @@
     <item
         android:id="@+id/timeLineFragment"
         android:icon="@drawable/ic_baseline_home_24"
-        android:title="@string/profileIcon"
+        android:title="@string/mainIcon"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/favoritesFragment"
@@ -13,7 +13,7 @@
         android:title="@string/favoritesIcon"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/clientOrdersFragment"
+        android:id="@+id/ordersFragment"
         android:icon="@drawable/ic_order_history"
         android:title="@string/ordersIcon"
         app:showAsAction="ifRoom" />
