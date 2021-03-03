@@ -12,5 +12,4 @@ class ViewPagerAdapter (fragment : Fragment) : FragmentStateAdapter( fragment) {
         return if (position == 0) ClientOrdersFragment()
         else BusinessOrdersFragment()
     }
-
 }

@@ -15,6 +15,7 @@ import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentCreateBusinessSecondBinding
 import com.example.localtrader.utils.*
+import com.example.localtrader.utils.constants.ImageSize
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
@@ -75,7 +76,6 @@ class CreateBusinessSecondFragment : Fragment() {
         super.onResume()
 
         if (auth.currentUser == null) {
-            MySharedPref.clearSharedPref(requireContext())
             findNavController().navigate(R.id.action_createBusinessSecondFragment_to_loginFragment)
         } else {
             uid = auth.currentUser!!.uid
@@ -190,7 +190,7 @@ class CreateBusinessSecondFragment : Fragment() {
                                     resizedImage.value = ImageUtils.resizeImageUriTo(
                                         requireActivity(),
                                         creationViewModel.business.imageUri!!,
-                                        Constants.BUSINESS_PROFILE_SIZE
+                                        ImageSize.BUSINESS_PROFILE_SIZE
                                     )
                                 }
                             }

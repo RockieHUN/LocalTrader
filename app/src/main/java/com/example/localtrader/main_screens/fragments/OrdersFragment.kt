@@ -6,9 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
-import com.example.localtrader.orders.adapters.OrdersAdapter
 import com.example.localtrader.databinding.FragmentOrdersBinding
 import com.example.localtrader.orders.adapters.ViewPagerAdapter
 
@@ -38,6 +36,4 @@ class OrdersFragment : Fragment(){
     private fun setUpVisuals(){
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
-
-
 }

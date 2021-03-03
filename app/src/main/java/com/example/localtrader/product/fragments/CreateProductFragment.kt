@@ -8,7 +8,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +21,7 @@ import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentCreateProductBinding
 import com.example.localtrader.product.models.Product
 import com.example.localtrader.utils.Animations
-import com.example.localtrader.utils.Constants
+import com.example.localtrader.utils.constants.ImageSize
 import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
@@ -193,7 +192,7 @@ class CreateProductFragment : Fragment() {
                                     resizedImage.value = ImageUtils.resizeImageBitmapTo(
                                         requireActivity(),
                                         g_imageBitmap!!,
-                                        Constants.PRODUCT_IMAGE_SIZE
+                                        ImageSize.PRODUCT_IMAGE_SIZE
                                     )
                                 }
                             }
@@ -204,7 +203,7 @@ class CreateProductFragment : Fragment() {
                                     resizedImage.value = ImageUtils.resizeImageUriTo(
                                         requireActivity(),
                                         g_imageUri!!,
-                                        Constants.PRODUCT_IMAGE_SIZE
+                                        ImageSize.PRODUCT_IMAGE_SIZE
                                     )
                                 }
                             }

@@ -9,9 +9,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentBusinessOrdersBinding
-import com.example.localtrader.orders.adapters.OrdersAdapter
+import com.example.localtrader.orders.adapters.ClientOrdersAdapter
 
-class BusinessOrdersFragment : Fragment(), OrdersAdapter.OnItemClickListener {
+class BusinessOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener {
 
     private lateinit var binding : FragmentBusinessOrdersBinding
 
@@ -25,13 +25,15 @@ class BusinessOrdersFragment : Fragment(), OrdersAdapter.OnItemClickListener {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_business_orders, container, false)
 
-        val adapter = OrdersAdapter(this)
+        val adapter = ClientOrdersAdapter(this, listOf(), requireContext())
         binding.recycleView.adapter = adapter
         binding.recycleView.layoutManager = LinearLayoutManager(context)
         binding.recycleView.setHasFixedSize(true)
 
         return binding.root
     }
+
+
 
     override fun onItemClick(position: Int) {
         return

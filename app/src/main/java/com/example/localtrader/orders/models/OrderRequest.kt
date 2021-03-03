@@ -1,6 +1,7 @@
 package com.example.localtrader.orders.models
 
-import java.time.LocalDateTime
+import com.example.localtrader.utils.date.MyDateTime
+import com.example.localtrader.utils.constants.OrderStatus
 
 data class OrderRequest (
     var orderRequestId : String = "",
@@ -13,5 +14,6 @@ data class OrderRequest (
     var sum : Double = 0.0,
     var count : Int = 1,
     var additionalComment : String = "",
-    var date : LocalDateTime = LocalDateTime.now()
+    var date : String = MyDateTime.getCurrentTime(),
+    var status : Int = OrderStatus.WAITING_FOR_CONFIRMATION
         )

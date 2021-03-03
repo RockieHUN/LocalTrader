@@ -9,15 +9,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentClientOrdersBinding
-import com.example.localtrader.orders.adapters.OrdersAdapter
+import com.example.localtrader.orders.OrdersRepository
+import com.example.localtrader.orders.adapters.ClientOrdersAdapter
+import com.example.localtrader.utils.date.DateComparator
 
-class ClientOrdersFragment : Fragment(), OrdersAdapter.OnItemClickListener {
+class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener {
 
     private lateinit var binding : FragmentClientOrdersBinding
+    private lateinit var ordersRepository: OrdersRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        ordersRepository = OrdersRepository()
     }
 
     override fun onCreateView(
@@ -26,16 +30,34 @@ class ClientOrdersFragment : Fragment(), OrdersAdapter.OnItemClickListener {
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_client_orders, container, false)
 
-        val adapter = OrdersAdapter(this)
-        binding.recycleView.adapter = adapter
-        binding.recycleView.layoutManager = LinearLayoutManager(context)
-        binding.recycleView.setHasFixedSize(true)
+        createRecycle()
+
         return binding.root
     }
+
+    private fun createRecycle(){
+        ordersRepository.clientOrders.observe(viewLifecycleOwner,{ orders ->
+
+            val sortedList = orders.sortedWith(DateComparator)
+
+            val adapter = ClientOrdersAdapter(this, sortedList, requireContext())
+            binding.recycleView.adapter = adapter
+            binding.recycleView.layoutManager = LinearLayoutManager(context)
+            binding.recycleView.setHasFixedSize(true)
+        })
+        ordersRepository.loadClientOrders()
+
+    }
+
+
 
     override fun onItemClick(position: Int) {
         return
     }
+
+
+
+
 
 
 }

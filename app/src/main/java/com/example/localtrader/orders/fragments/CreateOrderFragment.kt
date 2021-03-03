@@ -14,6 +14,7 @@ import com.example.localtrader.R
 import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentCreateOrderBinding
 import com.example.localtrader.orders.models.OrderRequest
+import com.example.localtrader.utils.date.MyDateTime
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -24,7 +25,6 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
-import java.time.LocalDateTime
 
 class CreateOrderFragment : Fragment(),
     YesNoDialogFragment.NoticeDialogListener {
@@ -115,7 +115,7 @@ class CreateOrderFragment : Fragment(),
             sum = round((binding.numberPicker.value * productViewModel.product.price)),
             count = binding.numberPicker.value,
             additionalComment = binding.additionalComment.text.toString(),
-            date = LocalDateTime.now()
+            date = MyDateTime.getCurrentTime()
         )
     }
 

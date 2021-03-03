@@ -43,7 +43,6 @@
     <!-- Profile -->
     <string name="my_business"> Vállalkozásom </string>
     <string name="create_business"> Új vállalkozás</string>
-
     <string name="logout"> Kijelentkezés </string>
 
     <!-- Creating business -->
@@ -96,6 +95,7 @@
     <!--Orders -->
     <string name="client_orders"> Saját rendelések</string>
     <string name="business_orders"> Vállalkozás rendelései </string>
+    <string name="order_status_not_confirmed">Megerősítésre vár</string>
 
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>

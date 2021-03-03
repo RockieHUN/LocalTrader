@@ -1,7 +1,6 @@
 package com.example.localtrader.main_screens.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.models.CreationalBusiness
-import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.databinding.FragmentProfileBinding
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
@@ -75,7 +73,6 @@ class ProfileFragment : Fragment() {
 
         if (auth.currentUser == null)
         {
-            MySharedPref.clearSharedPref(requireContext())
             findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
         }
     }

@@ -14,7 +14,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
-import com.example.localtrader.utils.MySharedPref
 import com.example.localtrader.authentication.models.RegistrationUser
 import com.example.localtrader.authentication.models.User
 import com.example.localtrader.databinding.FragmentRegisterBinding
@@ -25,7 +24,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -205,7 +203,6 @@ class RegisterFragment : Fragment() {
                     saveToFireStore()
 
                     //save to shared preferences, then navigate forward
-                    MySharedPref.saveToSharedPref(requireContext(), data.email!!, data.password!!)
                     findNavController().navigate(R.id.action_registerFragment_to_finishRegistrationFragment)
                 }
                 else

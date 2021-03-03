@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.databinding.FragmentFinishRegistrationBinding
-import com.example.localtrader.utils.Constants
+import com.example.localtrader.utils.constants.ImageSize
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -155,7 +155,7 @@ class FinishRegistrationFragment : Fragment() {
 
             //resize image and put to a LiveData variable
             lifecycleScope.launch(Dispatchers.IO) {
-                resizedImage.postValue(ImageUtils.resizeImageUriTo(requireActivity(), imageUri, Constants.USER_PROFILE_SIZE))
+                resizedImage.postValue(ImageUtils.resizeImageUriTo(requireActivity(), imageUri, ImageSize.USER_PROFILE_SIZE))
             }
 
         }
