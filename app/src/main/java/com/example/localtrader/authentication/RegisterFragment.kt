@@ -24,6 +24,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -201,9 +202,6 @@ class RegisterFragment : Fragment() {
                 {
                     //save additional info to FireStore
                     saveToFireStore()
-
-                    //save to shared preferences, then navigate forward
-                    findNavController().navigate(R.id.action_registerFragment_to_finishRegistrationFragment)
                 }
                 else
                 {
@@ -216,16 +214,30 @@ class RegisterFragment : Fragment() {
 
     fun saveToFireStore()
     {
-        //save to FireStore
-        val newUser = User(data.firstname!! , data.lastname!!, data.email!!)
-        db.collection("users")
-            .document(auth.currentUser!!.uid)
-            .set(newUser)
+        FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+            val newUser = User(
+                firstname = data.firstname!! ,
+                lastname =  data.lastname!!,
+                email = data.email!!,
+                messagingToken = token
+            )
 
-        //add to viewModel
-        userViewModel.user.value = newUser
+            //save to FireStore
+            db.collection("users")
+                .document(auth.currentUser!!.uid)
+                .set(newUser)
+                .addOnSuccessListener {
+
+                }
+
+            //add to viewModel
+            userViewModel.user.value = newUser
+
+            findNavController().navigate(R.id.action_registerFragment_to_finishRegistrationFragment)
+        }
+
+
     }
-
 
     private fun startLoading() {
         binding.circularProgress.visibility = View.VISIBLE
