@@ -14,6 +14,9 @@ import com.example.localtrader.R
 import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentCreateOrderBinding
 import com.example.localtrader.orders.models.OrderRequest
+import com.example.localtrader.services.notifications.NotificationRepository
+import com.example.localtrader.services.notifications.models.NotificationData
+import com.example.localtrader.services.notifications.models.PushNotification
 import com.example.localtrader.utils.date.MyDateTime
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
@@ -36,6 +39,8 @@ class CreateOrderFragment : Fragment(),
 
     private val productViewModel : ProductViewModel by activityViewModels()
     private val userViewModel : UserViewModel by activityViewModels()
+
+    private lateinit var notificationRepository : NotificationRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +126,7 @@ class CreateOrderFragment : Fragment(),
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         startLoading()
+        sendNotification()
         val orderRequest = createOrder()
 
         firestore.collection("orderRequests")
@@ -158,6 +164,23 @@ class CreateOrderFragment : Fragment(),
     private fun stopLoading() {
         binding.circularProgress.visibility = View.GONE
         binding.submitButton.visibility = View.VISIBLE
+    }
+
+    private fun sendNotification(){
+
+        notificationRepository = NotificationRepository()
+
+        val title ="test title"
+        val message = "test message"
+        val TOPIC = "/topics/myTopic"
+
+        val notification = PushNotification(
+            NotificationData(title,message),
+            TOPIC
+        )
+
+        notificationRepository.sendNotification(notification)
+
     }
 
 
