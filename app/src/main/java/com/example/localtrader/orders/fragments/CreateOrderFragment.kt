@@ -40,8 +40,6 @@ class CreateOrderFragment : Fragment(),
     private val productViewModel : ProductViewModel by activityViewModels()
     private val userViewModel : UserViewModel by activityViewModels()
 
-    private lateinit var notificationRepository : NotificationRepository
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -126,7 +124,6 @@ class CreateOrderFragment : Fragment(),
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         startLoading()
-        sendNotification()
         val orderRequest = createOrder()
 
         firestore.collection("orderRequests")
@@ -166,22 +163,6 @@ class CreateOrderFragment : Fragment(),
         binding.submitButton.visibility = View.VISIBLE
     }
 
-    private fun sendNotification(){
-
-        notificationRepository = NotificationRepository()
-
-        val title ="test title"
-        val message = "test message"
-        val TOPIC = "/topics/myTopic"
-
-        val notification = PushNotification(
-            NotificationData(title,message),
-            TOPIC
-        )
-
-        notificationRepository.sendNotification(notification)
-
-    }
 
 
 }

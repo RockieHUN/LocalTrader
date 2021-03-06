@@ -3,7 +3,6 @@ package com.example.localtrader.orders.models
 import com.example.localtrader.utils.date.MyDateTime
 import com.example.localtrader.utils.constants.OrderStatus
 
-//TODO: Continue : get messaging tokens on the server, based on this data
 data class OrderRequest (
     var orderRequestId : String = "",
     var businessId : String = "",
