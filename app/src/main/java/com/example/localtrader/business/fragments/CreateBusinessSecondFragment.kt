@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
@@ -84,6 +85,10 @@ class CreateBusinessSecondFragment : Fragment() {
         val user = userViewModel.user.value
         if (user != null) {
             binding.emailInput.setText(user.email)
+            binding.telephoneInput.setText(creationViewModel.business.telephone)
+            binding.locationInput.setText(creationViewModel.business.location)
+            binding.facebookInput.setText(creationViewModel.business.facebook_link)
+            binding.instagramInput.setText(creationViewModel.business.instagram_link)
         }
     }
 
@@ -96,6 +101,14 @@ class CreateBusinessSecondFragment : Fragment() {
     private fun setUpListeners() {
         binding.submitButton.setOnClickListener {
             submitData()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            creationViewModel.business.telephone = binding.telephoneInput.text.toString()
+            creationViewModel.business.location = binding.locationInput.text.toString()
+            creationViewModel.business.facebook_link = binding.facebookInput.text.toString()
+            creationViewModel.business.instagram_link = binding.instagramInput.text.toString()
+            findNavController().navigate(R.id.action_createBusinessSecondFragment_to_createBusinessFirstFragment)
         }
     }
 

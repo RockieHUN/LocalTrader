@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import com.example.localtrader.R
+import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentProductBottomModalBinding
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -18,7 +20,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 
-class ProductBottomModalFragment : BottomSheetDialogFragment() {
+class ProductBottomModalFragment : BottomSheetDialogFragment(), YesNoDialogFragment.NoticeDialogListener {
 
     private lateinit var binding : FragmentProductBottomModalBinding
     private val productViewModel : ProductViewModel by activityViewModels()
@@ -58,11 +60,33 @@ class ProductBottomModalFragment : BottomSheetDialogFragment() {
 
     private fun deleteProduct()
     {
-       val dialog = DeleteProductDialogFragment()
+       val dialog = YesNoDialogFragment(resources.getString(R.string.delete_confirmation), this)
         dialog.show(requireActivity().supportFragmentManager, null)
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        val productId = productViewModel.product.productId
+        val businessId = productViewModel.product.businessId
+
+        firestore.collection("products")
+            .document(productId)
+            .delete()
+            .addOnSuccessListener {
+
+                storage.reference.child("products/${productId}/image")
+                    .delete()
+                    .addOnSuccessListener {
+                        productViewModel.loadBusinessProducts(businessId)
+
+                    }
+            }
         this.dismiss()
     }
 
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        this.dismiss()
+        return
+    }
 
 
 }

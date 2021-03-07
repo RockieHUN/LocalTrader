@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.business.models.CreationalBusiness
 import com.example.localtrader.databinding.FragmentCreateBusinessFirstBinding
 import com.example.localtrader.utils.Animations
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
@@ -36,6 +38,7 @@ class CreateBusinessFirstFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_business_first, container, false)
         setSpinner()
+        setSavedData()
         return binding.root
     }
 
@@ -71,6 +74,11 @@ class CreateBusinessFirstFragment : Fragment() {
         binding.businessProfilePicture.setOnClickListener {
            pickImageFromGallery()
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this){
+            creationViewModel.business = CreationalBusiness()
+            findNavController().navigate(R.id.action_createBusinessFirstFragment_to_profileFragment)
+        }
     }
 
 
@@ -90,6 +98,15 @@ class CreateBusinessFirstFragment : Fragment() {
             binding.businessProfilePicture.setImageURI(imageUri)
             creationViewModel.business.imageUri = imageUri
         }
+    }
+
+    private fun setSavedData(){
+        val list = resources.getStringArray(R.array.category_list)
+        val index = list.indexOf(creationViewModel.business.category)
+
+        binding.categories.setSelection(index)
+        binding.businessName.setText(creationViewModel.business.name)
+        binding.businessDescription.setText(creationViewModel.business.description)
     }
 
     private fun submitData()

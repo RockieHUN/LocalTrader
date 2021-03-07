@@ -96,6 +96,7 @@
     <string name="client_orders"> Saját rendelések</string>
     <string name="business_orders"> Vállalkozás rendelései </string>
     <string name="order_status_not_confirmed">Megerősítésre vár</string>
+    <string name="no_orders_yet">Jelenleg nincsenek megrendelések!</string>
 
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>

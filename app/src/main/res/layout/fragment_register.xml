@@ -232,16 +232,16 @@
 
                         <EditText
                             android:id="@+id/password"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="5dp"
-                            android:layout_marginEnd="40dp"
+                            android:layout_marginEnd="5dp"
                             android:layout_marginBottom="10dp"
                             android:background="@null"
                             android:inputType="textPassword"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/show_password_button"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/password_text" />
 
@@ -249,12 +249,11 @@
                             android:id="@+id/show_password_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
+                            android:layout_marginEnd="10dp"
                             android:background="@null"
                             android:src="@drawable/ic_baseline_remove_red_eye_24"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/password"
                             app:layout_constraintTop_toTopOf="parent" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -291,26 +290,25 @@
                             android:id="@+id/show_passwordAgain_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="5dp"
+                            android:layout_marginEnd="10dp"
                             android:background="@null"
                             android:src="@drawable/ic_baseline_remove_red_eye_24"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@+id/passwordAgain"
                             app:layout_constraintTop_toTopOf="parent" />
 
                         <EditText
                             android:id="@+id/passwordAgain"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="5dp"
-                            android:layout_marginEnd="40dp"
+                            android:layout_marginEnd="5dp"
                             android:layout_marginBottom="10dp"
                             android:background="@null"
                             android:inputType="textPassword"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/show_passwordAgain_button"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@id/passwordAgain_text" />
                     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -205,9 +205,21 @@ class RegisterFragment : Fragment() {
                 }
                 else
                 {
+
                     binding.submitButton.visibility = View.VISIBLE
                     binding.circularProgress.visibility = View.GONE
-                    errorMessage = "A regisztráció ismeretlen okból nem sikerült. Próbálja újra később"
+
+                    if (task.exception?.message!! == "The email address is already in use by another account.")
+                    {
+                        errorMessage = "Ez az e-mail cím már használatban van!"
+                    }
+                    else{
+                        errorMessage = "A regisztráció ismeretlen okból nem sikerült. Próbálja újra később"
+                    }
+                    lifecycleScope.launch{
+                        Animations.animateError(binding.errorMessageView, errorMessage)
+                    }
+
                 }
             }
     }

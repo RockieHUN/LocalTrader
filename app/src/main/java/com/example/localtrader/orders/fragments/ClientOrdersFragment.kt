@@ -38,6 +38,8 @@ class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener
     private fun createRecycle(){
         ordersRepository.clientOrders.observe(viewLifecycleOwner,{ orders ->
 
+            if (orders.isNotEmpty()) binding.noOrdersYet.visibility = View.GONE
+
             val sortedList = orders.sortedWith(DateComparator)
 
             val adapter = ClientOrdersAdapter(this, sortedList, requireContext())
