@@ -98,6 +98,8 @@
     <string name="order_status_not_confirmed">Megerősítésre vár</string>
     <string name="no_orders_yet">Jelenleg nincsenek megrendelések!</string>
 
+    <string name="chat_editText_hint"> Gépelje be az üzenetet...</string>
+
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>
     <string name="monthlySale_count"> Havi eladások </string>

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/orderChatFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -233,4 +233,8 @@
             android:id="@+id/action_createOrderFragment_to_businessOrdersFragment"
             app:destination="@id/ordersFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/orderChatFragment"
+        android:name="com.example.localtrader.orders.fragments.OrderChatFragment"
+        android:label="OrderChatFragment" />
 </navigation>
