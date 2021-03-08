@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/orderChatFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -193,6 +193,9 @@
         <action
             android:id="@+id/action_businessProfileFragment_to_createOrderFragment"
             app:destination="@id/createOrderFragment" />
+        <action
+            android:id="@+id/action_businessProfileFragment_to_orderChatFragment"
+            app:destination="@id/orderChatFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_create_product"

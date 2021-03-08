@@ -106,16 +106,28 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         binding.moreButton.setOnClickListener {
             findNavController().navigate(R.id.action_businessProfileFragment_to_productGridFragment)
         }
+
+        binding.chatButton.setOnClickListener {
+            findNavController().navigate(R.id.action_businessProfileFragment_to_orderChatFragment)
+        }
     }
 
     private fun hideEditingTools(){
         binding.newProductButton.visibility = View.GONE
+        binding.chatButton.visibility = View.GONE
     }
 
     private fun showEditingTools()
     {
-        if (businessViewModel.business.value!!.ownerUid == auth.currentUser!!.uid){
+        val business = businessViewModel.business.value!!
+        val uid = auth.currentUser!!.uid
+
+        if (business.ownerUid == uid){
             binding.newProductButton.visibility = View.VISIBLE
+        }
+
+        if (business.ownerUid != uid){
+            binding.chatButton.visibility = View.VISIBLE
         }
 
     }
@@ -142,6 +154,7 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
             {
                 showEditingTools()
 
+
                 binding.businessName.text = business.name
                 binding.businessCategory.text = business.category
                 binding.businessDescription.text = business.description
@@ -159,8 +172,6 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
                             .load(uri)
                             .centerCrop()
                             .into(binding.businessProfilePicture)
-
-
                     }
             }
         })

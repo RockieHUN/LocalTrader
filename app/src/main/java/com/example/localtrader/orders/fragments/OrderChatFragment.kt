@@ -11,15 +11,17 @@ import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentOrderChatBinding
 import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
 import com.example.localtrader.orders.adapters.OrderChatAdapter
+import com.example.localtrader.orders.models.ChatMessage
 
 class OrderChatFragment : Fragment() {
 
     private lateinit var binding : FragmentOrderChatBinding
     private lateinit var adapter : OrderChatAdapter
 
+    private var type = 2
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -39,11 +41,15 @@ class OrderChatFragment : Fragment() {
 
     private fun setUpListeners(){
         binding.sendButton.setOnClickListener {
+
             val message = binding.messageInput.text.toString()
             if (message.isNotEmpty()){
                 binding.messageInput.setText("")
-                adapter.addItem(message)
+                adapter.addItem(ChatMessage(type,message))
                 binding.recycleView.scrollToPosition(adapter.itemCount-1)
+
+                type = if (type==2) 1
+                else 2
             }
 
         }
