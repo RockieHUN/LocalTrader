@@ -24,4 +24,6 @@
     <color name="blue_modal"> #02b7db</color>
     <color name="red_modal"> #db0235</color>
 
+    <color name="liked"> #ed3773</color>
+
 </resources>

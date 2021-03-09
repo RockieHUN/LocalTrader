@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentOrdersBinding
-import com.example.localtrader.orders.adapters.ViewPagerAdapter
+import com.example.localtrader.orders.adapters.OrdersViewPagerAdapter
 
 class OrdersFragment : Fragment(){
 
@@ -29,7 +29,7 @@ class OrdersFragment : Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = ViewPagerAdapter(this)
+        val adapter = OrdersViewPagerAdapter(this)
         binding.viewPager.adapter = adapter
     }
 

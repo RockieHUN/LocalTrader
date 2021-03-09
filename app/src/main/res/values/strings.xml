@@ -39,6 +39,7 @@
     <string name="recommended_products"> Népszerű termékek </string>
     <string name="popular_firms"> Ajánlott vállalkozások </string>
     <string name="exclamation_mark">!</string>
+    <string name="press_again_to_exit"> A kilépéshez nyomja meg megint!</string>
 
     <!-- Profile -->
     <string name="my_business"> Vállalkozásom </string>
@@ -75,6 +76,7 @@
 
     <!-- Product Profile -->
     <string name="order_button"> Rendelés </string>
+    <string name="like_failed"> Nem sikerült hozzáadni a kedvencekhez </string>
 
     <!-- Modal dialog -->
     <string name="view"> Megtekintés </string>
@@ -98,7 +100,7 @@
     <string name="order_status_not_confirmed">Megerősítésre vár</string>
     <string name="no_orders_yet">Jelenleg nincsenek megrendelések!</string>
 
-    <string name="chat_editText_hint"> Gépelje be az üzenetet...</string>
+    <string name="chat_editText_hint"> Gépelje be az üzenetet…</string>
 
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>

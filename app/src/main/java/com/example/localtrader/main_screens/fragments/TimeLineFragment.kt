@@ -1,9 +1,11 @@
 package com.example.localtrader.main_screens.fragments
 
+import android.app.ActionBar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
@@ -123,7 +125,6 @@ class TimeLineFragment : Fragment(),
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
-
     }
 
     private fun showDialog(){
@@ -136,7 +137,7 @@ class TimeLineFragment : Fragment(),
         var callbackCounter = 0
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             if (callbackCounter == 0) {
-                Toast.makeText(requireContext(), "Press again to exit", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), resources.getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
                 Timer().schedule(timerTask {
                     callbackCounter = 0
                 }, 2000)
