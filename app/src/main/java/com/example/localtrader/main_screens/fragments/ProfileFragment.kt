@@ -1,12 +1,12 @@
 package com.example.localtrader.main_screens.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -90,7 +90,7 @@ class ProfileFragment : Fragment() {
 
     private fun setUpListeners()
     {
-        binding.myBusinessButton.setOnClickListener {
+        binding.businessSection.setOnClickListener {
             val businessId = userViewModel.user.value?.businessId
             if (businessId == "" || businessId == null)
             {
@@ -107,18 +107,22 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profileFragment_to_timeLineFragment)
         }
 
-        binding.logoutButton.setOnClickListener {
+        binding.logoutSection.setOnClickListener {
             logout()
+        }
+
+        binding.bugReportSection.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_bugReportFragment)
         }
     }
 
     private fun hasBusiness() {
         val businessId = userViewModel.user.value?.businessId
         if (businessId != "") {
-            binding.myBusinessButton.text = resources.getText(R.string.my_business)
+            binding.businessSectionText.text = resources.getText(R.string.my_business)
         }
         else {
-            binding.myBusinessButton.text = resources.getText(R.string.create_business)
+            binding.businessSectionText.text = resources.getText(R.string.create_business)
         }
     }
 

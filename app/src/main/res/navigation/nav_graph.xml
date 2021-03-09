@@ -111,6 +111,9 @@
         <action
             android:id="@+id/action_profileFragment_to_businessProfileFragment"
             app:destination="@id/businessProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_bugReportFragment"
+            app:destination="@id/bugReportFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_orders"
@@ -240,4 +243,8 @@
         android:id="@+id/orderChatFragment"
         android:name="com.example.localtrader.orders.fragments.OrderChatFragment"
         android:label="OrderChatFragment" />
+    <fragment
+        android:id="@+id/bugReportFragment"
+        android:name="com.example.localtrader.bug.BugReportFragment"
+        android:label="BugReportFragment" />
 </navigation>

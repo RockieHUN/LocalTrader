@@ -45,6 +45,7 @@
     <string name="my_business"> Vállalkozásom </string>
     <string name="create_business"> Új vállalkozás</string>
     <string name="logout"> Kijelentkezés </string>
+    <string name="report_bug"> Hiba jelentése</string>
 
     <!-- Creating business -->
     <string name="createBusinessHeader1"> Vállakozás profilja </string>
@@ -105,6 +106,13 @@
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>
     <string name="monthlySale_count"> Havi eladások </string>
+
+    <!-- Bug report -->
+    <string name="bug_report_header">Hiba jelentése</string>
+    <string name="bug_report_description"> Kérjük jelezze, ha bármilyen hibát észlelt az applikáció működésében vagy megjelenésében.</string>
+    <string name="type_of_bug">Hiba típusa</string>
+    <string name="bug_description">Leírás</string>
+    <string name="bug_description_hint">Írja le részletesen a tapasztalt hibát…</string>
 
 
     <string name="placeholderText">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>
