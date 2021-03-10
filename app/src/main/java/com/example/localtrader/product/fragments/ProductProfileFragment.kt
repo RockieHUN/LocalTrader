@@ -1,17 +1,9 @@
 package com.example.localtrader.product.fragments
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -19,18 +11,13 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentProductProfileBinding
-import com.example.localtrader.product.models.LikedBy
-import com.example.localtrader.product.models.LikedProduct
-import com.example.localtrader.product.models.Product
+import com.example.localtrader.repositories.FavoritesRepository
 import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -41,6 +28,8 @@ class ProductProfileFragment : DialogFragment() {
     private lateinit var storage : FirebaseStorage
     private lateinit var firestore : FirebaseFirestore
     private lateinit var auth : FirebaseAuth
+
+    private lateinit var favoritesRepository : FavoritesRepository
 
     private val productViewModel : ProductViewModel by activityViewModels()
     private val navigationViewModel : NavigationViewModel by activityViewModels()
@@ -64,6 +53,8 @@ class ProductProfileFragment : DialogFragment() {
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_profile, container, false)
+
+        favoritesRepository = FavoritesRepository(context, binding.favoriteButton)
 
         setUpVisuals()
         setUpListeners()
@@ -97,7 +88,7 @@ class ProductProfileFragment : DialogFragment() {
         }
 
         binding.favoriteButton.setOnClickListener {
-            likeProduct()
+            favoritesRepository.favoritesAction(productViewModel.product)
         }
     }
 
@@ -106,102 +97,10 @@ class ProductProfileFragment : DialogFragment() {
             binding.orderButton.visibility = View.GONE
         }
 
-        likeButtonVisual()
+        favoritesRepository.likeButtonVisual(productViewModel.product)
     }
 
-    private fun likeButtonVisual(){
-        val product = productViewModel.product
-        firestore.collection("products")
-            .document(product.productId)
-            .collection("likedBy")
-            .whereEqualTo("userId",auth.currentUser!!.uid)
-            .get()
-            .addOnSuccessListener { documents ->
-                if (!documents.isEmpty){
-                    binding.favoriteButton.setColorFilter(Color.argb(255, 237, 55, 115))
-                }
-            }
-    }
 
-    private fun likeProduct()
-    {
-        val product = productViewModel.product
-
-        firestore.collection("products")
-            .document(product.productId)
-            .collection("likedBy")
-            .whereEqualTo("userId",auth.currentUser!!.uid)
-            .limit(1)
-            .get()
-            .addOnSuccessListener{ documents ->
-                if (documents.isEmpty) {
-                    addToFavorites(product)
-                } else {
-                    removeFromFavorites(documents)
-                }
-            }.addOnFailureListener {e ->
-                binding.favoriteButton.colorFilter = null
-                Toast.makeText(context, R.string.like_failed, Toast.LENGTH_SHORT).show()
-                Firebase.crashlytics.log(e.toString())
-            }
-    }
-
-    private fun addToFavorites(product : Product){
-        val uid = auth.currentUser!!.uid
-        //set liked
-        binding.favoriteButton.setColorFilter(Color.argb(255, 237, 55, 115))
-
-        //set liked in product document
-        firestore.collection("products")
-            .document(product.productId)
-            .collection("likedBy")
-            .add(LikedBy(userId = uid))
-            .addOnFailureListener { e ->
-                binding.favoriteButton.colorFilter = null
-                Toast.makeText(context, R.string.like_failed, Toast.LENGTH_SHORT).show()
-                Firebase.crashlytics.log(e.toString())
-            }
-
-        //set liked in user document
-        firestore.collection("users")
-            .document(uid)
-            .collection("likedProducts")
-            .add(LikedProduct(productId = product.productId))
-            .addOnFailureListener { e->
-                binding.favoriteButton.colorFilter = null
-                Toast.makeText(context, R.string.like_failed, Toast.LENGTH_SHORT).show()
-                Firebase.crashlytics.log(e.toString())
-
-                //remove from product document
-                firestore.collection("products")
-                    .document(product.productId)
-                    .delete()
-            }
-    }
-
-    private fun removeFromFavorites(documents : QuerySnapshot){
-        val uid = auth.currentUser!!.uid
-        val product = productViewModel.product
-
-        for (document in documents) {
-            document.reference.delete().addOnSuccessListener {
-                binding.favoriteButton.colorFilter = null
-            }
-        }
-
-        firestore.collection("users")
-            .document(uid)
-            .collection("likedProducts")
-            .whereEqualTo("productId",product.productId)
-            .get()
-            .addOnSuccessListener { documents2 ->
-                for (document in documents2){
-                    document.reference.delete()
-                }
-            }
-
-        binding.favoriteButton.colorFilter = null
-    }
 
     private fun setProductData()
     {

@@ -1,4 +1,4 @@
-package com.example.localtrader.orders
+package com.example.localtrader.repositories
 
 import androidx.lifecycle.MutableLiveData
 import com.example.localtrader.orders.models.OrderRequest
@@ -21,8 +21,6 @@ class OrdersRepository {
     fun loadClientOrders()
     {
         val userId = auth.currentUser?.uid
-
-
 
         if (userId == null) return
 

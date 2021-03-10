@@ -1,16 +1,16 @@
 package com.example.localtrader.orders.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentClientOrdersBinding
-import com.example.localtrader.orders.OrdersRepository
 import com.example.localtrader.orders.adapters.ClientOrdersAdapter
+import com.example.localtrader.repositories.OrdersRepository
 import com.example.localtrader.utils.date.DateComparator
 
 class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener {
