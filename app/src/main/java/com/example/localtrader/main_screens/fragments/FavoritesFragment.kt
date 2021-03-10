@@ -1,38 +1,36 @@
 package com.example.localtrader.main_screens.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentFavoritesBinding
 import com.example.localtrader.main_screens.adapters.FavoriteItemPagerAdapter
-import com.example.localtrader.product.models.LikedProduct
 import com.example.localtrader.product.models.Product
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObjects
-import com.google.firebase.ktx.Firebase
+import com.example.localtrader.viewmodels.FavoritesViewModel
 
-class FavoritesFragment : Fragment() {
+class FavoritesFragment : Fragment(),
+    FavoriteItemPagerAdapter.MyOnClickListener,
+    YesNoDialogFragment.NoticeDialogListener
+{
 
     private lateinit var binding : FragmentFavoritesBinding
+    private lateinit var productForDeletetion : Product
 
-    private lateinit var auth : FirebaseAuth
-    private lateinit var firestore : FirebaseFirestore
+    private val favoritesViewModel : FavoritesViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        auth = Firebase.auth
-        firestore = Firebase.firestore
     }
 
     override fun onCreateView(
@@ -52,30 +50,14 @@ class FavoritesFragment : Fragment() {
     }
 
     private fun viewPager(){
-        val uid = auth.currentUser!!.uid
+        val adapter = FavoriteItemPagerAdapter( mutableListOf(), requireActivity(), this)
+        binding.viewPager.adapter = adapter
 
-        firestore.collection("users")
-            .document(uid)
-            .collection("likedProducts")
-            .get()
-            .addOnSuccessListener { documents ->
-                val list = documents.toObjects<LikedProduct>()
-                val ids = mutableListOf<String>()
-
-                for (item in list){
-                    ids.add(item.productId)
-                }
-
-                firestore.collection("products")
-                    .whereIn("productId",ids)
-                    .get()
-                    .addOnSuccessListener { productsSnapshot ->
-                        val products = productsSnapshot.toObjects<Product>()
-
-                        val adapter = FavoriteItemPagerAdapter(this, products)
-                        binding.viewPager.adapter = adapter
-                    }
-            }
+        //load favorites
+        favoritesViewModel.favorites.observe(viewLifecycleOwner,{ products ->
+            adapter.updateData(products)
+        })
+        favoritesViewModel.loadFavorites()
     }
 
     private fun setUpListeners()
@@ -83,5 +65,24 @@ class FavoritesFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_favoritesFragment_to_timeLineFragment)
         }
+    }
+
+    private fun showAlertDialog(){
+        val dialog = YesNoDialogFragment(resources.getString(R.string.delete_favorite),this)
+        dialog.show(requireActivity().supportFragmentManager, null)
+    }
+
+    override fun onFavoriteButtonClick(product: Product) {
+        Log.d("********","HELLO")
+        productForDeletetion = product
+        showAlertDialog()
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        favoritesViewModel.removeFromFavorites(productForDeletetion)
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        return
     }
 }

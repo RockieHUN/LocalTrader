@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentProductProfileBinding
-import com.example.localtrader.repositories.FavoritesRepository
+import com.example.localtrader.viewmodels.FavoritesViewModel
 import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
@@ -29,11 +29,10 @@ class ProductProfileFragment : DialogFragment() {
     private lateinit var firestore : FirebaseFirestore
     private lateinit var auth : FirebaseAuth
 
-    private lateinit var favoritesRepository : FavoritesRepository
-
     private val productViewModel : ProductViewModel by activityViewModels()
     private val navigationViewModel : NavigationViewModel by activityViewModels()
     private val userViewModel : UserViewModel by activityViewModels()
+    private val favoritesViewModel : FavoritesViewModel by activityViewModels()
 
     private var isLayerVisible : Boolean = true
 
@@ -53,8 +52,6 @@ class ProductProfileFragment : DialogFragment() {
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_profile, container, false)
-
-        favoritesRepository = FavoritesRepository(context, binding.favoriteButton)
 
         setUpVisuals()
         setUpListeners()
@@ -88,7 +85,7 @@ class ProductProfileFragment : DialogFragment() {
         }
 
         binding.favoriteButton.setOnClickListener {
-            favoritesRepository.favoritesAction(productViewModel.product)
+            favoritesViewModel.favoritesAction(productViewModel.product, requireContext(), binding.favoriteButton)
         }
     }
 
@@ -97,7 +94,7 @@ class ProductProfileFragment : DialogFragment() {
             binding.orderButton.visibility = View.GONE
         }
 
-        favoritesRepository.likeButtonVisual(productViewModel.product)
+        favoritesViewModel.likeButtonVisual(productViewModel.product, binding.favoriteButton)
     }
 
 

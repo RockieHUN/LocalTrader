@@ -9,11 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
-import com.example.localtrader.business.models.Business
 import com.example.localtrader.product.models.Product
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import org.w3c.dom.Text
 
 class PopularProductsAdapter (
     private  val listener : OnItemClickListener,
@@ -22,7 +20,6 @@ class PopularProductsAdapter (
         ): RecyclerView.Adapter<PopularProductsAdapter.DataViewHolder>() {
 
     private val storage = Firebase.storage
-
 
 
     inner class DataViewHolder(itemView : View) : RecyclerView.ViewHolder (itemView), View.OnClickListener{
