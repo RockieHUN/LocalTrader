@@ -13,9 +13,6 @@ class OrdersRepository {
     private val auth = Firebase.auth
     private val firestore = Firebase.firestore
 
-
-
-
     val clientOrders : MutableLiveData<List<OrderRequest>> = MutableLiveData()
 
     fun loadClientOrders()
@@ -29,7 +26,6 @@ class OrdersRepository {
             .get()
             .addOnSuccessListener { documents ->
                 clientOrders.value = documents.toObjects()
-                //Log.d("****",clientOrders.value.toString())
             }
             .addOnFailureListener { e->
                 Firebase.crashlytics.log( e.toString())

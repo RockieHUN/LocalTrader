@@ -1,27 +1,22 @@
 package com.example.localtrader.business.fragments
 
-import android.graphics.BlurMaskFilter
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
 import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
+import com.example.localtrader.utils.date.DateComparator
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
@@ -136,7 +131,11 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         val businessId = businessViewModel.businessId
 
         productViewModel.businessProducts.observe(viewLifecycleOwner,{ productList ->
-            val adapter = BusinessProfileAdapter(this,requireActivity(), productList)
+
+            //sort list by date
+            val sortedList = productList.sortedWith(DateComparator).toMutableList()
+
+            val adapter = BusinessProfileAdapter(this,requireActivity(), sortedList)
             binding.recycleView.adapter = adapter
             val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             binding.recycleView.layoutManager = horizontalLayout

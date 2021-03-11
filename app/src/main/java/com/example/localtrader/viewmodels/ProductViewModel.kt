@@ -17,7 +17,6 @@ class ProductViewModel : ViewModel() {
     fun loadBusinessProducts(businessId : String){
         firestore.collection("products")
             .whereEqualTo("businessId",businessId)
-            //.whereNotEqualTo("deleted", "false")
             .get()
             .addOnSuccessListener { documents ->
                 businessProducts.value = documents.toObjects<Product>().toMutableList()

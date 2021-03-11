@@ -1,12 +1,12 @@
 package com.example.localtrader.main_screens.adapters
 
 import android.app.Activity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -29,10 +29,8 @@ class FavoriteItemPagerAdapter(
 
         val productImageView = itemView.findViewById<ImageView>(R.id.product_image)
         val favoritesButton = itemView.findViewById<ImageButton>(R.id.favorite_button)
-        //val productNameView = itemView.findViewById<TextView>(R.id.product_name)
-        //val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
-
-
+        val priceView = itemView.findViewById<TextView>(R.id.price)
+        val descriptionView = itemView.findViewById<TextView>(R.id.product_description)
     }
 
     override fun onCreateViewHolder(
@@ -47,8 +45,10 @@ class FavoriteItemPagerAdapter(
     override fun onBindViewHolder(holder: FavoriteItemPagerAdapter.DataViewHolder, position: Int) {
         val currentItem = items[position]
 
+        holder.priceView.text = currentItem.price.toString()
+        holder.descriptionView.text = currentItem.description
+
         holder.favoritesButton.setOnClickListener {
-            Log.d("****","Here ")
             listener.onFavoriteButtonClick(currentItem)
         }
 
@@ -68,7 +68,6 @@ class FavoriteItemPagerAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateData(newItems: List<Product>) {
-
         val diffUtil = MyDiffUtil(items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         items = newItems

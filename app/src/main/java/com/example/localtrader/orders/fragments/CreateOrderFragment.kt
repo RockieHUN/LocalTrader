@@ -1,12 +1,12 @@
 package com.example.localtrader.orders.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -14,10 +14,6 @@ import com.example.localtrader.R
 import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentCreateOrderBinding
 import com.example.localtrader.orders.models.OrderRequest
-import com.example.localtrader.services.notifications.NotificationRepository
-import com.example.localtrader.services.notifications.models.NotificationData
-import com.example.localtrader.services.notifications.models.PushNotification
-import com.example.localtrader.utils.date.MyDateTime
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -117,8 +113,7 @@ class CreateOrderFragment : Fragment(),
             productName = product.name,
             sum = round((binding.numberPicker.value * productViewModel.product.price)),
             count = binding.numberPicker.value,
-            additionalComment = binding.additionalComment.text.toString(),
-            date = MyDateTime.getCurrentTime()
+            additionalComment = binding.additionalComment.text.toString()
         )
     }
 

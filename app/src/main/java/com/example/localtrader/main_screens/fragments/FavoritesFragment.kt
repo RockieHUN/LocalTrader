@@ -1,7 +1,6 @@
 package com.example.localtrader.main_screens.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -73,7 +72,6 @@ class FavoritesFragment : Fragment(),
     }
 
     override fun onFavoriteButtonClick(product: Product) {
-        Log.d("********","HELLO")
         productForDeletetion = product
         showAlertDialog()
     }

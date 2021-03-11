@@ -1,6 +1,6 @@
 package com.example.localtrader.orders.models
 
-import com.example.localtrader.utils.date.MyDateTime
+import com.example.localtrader.BaseClass
 import com.example.localtrader.utils.constants.OrderStatus
 
 data class OrderRequest (
@@ -14,6 +14,5 @@ data class OrderRequest (
     var sum : Double = 0.0,
     var count : Int = 1,
     var additionalComment : String = "",
-    var date : String = MyDateTime.getCurrentTime(),
     var status : Int = OrderStatus.WAITING_FOR_CONFIRMATION
-        )
+        ) : BaseClass()

@@ -48,7 +48,6 @@ class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener
             binding.recycleView.setHasFixedSize(true)
         })
         ordersRepository.loadClientOrders()
-
     }
 
 

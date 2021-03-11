@@ -10,6 +10,7 @@ import com.example.localtrader.R
 import com.example.localtrader.product.models.LikedBy
 import com.example.localtrader.product.models.LikedProduct
 import com.example.localtrader.product.models.Product
+import com.example.localtrader.utils.date.DateComparator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.QuerySnapshot
@@ -34,7 +35,7 @@ class FavoritesViewModel : ViewModel() {
             .collection("likedProducts")
             .get()
             .addOnSuccessListener { documents ->
-                val list = documents.toObjects<LikedProduct>()
+                val list = documents.toObjects<LikedProduct>().sortedWith(DateComparator)
                 val ids = mutableListOf<String>()
 
                 //get the ids and put them to a list
@@ -48,9 +49,15 @@ class FavoritesViewModel : ViewModel() {
                         .whereIn("productId",ids)
                         .get()
                         .addOnSuccessListener { productsSnapshot ->
-                            val products = productsSnapshot.toObjects<Product>()
+                            var products = productsSnapshot.toObjects<Product>().toMutableList()
+
+                            //sort list by id
+                            products = sortById(ids,products)
                             favorites.value = products.toMutableList()
                         }
+                }
+                else{
+                    favorites.value = mutableListOf()
                 }
 
             }
@@ -177,5 +184,17 @@ class FavoritesViewModel : ViewModel() {
             }
 
         favoriteButton.colorFilter = null
+    }
+
+    private fun sortById(ids : List<String>, products : MutableList<Product> ) : MutableList<Product>{
+        if (ids.size != products.size) return products
+        for (i in products.indices){
+            val id = ids[i]
+            val index = products.indexOfFirst { product -> product.productId == id }
+            val temp = products[i]
+            products[i] = products[index]
+            products[index] = temp
+        }
+        return products
     }
 }
