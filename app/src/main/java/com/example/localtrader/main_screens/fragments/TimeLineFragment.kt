@@ -1,11 +1,9 @@
 package com.example.localtrader.main_screens.fragments
 
-import android.app.ActionBar
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
@@ -91,16 +89,18 @@ class TimeLineFragment : Fragment(),
     //set recommended products recycle view
     private fun recyclePopularProducts()
     {
+        val adapter = PopularProductsAdapter(this, requireActivity(), listOf())
+        binding.recycleRecommendedProducts.adapter = adapter
+        val horizontalLayout = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        binding.recycleRecommendedProducts.layoutManager = horizontalLayout
+        binding.recycleRecommendedProducts.setHasFixedSize(true)
+
         repository.popularProducts.observe(viewLifecycleOwner, { products ->
-            val adapter = PopularProductsAdapter(this, requireActivity(), products)
-            binding.recycleRecommendedProducts.adapter = adapter
-            val horizontalLayout = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            binding.recycleRecommendedProducts.layoutManager = horizontalLayout
-            binding.recycleRecommendedProducts.setHasFixedSize(true)
+            adapter.updateData(products)
         })
         repository.getPopularProducts()
     }
@@ -108,16 +108,18 @@ class TimeLineFragment : Fragment(),
     //set recommended products recycle view
     private fun recycleRecommendedBusinesses()
     {
+        val adapter = RecommendedBusinessesAdapter(this, listOf(), requireActivity())
+        binding.recyclePopularBusinesses.adapter = adapter
+        val horizontalLayout = LinearLayoutManager(
+            context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        binding.recyclePopularBusinesses.layoutManager = horizontalLayout
+        binding.recyclePopularBusinesses.setHasFixedSize(true)
+
         repository.recommendedBusinesses.observe(viewLifecycleOwner, { businesses ->
-            val adapter = RecommendedBusinessesAdapter(this, businesses, requireActivity())
-            binding.recyclePopularBusinesses.adapter = adapter
-            val horizontalLayout = LinearLayoutManager(
-                context,
-                LinearLayoutManager.HORIZONTAL,
-                false
-            )
-            binding.recyclePopularBusinesses.layoutManager = horizontalLayout
-            binding.recyclePopularBusinesses.setHasFixedSize(true)
+           adapter.updateData(businesses)
         })
         repository.getRecommendedBusinesses()
     }

@@ -1,23 +1,25 @@
 package com.example.localtrader.business.adapters
 
 import android.app.Activity
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.product.models.Product
+import com.example.localtrader.utils.diffUtils.ProductDiffUtil
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 class BusinessProfileAdapter (
-    private  val listener : OnItemClickListener,
+    private val listener : OnItemClickListener,
+    private val onProductAddedListener : OnProductAddedListener,
     private val activity : Activity,
-    private var items : MutableList<Product>
+    private var items : List<Product>
 ): RecyclerView.Adapter<BusinessProfileAdapter.DataViewHolder>() {
 
     private val storage = Firebase.storage
@@ -46,6 +48,10 @@ class BusinessProfileAdapter (
         fun myOnClickListener(product : Product)
     }
 
+    interface OnProductAddedListener{
+        fun scrollToPositionZero()
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -69,7 +75,14 @@ class BusinessProfileAdapter (
                     .centerCrop()
                     .into(holder.productImageView)
             }
+    }
 
+    fun updateData(newItems: List<Product>){
+        val diffUtil = ProductDiffUtil(items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        items = newItems
+        diffResult.dispatchUpdatesTo(this)
+        onProductAddedListener.scrollToPositionZero()
     }
 
     override fun getItemCount(): Int = items.size

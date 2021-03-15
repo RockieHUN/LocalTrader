@@ -6,16 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
+import com.example.localtrader.utils.diffUtils.BusinessDiffUtil
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 class RecommendedBusinessesAdapter(
     private  val listener : OnItemClickListener,
-    private var items : MutableList<Business>,
+    private var items : List<Business>,
     private val activity : Activity
 ): RecyclerView.Adapter<RecommendedBusinessesAdapter.DataViewHolder>() {
 
@@ -36,7 +38,6 @@ class RecommendedBusinessesAdapter(
         override fun onClick(v: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                //listener.onItemClick(position)
                 listener.myRecBusinessOnItemClick(items[position])
             }
         }
@@ -72,6 +73,13 @@ class RecommendedBusinessesAdapter(
                     .centerCrop()
                     .into(holder.businessLogoView)
             }
+    }
+
+    fun updateData(newItems: List<Business>){
+        val diffUtil = BusinessDiffUtil(items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        items = newItems
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun getItemCount(): Int = items.size

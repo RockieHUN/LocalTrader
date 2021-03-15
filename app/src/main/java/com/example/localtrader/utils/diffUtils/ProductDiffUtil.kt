@@ -3,7 +3,7 @@ package com.example.localtrader.utils.diffUtils
 import androidx.recyclerview.widget.DiffUtil
 import com.example.localtrader.product.models.Product
 
-class MyDiffUtil(
+class ProductDiffUtil(
     private val oldList : List<Product>,
     private val newList : List<Product>
 ) : DiffUtil.Callback(){
@@ -27,6 +27,7 @@ class MyDiffUtil(
             oldItem.price != newItem.price -> false
             oldItem.description != newItem.description -> false
             oldItem.businessName != newItem.businessName -> false
+            oldItem.date != newItem.date -> false
             else -> true
         }
     }

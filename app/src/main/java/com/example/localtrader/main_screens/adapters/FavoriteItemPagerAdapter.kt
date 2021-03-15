@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.utils.diffUtils.MyDiffUtil
+import com.example.localtrader.utils.diffUtils.ProductDiffUtil
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
@@ -68,7 +68,7 @@ class FavoriteItemPagerAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateData(newItems: List<Product>) {
-        val diffUtil = MyDiffUtil(items, newItems)
+        val diffUtil = ProductDiffUtil(items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         items = newItems
         diffResult.dispatchUpdatesTo(this)

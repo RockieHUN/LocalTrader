@@ -46,6 +46,7 @@
     <string name="create_business"> Új vállalkozás</string>
     <string name="logout"> Kijelentkezés </string>
     <string name="report_bug"> Hiba jelentése</string>
+    <string name="logout_confirmation"> Biztosan kijelentkezik?</string>
 
     <!-- Creating business -->
     <string name="createBusinessHeader1"> Vállakozás profilja </string>

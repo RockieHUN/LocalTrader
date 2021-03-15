@@ -1,6 +1,6 @@
 package com.example.localtrader.main_screens.repositories
 
-import androidx.lifecycle.Lifecycle
+import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.example.localtrader.business.models.Business
@@ -19,11 +19,21 @@ class TimeLineRepository (
     val recommendedBusinesses : MutableLiveData<MutableList<Business>> = MutableLiveData()
     val popularProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
 
+    fun MutableList<Business>.myToString() : String{
 
+        var str = ""
+        for (item in this){
+            str += item.name + " "
+        }
+        return str
+    }
+    
     fun getRecommendedBusinesses()
     {
         val ref = firestore.collection("businesses")
         val key = ref.document().id
+
+        Log.d("********", key)
 
         val businessList = mutableListOf<Business>()
 
@@ -39,6 +49,7 @@ class TimeLineRepository (
                 for (business in list){
                     businessList.add(business)
                 }
+                Log.d("********", businessList.myToString())
 
                 if (list.size < 6)
                 {
@@ -54,10 +65,12 @@ class TimeLineRepository (
                             for (business in list2){
                                 businessList.add(business)
                             }
+                            Log.d("********", businessList.myToString())
 
-                            recommendedBusinesses.value = businessList
+
                         }
                 }
+                recommendedBusinesses.value = businessList
             }
     }
 

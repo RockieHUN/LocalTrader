@@ -1,15 +1,14 @@
 package com.example.localtrader.orders.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentOrderChatBinding
-import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
 import com.example.localtrader.orders.adapters.OrderChatAdapter
 import com.example.localtrader.orders.models.ChatMessage
 
@@ -45,7 +44,7 @@ class OrderChatFragment : Fragment() {
             val message = binding.messageInput.text.toString()
             if (message.isNotEmpty()){
                 binding.messageInput.setText("")
-                adapter.addItem(ChatMessage(type,message))
+                adapter.addItem(ChatMessage(type, message))
                 binding.recycleView.scrollToPosition(adapter.itemCount-1)
 
                 type = if (type==2) 1

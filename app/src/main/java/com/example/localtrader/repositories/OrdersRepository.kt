@@ -14,6 +14,7 @@ class OrdersRepository {
     private val firestore = Firebase.firestore
 
     val clientOrders : MutableLiveData<List<OrderRequest>> = MutableLiveData()
+    val businessOrders : MutableLiveData<List<OrderRequest>> = MutableLiveData()
 
     fun loadClientOrders()
     {
@@ -29,6 +30,18 @@ class OrdersRepository {
             }
             .addOnFailureListener { e->
                 Firebase.crashlytics.log( e.toString())
+            }
+    }
+
+    fun loadBusinessOrders(businessId : String){
+        firestore.collection("orderRequests")
+            .whereEqualTo("businessId", businessId)
+            .get()
+            .addOnSuccessListener { documents ->
+                businessOrders.value = documents.toObjects()
+            }
+            .addOnFailureListener { e->
+                Firebase.crashlytics.log( e.toString() )
             }
     }
 

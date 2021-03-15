@@ -1,11 +1,11 @@
 package com.example.localtrader.product.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,6 +13,7 @@ import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentProductGridBinding
 import com.example.localtrader.product.adapters.ProductGridRecycleAdapter
 import com.example.localtrader.product.models.Product
+import com.example.localtrader.utils.date.DateComparator
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
@@ -52,17 +53,18 @@ class ProductGridFragment : Fragment(),
     private fun setRecycle(){
 
         val businessId = businessViewModel.businessId
+        val adapter = ProductGridRecycleAdapter(this, requireActivity(), listOf())
+        binding.recycleView.adapter = adapter
+        val gridLayout = GridLayoutManager(context,2)
+        binding.recycleView.layoutManager = gridLayout
+        binding.recycleView.setHasFixedSize(true)
 
         productViewModel.businessProducts.observe(viewLifecycleOwner,{ products ->
-            val adapter = ProductGridRecycleAdapter(this, requireActivity(), products)
-            binding.recycleView.adapter = adapter
-            val gridLayout = GridLayoutManager(context,2)
-            binding.recycleView.layoutManager = gridLayout
-            binding.recycleView.setHasFixedSize(true)
+            val sortedList = products.sortedWith(DateComparator)
+            adapter.updateData(sortedList)
         })
 
         productViewModel.loadBusinessProducts(businessId)
-
     }
 
     override fun onItemClick(position: Int) {

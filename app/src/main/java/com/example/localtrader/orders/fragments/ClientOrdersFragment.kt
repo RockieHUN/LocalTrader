@@ -36,16 +36,17 @@ class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener
     }
 
     private fun createRecycle(){
+
+        val adapter = ClientOrdersAdapter(this, listOf(), requireContext())
+        binding.recycleView.adapter = adapter
+        binding.recycleView.layoutManager = LinearLayoutManager(context)
+        binding.recycleView.setHasFixedSize(true)
+
+
         ordersRepository.clientOrders.observe(viewLifecycleOwner,{ orders ->
-
             if (orders.isNotEmpty()) binding.noOrdersYet.visibility = View.GONE
-
             val sortedList = orders.sortedWith(DateComparator)
-
-            val adapter = ClientOrdersAdapter(this, sortedList, requireContext())
-            binding.recycleView.adapter = adapter
-            binding.recycleView.layoutManager = LinearLayoutManager(context)
-            binding.recycleView.setHasFixedSize(true)
+            adapter.updateData(sortedList)
         })
         ordersRepository.loadClientOrders()
     }

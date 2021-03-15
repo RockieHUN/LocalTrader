@@ -6,11 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
+import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.business.models.CreationalBusiness
 import com.example.localtrader.databinding.FragmentProfileBinding
 import com.example.localtrader.viewmodels.BusinessViewModel
@@ -25,7 +27,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(),
+        YesNoDialogFragment.NoticeDialogListener
+{
 
     private lateinit var binding : FragmentProfileBinding
     private lateinit var auth : FirebaseAuth
@@ -108,7 +112,8 @@ class ProfileFragment : Fragment() {
         }
 
         binding.logoutSection.setOnClickListener {
-            logout()
+            val dialog = YesNoDialogFragment(resources.getString(R.string.logout_confirmation),this)
+            dialog.show(requireActivity().supportFragmentManager, null)
         }
 
         binding.bugReportSection.setOnClickListener {
@@ -165,6 +170,14 @@ class ProfileFragment : Fragment() {
         creationViewModel.business = CreationalBusiness()
         auth.signOut()
         findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        logout()
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        return
     }
 
 }

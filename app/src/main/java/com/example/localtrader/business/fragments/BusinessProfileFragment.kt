@@ -28,7 +28,10 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 
-class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickListener {
+class BusinessProfileFragment : Fragment(),
+    BusinessProfileAdapter.OnItemClickListener,
+    BusinessProfileAdapter.OnProductAddedListener
+{
 
     private lateinit var binding : FragmentBusinessProfileBinding
     private lateinit var auth : FirebaseAuth
@@ -130,16 +133,16 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
     private fun loadBusinessProducts() {
         val businessId = businessViewModel.businessId
 
-        productViewModel.businessProducts.observe(viewLifecycleOwner,{ productList ->
+        val adapter = BusinessProfileAdapter(this,this,requireActivity(), listOf())
+        binding.recycleView.adapter = adapter
+        val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.recycleView.layoutManager = horizontalLayout
+        binding.recycleView.setHasFixedSize(true)
 
+        productViewModel.businessProducts.observe(viewLifecycleOwner,{ productList ->
             //sort list by date
             val sortedList = productList.sortedWith(DateComparator).toMutableList()
-
-            val adapter = BusinessProfileAdapter(this,requireActivity(), sortedList)
-            binding.recycleView.adapter = adapter
-            val horizontalLayout = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            binding.recycleView.layoutManager = horizontalLayout
-            binding.recycleView.setHasFixedSize(true)
+            adapter.updateData(sortedList)
         })
 
         productViewModel.loadBusinessProducts(businessId)
@@ -152,7 +155,6 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
             if (business != null)
             {
                 showEditingTools()
-
 
                 binding.businessName.text = business.name
                 binding.businessCategory.text = business.category
@@ -202,5 +204,9 @@ class BusinessProfileFragment : Fragment(), BusinessProfileAdapter.OnItemClickLi
         productViewModel.product = product
         val dialog = ProductProfileFragment()
         dialog.show(requireActivity().supportFragmentManager, null)
+    }
+
+    override fun scrollToPositionZero() {
+        binding.recycleView.scrollToPosition(0)
     }
 }
