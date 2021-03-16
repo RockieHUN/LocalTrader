@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentLoginBinding
-import com.example.localtrader.utils.Animations
+import com.example.localtrader.utils.MySnackBar
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -82,7 +82,7 @@ class LoginFragment : Fragment() {
             stopLoading()
 
             lifecycleScope.launch {
-                Animations.animateError(binding.errorMessageView,"Kérjük, hogy töltsön ki minden mezőt!")
+                MySnackBar.createSnackBar(binding.screenRoot,"Kérjük, hogy töltsön ki minden mezőt!")
             }
             return
         }
@@ -102,7 +102,7 @@ class LoginFragment : Fragment() {
 
                     stopLoading()
                     lifecycleScope.launch {
-                        Animations.animateError(binding.errorMessageView,"Hibás e-mail vagy jelszó!")
+                        MySnackBar.createSnackBar(binding.screenRoot,"Hibás e-mail vagy jelszó!")
                     }
                 }
             }

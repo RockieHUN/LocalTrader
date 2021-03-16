@@ -18,7 +18,7 @@ import com.example.localtrader.R
 import com.example.localtrader.authentication.models.RegistrationUser
 import com.example.localtrader.authentication.models.User
 import com.example.localtrader.databinding.FragmentRegisterBinding
-import com.example.localtrader.utils.Animations
+import com.example.localtrader.utils.MySnackBar
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -90,10 +90,7 @@ class RegisterFragment : Fragment() {
             else
             {
                 stopLoading()
-                lifecycleScope.launch {
-                    Animations.animateError(binding.errorMessageView, errorMessage)
-                }
-
+                MySnackBar.createSnackBar(binding.screenRoot, errorMessage)
             }
         }
 
@@ -169,12 +166,12 @@ class RegisterFragment : Fragment() {
         }
         if (firstname.length < 2 || firstname.length > 40)
         {
-            errorMessage = "Helytelen vezetéknév"
+            errorMessage = "Helytelen vezetéknév!"
             return false
         }
         if (lastname.length < 2 || lastname.length > 40)
         {
-            errorMessage = "Helytelen keresztnév"
+            errorMessage = "Helytelen keresztnév!"
             return false
         }
 
@@ -224,7 +221,7 @@ class RegisterFragment : Fragment() {
                         errorMessage = "A regisztráció ismeretlen okból nem sikerült. Próbálja újra később"
                     }
                     lifecycleScope.launch{
-                        Animations.animateError(binding.errorMessageView, errorMessage)
+                        MySnackBar.createSnackBar(binding.screenRoot, errorMessage)
                     }
 
                 }

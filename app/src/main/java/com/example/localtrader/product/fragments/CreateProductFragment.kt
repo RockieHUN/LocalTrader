@@ -8,11 +8,11 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -20,9 +20,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentCreateProductBinding
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.utils.Animations
-import com.example.localtrader.utils.constants.ImageSize
 import com.example.localtrader.utils.ImageUtils
+import com.example.localtrader.utils.MySnackBar
+import com.example.localtrader.utils.constants.ImageSize
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -246,7 +246,7 @@ class CreateProductFragment : Fragment() {
 
     private fun animateError(msg : String){
         lifecycleScope.launch {
-            Animations.animateError(binding.errorMessageView, msg)
+            MySnackBar.createSnackBar(binding.screenRoot, msg)
         }
     }
 

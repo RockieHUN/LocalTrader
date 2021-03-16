@@ -2,12 +2,12 @@ package com.example.localtrader.business.fragments
 
 import android.os.Bundle
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -15,7 +15,8 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentCreateBusinessSecondBinding
-import com.example.localtrader.utils.*
+import com.example.localtrader.utils.ImageUtils
+import com.example.localtrader.utils.MySnackBar
 import com.example.localtrader.utils.constants.ImageSize
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
@@ -148,7 +149,7 @@ class CreateBusinessSecondFragment : Fragment() {
 
     private fun showErrorMessage(msg: String) {
         lifecycleScope.launch {
-            Animations.animateError(binding.errorMessageView, msg)
+            MySnackBar.createSnackBar(binding.screenRoot, msg)
         }
     }
 
