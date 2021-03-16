@@ -1,10 +1,10 @@
-package com.example.localtrader.authentication
+package com.example.localtrader.authentication.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
@@ -63,29 +63,6 @@ class SplashFragment : Fragment() {
         else{
             findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
         }
-
-        /*
-        val credentials = MySharedPref.getFromSharedPref(requireContext())
-
-        if (credentials.containsKey("email") && credentials.containsKey("password"))
-        {
-            auth.signInWithEmailAndPassword(credentials["email"]!!, credentials["password"]!!)
-                .addOnCompleteListener{ task ->
-                    if (task.isSuccessful)
-                    {
-                        userViewModel.loadUserData(auth.currentUser!!.uid)
-
-                    }
-                    else
-                    {
-                        findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-                    }
-                }
-        }
-        else
-        {
-            findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-        }*/
 
     }
 

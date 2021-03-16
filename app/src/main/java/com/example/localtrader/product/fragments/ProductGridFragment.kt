@@ -13,7 +13,7 @@ import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentProductGridBinding
 import com.example.localtrader.product.adapters.ProductGridRecycleAdapter
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.utils.date.DateComparator
+import com.example.localtrader.utils.comparators.DateComparator
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel

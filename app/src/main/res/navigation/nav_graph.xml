@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.example.localtrader.authentication.SplashFragment"
+        android:name="com.example.localtrader.authentication.fragments.SplashFragment"
         android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash" >
+        tools:layout="@layout/fragment_splash">
         <action
             android:id="@+id/action_splashFragment_to_registerFragment"
             app:destination="@id/registerFragment"
@@ -21,9 +21,9 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.example.localtrader.authentication.RegisterFragment"
+        android:name="com.example.localtrader.authentication.fragments.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" >
+        tools:layout="@layout/fragment_register">
         <action
             android:id="@+id/action_registerFragment_to_finishRegistrationFragment"
             app:destination="@id/finishRegistrationFragment"
@@ -38,12 +38,15 @@
             app:exitAnim="@anim/to_left"
             app:popEnterAnim="@anim/from_left"
             app:popExitAnim="@anim/to_right" />
+        <action
+            android:id="@+id/action_registerFragment_to_userAgreementsFragment"
+            app:destination="@id/userAgreementsFragment" />
     </fragment>
     <fragment
         android:id="@+id/finishRegistrationFragment"
-        android:name="com.example.localtrader.authentication.FinishRegistrationFragment"
+        android:name="com.example.localtrader.authentication.fragments.FinishRegistrationFragment"
         android:label="fragment_finish_registration"
-        tools:layout="@layout/fragment_finish_registration" >
+        tools:layout="@layout/fragment_finish_registration">
         <action
             android:id="@+id/action_finishRegistrationFragment_to_timeLineFragment"
             app:destination="@id/timeLineFragment"
@@ -51,10 +54,10 @@
             app:exitAnim="@anim/to_left" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_login"
         android:id="@+id/loginFragment"
-        android:name="com.example.localtrader.authentication.LoginFragment"
-        android:label="LoginFragment" >
+        android:name="com.example.localtrader.authentication.fragments.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment"
@@ -70,7 +73,7 @@
         android:id="@+id/timeLineFragment"
         android:name="com.example.localtrader.main_screens.fragments.TimeLineFragment"
         android:label="fragment_time_line"
-        tools:layout="@layout/fragment_time_line" >
+        tools:layout="@layout/fragment_time_line">
         <action
             android:id="@+id/action_timeLineFragment_to_businessOrdersFragment"
             app:destination="@id/ordersFragment"
@@ -89,10 +92,10 @@
             app:destination="@id/createOrderFragment" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_profile"
         android:id="@+id/profileFragment"
         android:name="com.example.localtrader.main_screens.fragments.ProfileFragment"
-        android:label="ProfileFragment" >
+        android:label="ProfileFragment"
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_timeLineFragment"
             app:destination="@id/timeLineFragment"
@@ -116,10 +119,10 @@
             app:destination="@id/bugReportFragment" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_orders"
         android:id="@+id/ordersFragment"
         android:name="com.example.localtrader.main_screens.fragments.OrdersFragment"
-        android:label="ClientOrdersFragment" >
+        android:label="ClientOrdersFragment"
+        tools:layout="@layout/fragment_orders">
         <action
             android:id="@+id/action_clientOrdersFragment_to_timeLineFragment"
             app:destination="@id/timeLineFragment"
@@ -127,10 +130,10 @@
             app:exitAnim="@anim/to_right" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_favorites"
         android:id="@+id/favoritesFragment"
         android:name="com.example.localtrader.main_screens.fragments.FavoritesFragment"
-        android:label="FavoritesFragment" >
+        android:label="FavoritesFragment"
+        tools:layout="@layout/fragment_favorites">
         <action
             android:id="@+id/action_favoritesFragment_to_timeLineFragment"
             app:destination="@id/timeLineFragment"
@@ -141,7 +144,7 @@
         android:id="@+id/createBusinessFirstFragment"
         android:name="com.example.localtrader.business.fragments.CreateBusinessFirstFragment"
         android:label="fragment_create_business_first"
-        tools:layout="@layout/fragment_create_business_first" >
+        tools:layout="@layout/fragment_create_business_first">
         <action
             android:id="@+id/action_createBusinessFirstFragment_to_createBusinessSecondFragment"
             app:destination="@id/createBusinessSecondFragment"
@@ -157,7 +160,7 @@
         android:id="@+id/createBusinessSecondFragment"
         android:name="com.example.localtrader.business.fragments.CreateBusinessSecondFragment"
         android:label="fragment_create_business_second"
-        tools:layout="@layout/fragment_create_business_second" >
+        tools:layout="@layout/fragment_create_business_second">
         <action
             android:id="@+id/action_createBusinessSecondFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
@@ -169,15 +172,15 @@
             app:destination="@id/createBusinessFirstFragment" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_statistics"
         android:id="@+id/statisticsFragment"
         android:name="com.example.localtrader.business.fragments.StatisticsFragment"
-        android:label="StatisticsFragment" />
+        android:label="StatisticsFragment"
+        tools:layout="@layout/fragment_statistics" />
     <fragment
-        tools:layout="@layout/fragment_business_profile"
         android:id="@+id/businessProfileFragment"
         android:name="com.example.localtrader.business.fragments.BusinessProfileFragment"
-        android:label="BusinessProfileFragment" >
+        android:label="BusinessProfileFragment"
+        tools:layout="@layout/fragment_business_profile">
         <action
             android:id="@+id/action_businessProfileFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
@@ -201,19 +204,19 @@
             app:destination="@id/orderChatFragment" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_create_product"
         android:id="@+id/createProductFragment"
         android:name="com.example.localtrader.product.fragments.CreateProductFragment"
-        android:label="CreateProductFragment" >
+        android:label="CreateProductFragment"
+        tools:layout="@layout/fragment_create_product">
         <action
             android:id="@+id/action_createProductFragment_to_businessProfileFragment"
             app:destination="@id/businessProfileFragment" />
     </fragment>
     <fragment
-        tools:layout="@layout/fragment_product_grid"
         android:id="@+id/productGridFragment"
         android:name="com.example.localtrader.product.fragments.ProductGridFragment"
-        android:label="ProductGridFragment" >
+        android:label="ProductGridFragment"
+        tools:layout="@layout/fragment_product_grid">
         <action
             android:id="@+id/action_productGridFragment_to_productBottomModalFragment"
             app:destination="@id/productBottomModalFragment" />
@@ -225,16 +228,16 @@
         android:id="@+id/productBottomModalFragment"
         android:name="com.example.localtrader.product.fragments.ProductBottomModalFragment"
         android:label="fragment_product_bottom_modal"
-        tools:layout="@layout/fragment_product_bottom_modal" >
+        tools:layout="@layout/fragment_product_bottom_modal">
         <action
             android:id="@+id/action_productBottomModalFragment_to_productGridFragment"
             app:destination="@id/productGridFragment" />
     </dialog>
     <fragment
-        tools:layout="@layout/fragment_create_order"
         android:id="@+id/createOrderFragment"
         android:name="com.example.localtrader.orders.fragments.CreateOrderFragment"
-        android:label="CreateOrderFragment" >
+        android:label="CreateOrderFragment"
+        tools:layout="@layout/fragment_create_order">
         <action
             android:id="@+id/action_createOrderFragment_to_businessOrdersFragment"
             app:destination="@id/ordersFragment" />
@@ -247,4 +250,10 @@
         android:id="@+id/bugReportFragment"
         android:name="com.example.localtrader.bug.BugReportFragment"
         android:label="BugReportFragment" />
+
+    <fragment
+        android:id="@+id/userAgreementsFragment"
+        android:name="com.example.localtrader.authentication.fragments.UserAgreementsFragment"
+        android:label="fragment_user_agreements"
+        tools:layout="@layout/fragment_user_agreements" />
 </navigation>

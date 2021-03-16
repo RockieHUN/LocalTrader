@@ -10,7 +10,7 @@ import com.example.localtrader.R
 import com.example.localtrader.product.models.LikedBy
 import com.example.localtrader.product.models.LikedProduct
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.utils.date.DateComparator
+import com.example.localtrader.utils.comparators.DateComparator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.QuerySnapshot

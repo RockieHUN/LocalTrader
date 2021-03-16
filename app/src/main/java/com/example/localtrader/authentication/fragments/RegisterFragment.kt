@@ -1,15 +1,16 @@
-package com.example.localtrader.authentication
+package com.example.localtrader.authentication.fragments
 
+import android.graphics.Color
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.util.Patterns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -67,8 +68,6 @@ class RegisterFragment : Fragment() {
 
         setUpVisuals()
         setUpListeners()
-
-
     }
 
     private fun setUpVisuals()
@@ -115,15 +114,21 @@ class RegisterFragment : Fragment() {
             } else requireActivity().finish()
         }
 
+        binding.termsWarning.setOnClickListener{
+            findNavController().navigate(R.id.action_registerFragment_to_userAgreementsFragment)
+        }
+
         //show passwords
         binding.showPasswordButton.setOnClickListener {
             if (pwShown)
             {
-                binding.password.transformationMethod = null
+                binding.password.transformationMethod = PasswordTransformationMethod()
+                binding.showPasswordButton.colorFilter = null
                 pwShown= false
             }
             else{
-                binding.password.transformationMethod = PasswordTransformationMethod()
+                binding.password.transformationMethod = null
+                binding.showPasswordButton.setColorFilter(Color.argb(255, 2, 183, 219))
                 pwShown = true
             }
         }
@@ -131,11 +136,13 @@ class RegisterFragment : Fragment() {
         binding.showPasswordAgainButton.setOnClickListener {
             if (pwAgainShown)
             {
-                binding.passwordAgain.transformationMethod = null
+                binding.passwordAgain.transformationMethod = PasswordTransformationMethod()
+                binding.showPasswordAgainButton.colorFilter = null
                 pwAgainShown= false
             }
             else{
-                binding.passwordAgain.transformationMethod = PasswordTransformationMethod()
+                binding.passwordAgain.transformationMethod = null
+                binding.showPasswordAgainButton.setColorFilter(Color.argb(255, 2, 183, 219))
                 pwAgainShown = true
             }
         }
@@ -192,7 +199,7 @@ class RegisterFragment : Fragment() {
         return true
     }
 
-    //register the user and save data to sharedPref
+    //register the user
     private fun register()
     {
 

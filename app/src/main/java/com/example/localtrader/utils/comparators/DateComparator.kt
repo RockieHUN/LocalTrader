@@ -1,6 +1,7 @@
-package com.example.localtrader.utils.date
+package com.example.localtrader.utils.comparators
 
 import com.example.localtrader.BaseClass
+import com.example.localtrader.utils.date.MyDateTime
 
 class DateComparator {
 

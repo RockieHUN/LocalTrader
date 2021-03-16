@@ -16,7 +16,7 @@ import com.example.localtrader.business.adapters.BusinessProfileAdapter
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
 import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.utils.date.DateComparator
+import com.example.localtrader.utils.comparators.DateComparator
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel

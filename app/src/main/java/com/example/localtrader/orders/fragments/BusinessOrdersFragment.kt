@@ -12,7 +12,7 @@ import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentBusinessOrdersBinding
 import com.example.localtrader.orders.adapters.BusinessOrdersAdapter
 import com.example.localtrader.repositories.OrdersRepository
-import com.example.localtrader.utils.date.DateComparator
+import com.example.localtrader.utils.comparators.OrderComparator
 import com.example.localtrader.viewmodels.UserViewModel
 
 class BusinessOrdersFragment : Fragment(), BusinessOrdersAdapter.OnItemClickListener {
@@ -49,7 +49,7 @@ class BusinessOrdersFragment : Fragment(), BusinessOrdersAdapter.OnItemClickList
             if (orders.isNotEmpty()){
                 binding.noOrdersYet.visibility = View.GONE
             }
-            val sortedList = orders.sortedWith(DateComparator)
+            val sortedList = orders.sortedWith(OrderComparator)
             adapter.updateData(sortedList)
         })
         ordersRepository.loadBusinessOrders(userViewModel.user.value!!.businessId)

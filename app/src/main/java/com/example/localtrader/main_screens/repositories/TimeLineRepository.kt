@@ -66,11 +66,14 @@ class TimeLineRepository (
                                 businessList.add(business)
                             }
                             Log.d("********", businessList.myToString())
-
+                            recommendedBusinesses.value = businessList
 
                         }
                 }
-                recommendedBusinesses.value = businessList
+                else{
+                    recommendedBusinesses.value = businessList
+                }
+
             }
     }
 

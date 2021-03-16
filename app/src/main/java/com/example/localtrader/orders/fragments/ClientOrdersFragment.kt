@@ -11,7 +11,7 @@ import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentClientOrdersBinding
 import com.example.localtrader.orders.adapters.ClientOrdersAdapter
 import com.example.localtrader.repositories.OrdersRepository
-import com.example.localtrader.utils.date.DateComparator
+import com.example.localtrader.utils.comparators.OrderComparator
 
 class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener {
 
@@ -45,7 +45,7 @@ class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener
 
         ordersRepository.clientOrders.observe(viewLifecycleOwner,{ orders ->
             if (orders.isNotEmpty()) binding.noOrdersYet.visibility = View.GONE
-            val sortedList = orders.sortedWith(DateComparator)
+            val sortedList = orders.sortedWith(OrderComparator)
             adapter.updateData(sortedList)
         })
         ordersRepository.loadClientOrders()

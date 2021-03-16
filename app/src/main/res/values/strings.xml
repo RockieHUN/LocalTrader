@@ -22,6 +22,8 @@
     <string name="login_description"> Adja meg a az adatokat amelyekkel regisztrált!</string>
     <string name="isAccountNotExists"> Nincs még fiókja? </string>
     <string name="isAccountNotExists2"> Hozzon létre egyet! </string>
+    <string name="accept_terms"> Elfogadom és regisztrálok </string>
+    <string name="terms_description">A regisztrációval elfogadja a <font fgcolor='#02b7db'>Felhasználási feltételeket</font></string>
 
     <!-- Bottom nav menu -->
     <string name="mainIcon"> Kezdőlap </string>
@@ -100,6 +102,8 @@
     <string name="client_orders"> Saját rendelések</string>
     <string name="business_orders"> Vállalkozás rendelései </string>
     <string name="order_status_not_confirmed">Megerősítésre vár</string>
+    <string name="order_status_accepted">Elfogadva</string>
+    <string name="order_status_declined">Elutasítva</string>
     <string name="no_orders_yet">Jelenleg nincsenek megrendelések!</string>
     <string name="chat_editText_hint"> Gépelje be az üzenetet…</string>
 
@@ -119,5 +123,12 @@
 
 
     <string name="placeholderText">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>
+    <string name="title_activity_get_location">Map</string>
+
+
+
+
+
+
 
 </resources>

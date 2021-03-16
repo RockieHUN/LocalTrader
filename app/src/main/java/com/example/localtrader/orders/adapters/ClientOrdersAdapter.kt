@@ -1,14 +1,17 @@
 package com.example.localtrader.orders.adapters
 
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.localtrader.R
 import com.example.localtrader.orders.models.OrderRequest
+import com.example.localtrader.utils.constants.OrderStatus
 import com.example.localtrader.utils.diffUtils.OrderRequestDiffUtil
 
 class ClientOrdersAdapter (
@@ -20,6 +23,7 @@ class ClientOrdersAdapter (
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
 
+        val item = itemView.findViewById<ConstraintLayout>(R.id.item)
         val productNameView = itemView.findViewById<TextView>(R.id.product_name)
         val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
         val priceView = itemView.findViewById<TextView>(R.id.product_price)
@@ -62,7 +66,19 @@ class ClientOrdersAdapter (
         holder.productCountView.text = currentItem.count.toString()
 
         when(currentItem.status){
-            1 -> holder.statusView.text = context.resources.getString(R.string.order_status_not_confirmed)
+            OrderStatus.WAITING_FOR_CONFIRMATION ->{
+                holder.statusView.text = context.resources.getString(R.string.order_status_not_confirmed)
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_WAITING_FOR_CONFIRMATION))
+            }
+            OrderStatus.ACCEPTED -> {
+                holder.statusView.text = context.resources.getString(R.string.order_status_accepted)
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_ACCEPTED))
+            }
+            OrderStatus.DECLINED -> {
+                holder.statusView.text = context.resources.getString(R.string.order_status_declined)
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_DECLINED))
+            }
+
         }
     }
 
