@@ -8,6 +8,10 @@ data class BugReport(
     var userId: String = "",
     var userFirstName: String = "",
     var userLastName: String = "",
+    var userEmail : String = "",
+
+    var category : String ="",
+    var description : String ="",
 
     var reportId: String = "",
 

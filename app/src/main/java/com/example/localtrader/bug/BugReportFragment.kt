@@ -1,23 +1,53 @@
 package com.example.localtrader.bug
 
+import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import com.example.localtrader.R
+import com.example.localtrader.bug.models.BugReport
 import com.example.localtrader.databinding.FragmentBugReportBinding
+import com.example.localtrader.utils.ImageUtils
+import com.example.localtrader.utils.MySnackBar
+import com.example.localtrader.utils.constants.ImageSize
+import com.example.localtrader.viewmodels.UserViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.crashlytics.ktx.crashlytics
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class BugReportFragment : Fragment() {
 
     private lateinit var binding : FragmentBugReportBinding
+    private lateinit var auth : FirebaseAuth
+    private lateinit var firestore : FirebaseFirestore
+    private lateinit var storage : FirebaseStorage
+
+    private val userViewModel : UserViewModel by activityViewModels()
+
+    private var imageUri : Uri? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        auth = Firebase.auth
+        firestore = Firebase.firestore
+        storage = Firebase.storage
     }
 
     override fun onCreateView(
@@ -27,7 +57,17 @@ class BugReportFragment : Fragment() {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bug_report,container,false)
         setUpVisuals()
+        setSpinner()
+        setUpListeners()
         return binding.root
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 2 && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+            imageUri = data.data!!
+            binding.bugImage.setImageURI(imageUri)
+        }
     }
 
     private fun pickImageFromGallery() {
@@ -39,13 +79,18 @@ class BugReportFragment : Fragment() {
     }
 
     private fun setUpListeners(){
+        binding.selectPicture.setOnClickListener {
+            pickImageFromGallery()
+        }
 
+        binding.submitButton.setOnClickListener {
+            sendErrorReport()
+        }
     }
 
     private fun setUpVisuals(){
         binding.circularProgress.visibility = View.GONE
     }
-
 
     private fun startLoading() {
         binding.circularProgress.visibility = View.VISIBLE
@@ -56,4 +101,110 @@ class BugReportFragment : Fragment() {
         binding.circularProgress.visibility = View.GONE
         binding.submitButton.visibility = View.VISIBLE
     }
+
+    private fun setSpinner()
+    {
+        val spinner = binding.categories
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.bugReport_category_list,
+            R.layout.spinner_item
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+        }
+    }
+
+    private fun sendErrorReport(){
+        startLoading()
+
+        val bugReport = generateBugReport()
+
+        if (bugReport != null){
+            firestore.collection("bugReports")
+                .add(bugReport)
+                .addOnSuccessListener { documentReference ->
+
+                    firestore.collection("bugReports")
+                        .document(documentReference.id)
+                        .update("reportId", documentReference.id)
+                        .addOnSuccessListener {
+
+                            if (imageUri != null){
+                                val resizedImage : MutableLiveData<ByteArray> = MutableLiveData()
+                                resizedImage.observe(viewLifecycleOwner,{ byteArray ->
+                                    storage.reference.child("bugReports/${documentReference.id}").putBytes(byteArray)
+                                        .addOnSuccessListener {
+                                            stopLoading()
+                                            MySnackBar.createSnackBar(binding.screenRoot,resources.getString(R.string.thanks_the_report))
+                                        }
+                                        .addOnFailureListener{
+                                            stopLoading()
+                                            showErrorToUser()
+                                        }
+                                })
+
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    resizedImage.postValue( ImageUtils.resizeImageUriTo(
+                                        requireActivity(),
+                                        imageUri!!,
+                                        ImageSize.BUG_REPORT_IMAGE_SIZE
+                                    ))
+                                }
+                            }
+
+                            else{
+                                stopLoading()
+                                MySnackBar.createSnackBar(binding.screenRoot,resources.getString(R.string.thanks_the_report))
+                            }
+
+                        }
+                        .addOnFailureListener {
+                            stopLoading()
+                            showErrorToUser()
+                        }
+                }
+                .addOnFailureListener {
+                    stopLoading()
+                    showErrorToUser()
+                }
+        }
+        else{
+            stopLoading()
+        }
+    }
+
+    private fun generateBugReport() : BugReport?{
+
+        val category = binding.categories.selectedItem.toString()
+        val description = binding.bugDescription.text.toString()
+
+        if (description.isNotEmpty()){
+            return try{
+                val bugReport = BugReport(
+                    userId = auth.currentUser!!.uid,
+                    userFirstName = userViewModel.user.value!!.firstname,
+                    userLastName = userViewModel.user.value!!.lastname,
+                    userEmail = userViewModel.user.value!!.email,
+                    category = category,
+                    description = description
+                )
+                bugReport
+            } catch (e : Exception) {
+                Firebase.crashlytics.log(e.toString())
+                null
+            }
+        }
+        else{
+            MySnackBar.createSnackBar(binding.screenRoot,resources.getString(R.string.error_missing_description))
+            return null
+        }
+    }
+
+    private fun showErrorToUser(){
+        val error = resources.getString(R.string.error_unknown)
+        MySnackBar.createSnackBar(binding.screenRoot,error)
+    }
+
+
 }

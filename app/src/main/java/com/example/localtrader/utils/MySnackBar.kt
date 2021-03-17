@@ -9,9 +9,9 @@ class MySnackBar {
 
         fun createSnackBar(view : View, message : String){
 
-            val snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-            snackbar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
-            snackbar.show()
+            val snackBar = Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+            snackBar.animationMode = Snackbar.ANIMATION_MODE_SLIDE
+            snackBar.show()
         }
 
 

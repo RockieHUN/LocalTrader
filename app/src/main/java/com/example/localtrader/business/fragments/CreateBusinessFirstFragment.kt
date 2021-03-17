@@ -101,7 +101,7 @@ class CreateBusinessFirstFragment : Fragment() {
     }
 
     private fun setSavedData(){
-        val list = resources.getStringArray(R.array.category_list)
+        val list = resources.getStringArray(R.array.business_category_list)
         val index = list.indexOf(creationViewModel.business.category)
 
         binding.categories.setSelection(index)
@@ -151,7 +151,7 @@ class CreateBusinessFirstFragment : Fragment() {
         val spinner = binding.categories
         ArrayAdapter.createFromResource(
             requireContext(),
-            R.array.category_list,
+            R.array.business_category_list,
             R.layout.spinner_item
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

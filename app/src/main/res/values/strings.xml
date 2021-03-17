@@ -3,6 +3,11 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!--Error texts -->
+    <string name="error_unknown"> Ismeretlen hiba miatt nem sikerült a művelet!</string>
+    <string name="error_missing_image"> A kép feltöltése kötelező!</string>
+    <string name="error_missing_description"> A leírás kötelező!</string>
+
 
     <!-- Authentication -->
     <string name="registration_text"> Regisztráció </string>
@@ -117,9 +122,10 @@
     <!-- Bug report -->
     <string name="bug_report_header">Hiba jelentése</string>
     <string name="bug_report_description"> Kérjük jelezze, ha bármilyen hibát észlelt az applikáció működésében vagy megjelenésében.</string>
-    <string name="type_of_bug">Hiba típusa</string>
+    <string name="type_of_bug">Hiba típusa:</string>
     <string name="bug_description">Leírás</string>
     <string name="bug_description_hint">Írja le részletesen a tapasztalt hibát…</string>
+    <string name="thanks_the_report"> Köszönjük a visszajelzést!</string>
 
 
     <string name="placeholderText">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>

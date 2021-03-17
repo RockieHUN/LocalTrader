@@ -29,6 +29,7 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -200,12 +201,12 @@ class CreateBusinessSecondFragment : Fragment() {
                                 })
 
                                 //resize image
-                                lifecycleScope.launch {
-                                    resizedImage.value = ImageUtils.resizeImageUriTo(
+                                lifecycleScope.launch(Dispatchers.IO) {
+                                    resizedImage.postValue(ImageUtils.resizeImageUriTo(
                                         requireActivity(),
                                         creationViewModel.business.imageUri!!,
                                         ImageSize.BUSINESS_PROFILE_SIZE
-                                    )
+                                    ))
                                 }
                             }
                             .addOnFailureListener { e->
