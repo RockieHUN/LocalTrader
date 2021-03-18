@@ -1,20 +1,27 @@
 package com.example.localtrader.main_screens.fragments
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.localtrader.NoticeDialog
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentTimeLineBinding
+import com.example.localtrader.location.LocationFunctions
 import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
 import com.example.localtrader.main_screens.adapters.RecommendedBusinessesAdapter
 import com.example.localtrader.main_screens.repositories.TimeLineRepository
@@ -24,6 +31,7 @@ import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -33,7 +41,8 @@ import kotlin.concurrent.timerTask
 
 class TimeLineFragment : Fragment(),
     PopularProductsAdapter.OnItemClickListener,
-    RecommendedBusinessesAdapter.OnItemClickListener
+    RecommendedBusinessesAdapter.OnItemClickListener,
+    NoticeDialog.OnDismissListener
 {
     private lateinit var binding : FragmentTimeLineBinding
     private lateinit var auth : FirebaseAuth
@@ -44,6 +53,8 @@ class TimeLineFragment : Fragment(),
     private val navigationViewModel : NavigationViewModel by activityViewModels()
 
     private lateinit var repository : TimeLineRepository
+
+    private val locationRequestCode = 1000
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,9 +97,71 @@ class TimeLineFragment : Fragment(),
         userViewModel.removeAllObserver(viewLifecycleOwner)
     }
 
+    private fun setUpListeners() {
+        var callbackCounter = 0
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if (callbackCounter == 0) {
+                Toast.makeText(requireContext(), resources.getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
+                Timer().schedule(timerTask {
+                    callbackCounter = 0
+                }, 2000)
+                callbackCounter++
+            } else requireActivity().finish()
+        }
+
+        binding.profilePicture.setOnClickListener {
+            findNavController().navigate(R.id.action_timeLineFragment_to_profileFragment)
+        }
+    }
+
+    // ------------------------------------------------- LOCATION ---------------------------------------------------
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (requestCode == locationRequestCode){
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            ) {
+                val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+                locationClient.lastLocation.addOnSuccessListener { location ->
+                    saveLocation(location.longitude, location.latitude)
+                }
+            }
+        }
+        else{
+            //
+        }
+    }
+
+
+    override fun onDismiss(dialog: DialogFragment) {
+        dialog.dismiss()
+    }
+
+    private fun saveLocation(longitude : Double, latitude : Double){
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+
+            LocationFunctions.requestLocationPermission(requireActivity(), locationRequestCode)
+
+            Log.d("******", "$latitude $longitude")
+        }
+        else{
+            val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+            locationClient.lastLocation.addOnSuccessListener { location ->
+                Log.d("******", "$latitude $longitude")
+            }
+        }
+
+
+    }
+
+    // ---------------------------------------------------- FEED - Recycle Views --------------------------------------------
+
     //set recommended products recycle view
-    private fun recyclePopularProducts()
-    {
+    private fun recyclePopularProducts() {
         val adapter = PopularProductsAdapter(this, requireActivity(), listOf())
         binding.recycleRecommendedProducts.adapter = adapter
         val horizontalLayout = LinearLayoutManager(
@@ -106,8 +179,7 @@ class TimeLineFragment : Fragment(),
     }
 
     //set recommended products recycle view
-    private fun recycleRecommendedBusinesses()
-    {
+    private fun recycleRecommendedBusinesses() {
         val adapter = RecommendedBusinessesAdapter(this, listOf(), requireActivity())
         binding.recyclePopularBusinesses.adapter = adapter
         val horizontalLayout = LinearLayoutManager(
@@ -124,8 +196,7 @@ class TimeLineFragment : Fragment(),
         repository.getRecommendedBusinesses()
     }
 
-    private fun setUpVisuals()
-    {
+    private fun setUpVisuals() {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
 
@@ -134,26 +205,9 @@ class TimeLineFragment : Fragment(),
         dialog.show(requireActivity().supportFragmentManager, null)
     }
 
-    private fun setUpListeners()
-    {
-        var callbackCounter = 0
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (callbackCounter == 0) {
-                Toast.makeText(requireContext(), resources.getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-                Timer().schedule(timerTask {
-                    callbackCounter = 0
-                }, 2000)
-                callbackCounter++
-            } else requireActivity().finish()
-        }
 
-        binding.profilePicture.setOnClickListener {
-            findNavController().navigate(R.id.action_timeLineFragment_to_profileFragment)
-        }
-    }
 
-    private fun showUserData()
-    {
+    private fun showUserData() {
         userViewModel.downloadUri.observe(viewLifecycleOwner, { uri ->
             Glide.with(requireContext())
                 .load(uri)
@@ -169,8 +223,7 @@ class TimeLineFragment : Fragment(),
         })
     }
 
-    private fun setGreeting()
-    {
+    private fun setGreeting() {
         val greeting = binding.greeting
         val time = LocalDateTime.now()
 

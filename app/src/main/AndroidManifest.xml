@@ -28,10 +28,15 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".location.GetLocationActivity"
-            android:label="@string/title_activity_get_location" />
 
+
+
+        <!-- SERVICES -->
+
+
+
+
+        <!-- FIREBASE MESSAGING -->
         <service
             android:name=".services.FirebaseService"
             android:permission="com.google.android.c2dm.permission.SEND">
@@ -41,6 +46,14 @@
             </intent-filter>
         </service>
 
+
+        <!-- ACTIVITIES -->
+        <activity
+            android:name=".location.GetLocationActivity"
+            android:label="@string/title_activity_get_location" />
+
+
+        <!-- MAIN ACTIVITY -->
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">
@@ -50,6 +63,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

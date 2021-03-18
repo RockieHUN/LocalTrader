@@ -127,6 +127,8 @@
     <string name="bug_description_hint">Írja le részletesen a tapasztalt hibát…</string>
     <string name="thanks_the_report"> Köszönjük a visszajelzést!</string>
 
+    <string name="ok"> OK </string>
+
 
     <string name="placeholderText">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>
     <string name="title_activity_get_location">Map</string>
