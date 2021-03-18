@@ -22,7 +22,7 @@ class DataStoreRepository(private val context : Context) {
         val locationNoticeDialog = booleanPreferencesKey("locationNoticeDialog")
     }
 
-    suspend fun locationNoticeShown(){
+    suspend fun locationNoticeShowed(){
         context.dataStore.edit { preference ->
             preference[PreferenceKeys.locationNoticeDialog] = true
         }

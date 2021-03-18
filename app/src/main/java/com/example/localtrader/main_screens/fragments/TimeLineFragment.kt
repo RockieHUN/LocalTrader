@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -21,16 +22,13 @@ import com.example.localtrader.NoticeDialog
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentTimeLineBinding
-import com.example.localtrader.location.LocationFunctions
+import com.example.localtrader.location.PermissionRequests
 import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
 import com.example.localtrader.main_screens.adapters.RecommendedBusinessesAdapter
 import com.example.localtrader.main_screens.repositories.TimeLineRepository
 import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.viewmodels.BusinessViewModel
-import com.example.localtrader.viewmodels.NavigationViewModel
-import com.example.localtrader.viewmodels.ProductViewModel
-import com.example.localtrader.viewmodels.UserViewModel
+import com.example.localtrader.viewmodels.*
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -51,6 +49,7 @@ class TimeLineFragment : Fragment(),
     private val businessViewModel : BusinessViewModel by activityViewModels()
     private val productViewModel : ProductViewModel by activityViewModels()
     private val navigationViewModel : NavigationViewModel by activityViewModels()
+    private lateinit var dataStoreViewModel : DataStoreViewModel
 
     private lateinit var repository : TimeLineRepository
 
@@ -60,6 +59,7 @@ class TimeLineFragment : Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        dataStoreViewModel = ViewModelProvider(requireActivity()).get(DataStoreViewModel::class.java)
         auth = Firebase.auth
         navigationViewModel.origin = 1
     }
@@ -85,6 +85,7 @@ class TimeLineFragment : Fragment(),
 
         recyclePopularProducts()
         recycleRecommendedBusinesses()
+        locationData()
     }
 
     override fun onResume() {
@@ -120,38 +121,43 @@ class TimeLineFragment : Fragment(),
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == locationRequestCode){
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
             ) {
-                val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-                locationClient.lastLocation.addOnSuccessListener { location ->
-                    saveLocation(location.longitude, location.latitude)
-                }
+               saveLocation()
             }
         }
-        else{
-            //
-        }
     }
 
+    private fun locationData(){
+        /*dataStoreViewModel.locationDialogIsShown.observe(viewLifecycleOwner, { isShowed ->
+            if (isShowed){
+                saveLocation()
+            }
+            else{
+                val noticeDialog = NoticeDialog(resources.getString(R.string.notification_location_data), this)
+                dataStoreViewModel.locationNotificationShowed()
+                noticeDialog.show(requireActivity().supportFragmentManager,null)
+            }
+        })*/
+        saveLocation()
+    }
 
-    override fun onDismiss(dialog: DialogFragment) {
+    override fun onNoticeDismiss(dialog: DialogFragment) {
         dialog.dismiss()
+        saveLocation()
     }
 
-    private fun saveLocation(longitude : Double, latitude : Double){
+    private fun saveLocation(){
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-
-            LocationFunctions.requestLocationPermission(requireActivity(), locationRequestCode)
-
-            Log.d("******", "$latitude $longitude")
+            PermissionRequests.requestLocationPermission(requireActivity(), locationRequestCode)
         }
         else{
             val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
             locationClient.lastLocation.addOnSuccessListener { location ->
-                Log.d("******", "$latitude $longitude")
+                Log.d("******", "${location.latitude} ${location.longitude}")
             }
         }
 

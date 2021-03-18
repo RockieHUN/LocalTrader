@@ -16,7 +16,7 @@ class NoticeDialog(
             val builder = AlertDialog.Builder(it)
             builder.setMessage(message)
                 .setPositiveButton(R.string.ok){ dialog, id ->
-                    dismissListener.onDismiss(this)
+                    dismissListener.onNoticeDismiss(this)
                 }
 
             builder.create()
@@ -26,6 +26,6 @@ class NoticeDialog(
 
 
     interface OnDismissListener {
-        fun onDismiss(dialog : DialogFragment)
+        fun onNoticeDismiss(dialog : DialogFragment)
     }
 }
