@@ -1,16 +1,18 @@
 package com.example.localtrader.viewmodels
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.localtrader.authentication.models.User
 import com.example.localtrader.business.models.Business
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UserViewModel : ViewModel() {
 
@@ -67,6 +69,18 @@ class UserViewModel : ViewModel() {
             .addOnSuccessListener { uri ->
                 downloadUri.value = uri
             }
+    }
+
+    fun saveLocationData(longitude : Double, latitude : Double, uid: String){
+        viewModelScope.launch (Dispatchers.IO){
+
+            firestore.collection("users")
+                .document(uid)
+                .collection("userLocation")
+                .document("userLocation")
+                .set(mapOf("longitude" to longitude, "latitude" to  latitude))
+
+        }
     }
 
 

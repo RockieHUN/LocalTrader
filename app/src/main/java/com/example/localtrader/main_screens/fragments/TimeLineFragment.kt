@@ -3,7 +3,6 @@ package com.example.localtrader.main_screens.fragments
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -157,12 +156,12 @@ class TimeLineFragment : Fragment(),
         else{
             val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
             locationClient.lastLocation.addOnSuccessListener { location ->
-                Log.d("******", "${location.latitude} ${location.longitude}")
+                userViewModel.saveLocationData(location.longitude, location.latitude, auth.currentUser!!.uid)
             }
         }
-
-
     }
+
+
 
     // ---------------------------------------------------- FEED - Recycle Views --------------------------------------------
 
