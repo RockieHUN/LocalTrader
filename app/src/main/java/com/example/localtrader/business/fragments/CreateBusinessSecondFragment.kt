@@ -1,6 +1,8 @@
 package com.example.localtrader.business.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentCreateBusinessSecondBinding
+import com.example.localtrader.location.BusinessLocationActivity
 import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.utils.MySnackBar
 import com.example.localtrader.utils.constants.ImageSize
@@ -34,6 +37,7 @@ import kotlinx.coroutines.launch
 
 
 class CreateBusinessSecondFragment : Fragment() {
+    private val LOCATION_REQUEST_CODE = 3
 
     private lateinit var binding: FragmentCreateBusinessSecondBinding
     private lateinit var auth: FirebaseAuth
@@ -45,6 +49,7 @@ class CreateBusinessSecondFragment : Fragment() {
     private val businessViewModel : BusinessViewModel by activityViewModels()
 
     private lateinit var uid: String
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +107,8 @@ class CreateBusinessSecondFragment : Fragment() {
 
     private fun setUpListeners() {
         binding.submitButton.setOnClickListener {
-            submitData()
+            startLocationActivity()
+
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -112,6 +118,22 @@ class CreateBusinessSecondFragment : Fragment() {
             creationViewModel.business.instagram_link = binding.instagramInput.text.toString()
             findNavController().navigate(R.id.action_createBusinessSecondFragment_to_createBusinessFirstFragment)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LOCATION_REQUEST_CODE && data != null && data.data != null){
+            //submitData()
+            Log.d("***",data.data.toString())
+            Log.d("***", data.getStringExtra("longitude").toString())
+            Log.d("***", data.getStringExtra("latitude").toString())
+        }
+    }
+
+    private fun startLocationActivity(){
+        val intent = Intent(requireContext(), BusinessLocationActivity::class.java)
+        startActivityForResult(intent, LOCATION_REQUEST_CODE)
     }
 
     private fun submitData() {
@@ -237,38 +259,6 @@ class CreateBusinessSecondFragment : Fragment() {
         binding.submitButton.visibility = View.VISIBLE
     }
 
-    /* private fun startAutocompleteActivity()
-     {
-         Places.initialize(requireContext(), Secrets.placesKey)
-         Places.createClient(requireContext())
-
-         val fields = listOf(Place.Field.ID, Place.Field.NAME)
-         val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-             .build(requireContext())
-         startActivityForResult(intent, 1)
-     }
-
-     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-         if (requestCode == 1) {
-             when (resultCode) {
-                 Activity.RESULT_OK -> {
-                     data?.let {
-                         val place = Autocomplete.getPlaceFromIntent(data)
-                         Log.d("*********", "Place: ${place.name}, ${place.id}")
-                         binding.locationInput.text = place.name
-                     }
-                 }
-                 AutocompleteActivity.RESULT_ERROR -> {
-                     Log.d("********","Error")
-                 }
-                 Activity.RESULT_CANCELED -> {
-                     Log.d("******","CANCELLLED")
-                 }
-             }
-             return
-         }
-         super.onActivityResult(requestCode, resultCode, data)
-     }*/
 
 
 }

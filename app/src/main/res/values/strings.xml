@@ -133,12 +133,12 @@
 
 
     <string name="placeholderText">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book</string>
-    <string name="title_activity_get_location">Map</string>
 
-
-
-
-
+    <!-- MAP -->
+    <string name="done"> Kész </string>
+    <string name="title_activity_business_location">Map</string>
+    <string name="map_header_description"> A vállalkozás létrehozásához szükségünk van a helyadatokra. Ez más felhasználók számára nem publikus és csak arra használjuk fel, hogy főként olyan felhasználók számára ajánljuk a vállalkozást, akik a közelben vannak. Módosíthatja az általunk kiválasztott koordinátákat.</string>
+    <string name="map_header"> Helyadatok</string>
 
 
 </resources>
