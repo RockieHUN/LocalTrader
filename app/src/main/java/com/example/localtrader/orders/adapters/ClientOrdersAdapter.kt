@@ -31,6 +31,7 @@ class ClientOrdersAdapter (
         val statusView = itemView.findViewById<TextView>(R.id.status)
         val productCountView = itemView.findViewById<TextView>(R.id.count)
 
+
         init {
             itemView.setOnClickListener(this)
         }
