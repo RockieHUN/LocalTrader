@@ -11,7 +11,7 @@ class OrderStatus {
 
         //colors
         const val COLOR_WAITING_FOR_CONFIRMATION = "#b302db"
-        const val COLOR_ACCEPTED = "#02db3c"
-        const val COLOR_DECLINED = "#db0235"
+        const val COLOR_ACCEPTED = "#0fba3d"
+        const val COLOR_DECLINED = "#ba163d"
     }
 }

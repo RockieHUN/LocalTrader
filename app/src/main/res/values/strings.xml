@@ -7,6 +7,7 @@
     <string name="error_unknown"> Ismeretlen hiba miatt nem sikerült a művelet!</string>
     <string name="error_missing_image"> A kép feltöltése kötelező!</string>
     <string name="error_missing_description"> A leírás kötelező!</string>
+    <string name="error_missing_location"> A vállalkozás létrehozásához szükséges a helyadatok megadása! </string>
 
     <!--Notification Dialog texts -->
     <string name="notification_location_data">Az alkalmazás helyadatokat használ annak érdekében, hogy jobb szolgáltatásokat nyújtson, valamint személyre szabott ajánlásokat jelenítsen meg. A helyadatok felhasználását később is engedélyezheti az eszköz beállításaiban.</string>

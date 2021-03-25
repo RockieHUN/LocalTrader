@@ -28,7 +28,8 @@ class BusinessDiffUtil(
             oldItem.description != newItem.description -> false
             oldItem.email != newItem.email -> false
             oldItem.telephone != newItem.telephone -> false
-            oldItem.location != newItem.location -> false
+            oldItem.longitude != newItem.longitude -> false
+            oldItem.latitude != newItem.latitude -> false
             oldItem.facebook_link != newItem.facebook_link -> false
             oldItem.instagram_link != newItem.instagram_link -> false
             else -> true

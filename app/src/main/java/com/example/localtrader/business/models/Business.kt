@@ -10,7 +10,8 @@ class Business (
     var description : String = "",
     var email : String ="",
     var telephone : String = "",
-    var location : String = "",
+    var longitude : Double = 0.0,
+    var latitude : Double = 0.0,
     var facebook_link : String = "",
     var instagram_link : String= "",
     var isPromoted : Boolean = false

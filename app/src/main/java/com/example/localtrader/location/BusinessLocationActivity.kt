@@ -50,7 +50,6 @@ class BusinessLocationActivity : AppCompatActivity(), OnMapReadyCallback {
             this.location.value = it
         }
 
-
         val zoomLevel = 15f
 
         location.observe(this,{

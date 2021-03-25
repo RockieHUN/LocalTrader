@@ -16,7 +16,8 @@ class CreateBusinessViewModel : ViewModel() {
             description = business.description,
             email = business.email,
             telephone = business.telephone,
-            location = business.location,
+            longitude = business.longitude,
+            latitude = business.latitude,
             facebook_link = business.facebook_link,
             instagram_link = business.instagram_link
         )

@@ -115,7 +115,7 @@ class CreateBusinessFirstFragment : Fragment() {
         val category = binding.categories.selectedItem.toString()
         val description = binding.businessDescription.text.toString()
 
-        val error = detectError(name, category, description)
+        val error = detectError(name,description)
 
         when (error){
             0 -> {
@@ -138,7 +138,7 @@ class CreateBusinessFirstFragment : Fragment() {
 
     }
 
-    private fun detectError(name : String, category : String, description: String) : Int
+    private fun detectError(name : String,  description: String) : Int
     {
         return if (creationViewModel.business.imageUri == null) 1
         else if (name.length < 3) 2

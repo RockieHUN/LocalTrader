@@ -93,7 +93,6 @@ class CreateBusinessSecondFragment : Fragment() {
         if (user != null) {
             binding.emailInput.setText(user.email)
             binding.telephoneInput.setText(creationViewModel.business.telephone)
-            binding.locationInput.setText(creationViewModel.business.location)
             binding.facebookInput.setText(creationViewModel.business.facebook_link)
             binding.instagramInput.setText(creationViewModel.business.instagram_link)
         }
@@ -107,13 +106,11 @@ class CreateBusinessSecondFragment : Fragment() {
 
     private fun setUpListeners() {
         binding.submitButton.setOnClickListener {
-            startLocationActivity()
-
+            submitData()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             creationViewModel.business.telephone = binding.telephoneInput.text.toString()
-            creationViewModel.business.location = binding.locationInput.text.toString()
             creationViewModel.business.facebook_link = binding.facebookInput.text.toString()
             creationViewModel.business.instagram_link = binding.instagramInput.text.toString()
             findNavController().navigate(R.id.action_createBusinessSecondFragment_to_createBusinessFirstFragment)
@@ -123,11 +120,27 @@ class CreateBusinessSecondFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == LOCATION_REQUEST_CODE && data != null && data.data != null){
-            //submitData()
-            Log.d("***",data.data.toString())
-            Log.d("***", data.getStringExtra("longitude").toString())
-            Log.d("***", data.getStringExtra("latitude").toString())
+        startLoading()
+
+        if (requestCode == LOCATION_REQUEST_CODE && data != null ){
+
+            val longitude = data.getDoubleExtra("longitude", 0.0)
+            val latitude = data.getDoubleExtra( "latitude",0.0)
+            if (longitude != 0.0 && latitude != 0.0){
+                creationViewModel.business.latitude = latitude
+                creationViewModel.business.longitude = longitude
+
+                val business = creationViewModel.convert(uid)
+                saveDataToDatabase(business)
+            }
+            else{
+                stopLoading()
+                MySnackBar.createSnackBar(binding.screenRoot, resources.getString(R.string.error_missing_location))
+            }
+        }
+        else{
+            stopLoading()
+            MySnackBar.createSnackBar(binding.screenRoot, resources.getString(R.string.error_missing_location))
         }
     }
 
@@ -139,11 +152,10 @@ class CreateBusinessSecondFragment : Fragment() {
     private fun submitData() {
         val email = binding.emailInput.text.toString()
         val telephone = binding.telephoneInput.text.toString()
-        val location = binding.locationInput.text.toString()
         val facebook = binding.facebookInput.text.toString()
         val instagram = binding.instagramInput.text.toString()
 
-        val error = validateData(email, telephone, location)
+        val error = validateData(email, telephone)
 
         when (error) {
             1 -> showErrorMessage("Helytelen e-mail!!")
@@ -152,21 +164,16 @@ class CreateBusinessSecondFragment : Fragment() {
             0 -> {
                 creationViewModel.business.email = email
                 creationViewModel.business.telephone = telephone
-                creationViewModel.business.location = location
                 creationViewModel.business.facebook_link = facebook
                 creationViewModel.business.instagram_link = instagram
-
-                val business = creationViewModel.convert(uid)
-                //userViewModel.userBusiness.value = business
-                saveDataToDatabase(business)
+                startLocationActivity()
             }
         }
     }
 
-    private fun validateData(email: String, telephone: String, location: String): Int {
+    private fun validateData(email: String, telephone: String): Int {
         return if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) 1
         else if (!Patterns.PHONE.matcher(telephone).matches()) 2
-        else if (location.isEmpty()) 3
         else 0
     }
 
@@ -177,7 +184,6 @@ class CreateBusinessSecondFragment : Fragment() {
     }
 
     private fun saveDataToDatabase(business: Business) {
-        startLoading()
 
         //save business data to firestore
         database.collection("businesses")
