@@ -76,6 +76,7 @@
     <string name="add_new_product"> Új termék </string>
     <string name="business_rating"> Értékelés </string>
     <string name="business_product_number"> Termékszám </string>
+    <string name="business_no_items"> Nincs megjeleníthető termék. Nézzen vissza később! </string>
 
 
     <!-- Creating product -->
@@ -117,6 +118,7 @@
 
     <!-- Favorites -->
     <string name="delete_favorite"> Bíztosan törli a kedvencek közül? </string>
+    <string name="favorites_no_items"> Jelenleg nincs egy termék sem elmentve a kedvencei közé! </string>
 
     <!-- Statistics -->
     <string name="statistics"> Statisztikák </string>

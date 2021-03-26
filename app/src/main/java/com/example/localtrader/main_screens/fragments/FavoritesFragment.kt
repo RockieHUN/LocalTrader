@@ -54,6 +54,12 @@ class FavoritesFragment : Fragment(),
 
         //load favorites
         favoritesViewModel.favorites.observe(viewLifecycleOwner,{ products ->
+            if (products.isEmpty()){
+                binding.noItemsHolder.visibility = View.VISIBLE
+            }
+            else{
+                binding.noItemsHolder.visibility = View.GONE
+            }
             adapter.updateData(products)
         })
         favoritesViewModel.loadFavorites()

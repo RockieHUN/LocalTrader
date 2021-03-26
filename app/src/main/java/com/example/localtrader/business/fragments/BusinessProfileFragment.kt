@@ -140,6 +140,12 @@ class BusinessProfileFragment : Fragment(),
         binding.recycleView.setHasFixedSize(true)
 
         productViewModel.businessProducts.observe(viewLifecycleOwner,{ productList ->
+            if (productList.isEmpty()){
+                binding.noItemsHolder.visibility = View.VISIBLE
+            }
+            else{
+                binding.noItemsHolder.visibility = View.GONE
+            }
             //sort list by date
             val sortedList = productList.sortedWith(DateComparator).toMutableList()
             adapter.updateData(sortedList)
