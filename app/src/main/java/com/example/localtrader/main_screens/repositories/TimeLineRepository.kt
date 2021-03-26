@@ -4,11 +4,14 @@ import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.example.localtrader.business.models.Business
+import com.example.localtrader.location.MyLocation
+import com.example.localtrader.main_screens.api.RetrofitInstance
 import com.example.localtrader.product.models.Product
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import retrofit2.Response
 
 class TimeLineRepository (
     private val lifecycleOwner: LifecycleOwner
@@ -16,8 +19,16 @@ class TimeLineRepository (
 
     private var firestore : FirebaseFirestore = Firebase.firestore
 
-    val recommendedBusinesses : MutableLiveData<MutableList<Business>> = MutableLiveData()
+    val localBusinesses : MutableLiveData<List<Business>> = MutableLiveData()
     val popularProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
+
+
+    suspend fun getLocalBusinesses(location : MyLocation) {
+        val response =  RetrofitInstance.api.getLocalBusinesses(location)
+        if (response.isSuccessful){
+            localBusinesses.value = response.body()
+        }
+    }
 
     fun MutableList<Business>.myToString() : String{
 
@@ -66,12 +77,12 @@ class TimeLineRepository (
                                 businessList.add(business)
                             }
                             Log.d("********", businessList.myToString())
-                            recommendedBusinesses.value = businessList
+                            localBusinesses.value = businessList
 
                         }
                 }
                 else{
-                    recommendedBusinesses.value = businessList
+                    localBusinesses.value = businessList
                 }
 
             }
@@ -90,7 +101,7 @@ class TimeLineRepository (
 
     fun removeBusinessObservers(owner : LifecycleOwner)
     {
-        recommendedBusinesses.removeObservers(owner)
+        localBusinesses.removeObservers(owner)
     }
 
 

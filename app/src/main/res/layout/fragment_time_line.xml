@@ -149,7 +149,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycle_popular_businesses"
+                        android:id="@+id/recycle_local_businesses"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_marginTop="5dp"

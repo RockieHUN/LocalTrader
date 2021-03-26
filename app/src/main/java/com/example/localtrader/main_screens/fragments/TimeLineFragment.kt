@@ -2,7 +2,9 @@ package com.example.localtrader.main_screens.fragments
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +15,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -21,9 +25,10 @@ import com.example.localtrader.NoticeDialog
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentTimeLineBinding
+import com.example.localtrader.location.MyLocation
 import com.example.localtrader.location.PermissionRequests
 import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
-import com.example.localtrader.main_screens.adapters.RecommendedBusinessesAdapter
+import com.example.localtrader.main_screens.adapters.LocalBusinessesAdapter
 import com.example.localtrader.main_screens.repositories.TimeLineRepository
 import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
@@ -32,13 +37,14 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.concurrent.timerTask
 
 class TimeLineFragment : Fragment(),
     PopularProductsAdapter.OnItemClickListener,
-    RecommendedBusinessesAdapter.OnItemClickListener,
+    LocalBusinessesAdapter.OnItemClickListener,
     NoticeDialog.OnDismissListener
 {
     private lateinit var binding : FragmentTimeLineBinding
@@ -53,6 +59,7 @@ class TimeLineFragment : Fragment(),
     private lateinit var repository : TimeLineRepository
 
     private val locationRequestCode = 1000
+    private val deviceLocation : MutableLiveData<Location> = MutableLiveData()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,8 +90,8 @@ class TimeLineFragment : Fragment(),
         setUpListeners()
 
         recyclePopularProducts()
-        recycleRecommendedBusinesses()
         locationData()
+        recycleLocalBusinesses()
     }
 
     override fun onResume() {
@@ -120,10 +127,11 @@ class TimeLineFragment : Fragment(),
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == locationRequestCode){
-            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            ) {
+            if (grantResults[0] == 0 && grantResults[1] == 0) {
                saveLocation()
+            }
+            else{
+                deviceLocation.value = null
             }
         }
     }
@@ -151,12 +159,18 @@ class TimeLineFragment : Fragment(),
 
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            PermissionRequests.requestLocationPermission(requireActivity(), locationRequestCode)
+            PermissionRequests.requestLocationPermissionFragment(this, locationRequestCode)
         }
         else{
             val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
             locationClient.lastLocation.addOnSuccessListener { location ->
-                userViewModel.saveLocationData(location.longitude, location.latitude, auth.currentUser!!.uid)
+                if (location != null){
+                    deviceLocation.value = location
+                    userViewModel.saveLocationData(location.longitude, location.latitude, auth.currentUser!!.uid)
+                }
+                else{
+                    deviceLocation.value = null
+                }
             }
         }
     }
@@ -183,22 +197,29 @@ class TimeLineFragment : Fragment(),
         repository.getPopularProducts()
     }
 
-    //set recommended products recycle view
-    private fun recycleRecommendedBusinesses() {
-        val adapter = RecommendedBusinessesAdapter(this, listOf(), requireActivity())
-        binding.recyclePopularBusinesses.adapter = adapter
+    //set local businesses recycle view
+    private fun recycleLocalBusinesses() {
+        val adapter = LocalBusinessesAdapter(this, listOf(), requireActivity())
+        binding.recycleLocalBusinesses.adapter = adapter
         val horizontalLayout = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,
             false
         )
-        binding.recyclePopularBusinesses.layoutManager = horizontalLayout
-        binding.recyclePopularBusinesses.setHasFixedSize(true)
+        binding.recycleLocalBusinesses.layoutManager = horizontalLayout
+        binding.recycleLocalBusinesses.setHasFixedSize(true)
 
-        repository.recommendedBusinesses.observe(viewLifecycleOwner, { businesses ->
+        repository.localBusinesses.observe(viewLifecycleOwner, { businesses ->
            adapter.updateData(businesses)
         })
-        repository.getRecommendedBusinesses()
+
+        deviceLocation.observe(viewLifecycleOwner,{
+            val location = MyLocation(longitude = it.longitude, latitude = it.latitude)
+            lifecycleScope.launch {
+                repository.getLocalBusinesses(location)
+            }
+        })
+
     }
 
     private fun setUpVisuals() {

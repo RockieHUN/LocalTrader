@@ -106,12 +106,14 @@ class BusinessLocationActivity : AppCompatActivity(), OnMapReadyCallback {
         //if didn't get permission FIRST time, request permission
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
             ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            PermissionRequests.requestLocationPermission(this,locationRequestCode)
+            PermissionRequests.requestLocationPermissionActivity(this,locationRequestCode)
         }
         else{
             val locationClient = LocationServices.getFusedLocationProviderClient(this)
             locationClient.lastLocation.addOnSuccessListener { location ->
-                this.location.value = LatLng(location.latitude, location.longitude)
+                if (location != null){
+                    this.location.value = LatLng(location.latitude, location.longitude)
+                }
             }
         }
     }

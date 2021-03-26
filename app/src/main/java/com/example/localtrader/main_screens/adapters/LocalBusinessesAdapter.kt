@@ -15,11 +15,11 @@ import com.example.localtrader.utils.diffUtils.BusinessDiffUtil
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
-class RecommendedBusinessesAdapter(
+class LocalBusinessesAdapter(
     private  val listener : OnItemClickListener,
     private var items : List<Business>,
     private val activity : Activity
-): RecyclerView.Adapter<RecommendedBusinessesAdapter.DataViewHolder>() {
+): RecyclerView.Adapter<LocalBusinessesAdapter.DataViewHolder>() {
 
     private val storage = Firebase.storage
 
@@ -53,13 +53,13 @@ class RecommendedBusinessesAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): RecommendedBusinessesAdapter.DataViewHolder {
+    ): LocalBusinessesAdapter.DataViewHolder {
         val itemView =
             LayoutInflater.from(parent.context).inflate(R.layout.business_item, parent, false)
         return DataViewHolder(itemView)
     }
 
-    override fun onBindViewHolder(holder: RecommendedBusinessesAdapter.DataViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LocalBusinessesAdapter.DataViewHolder, position: Int) {
         val currentItem = items[position]
 
         holder.businessNameView.text = currentItem.name
