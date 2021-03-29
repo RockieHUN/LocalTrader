@@ -2,7 +2,7 @@ package com.example.localtrader.business.models
 
 import android.net.Uri
 
-class Business (
+data class Business (
     var businessId : String ="",
     var ownerUid : String = "",
     var name : String = "",

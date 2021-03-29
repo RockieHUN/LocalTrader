@@ -11,7 +11,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
-import retrofit2.Response
 
 class TimeLineRepository (
     private val lifecycleOwner: LifecycleOwner
@@ -26,6 +25,7 @@ class TimeLineRepository (
     suspend fun getLocalBusinesses(location : MyLocation) {
         val response =  RetrofitInstance.api.getLocalBusinesses(location)
         if (response.isSuccessful){
+            Log.d("body ", response.body()?.get(0)?.businessId.toString())
             localBusinesses.value = response.body()
         }
     }
@@ -77,12 +77,12 @@ class TimeLineRepository (
                                 businessList.add(business)
                             }
                             Log.d("********", businessList.myToString())
-                            localBusinesses.value = businessList
+                           // localBusinesses.value = businessList
 
                         }
                 }
                 else{
-                    localBusinesses.value = businessList
+                    //localBusinesses.value = businessList
                 }
 
             }

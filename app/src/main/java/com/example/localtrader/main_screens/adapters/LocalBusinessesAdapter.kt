@@ -1,6 +1,7 @@
 package com.example.localtrader.main_screens.adapters
 
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +47,7 @@ class LocalBusinessesAdapter(
 
     interface OnItemClickListener {
         fun onItemClick(position: Int)
-        fun myRecBusinessOnItemClick (business: Business)
+        fun myRecBusinessOnItemClick (business:Business)
     }
 
 

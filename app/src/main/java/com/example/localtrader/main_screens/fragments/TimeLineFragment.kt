@@ -210,6 +210,7 @@ class TimeLineFragment : Fragment(),
         binding.recycleLocalBusinesses.setHasFixedSize(true)
 
         repository.localBusinesses.observe(viewLifecycleOwner, { businesses ->
+            Log.d("size ", businesses.size.toString())
            adapter.updateData(businesses)
         })
 
