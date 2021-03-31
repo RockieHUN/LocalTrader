@@ -3,6 +3,7 @@ package com.example.localtrader.location
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -110,7 +111,7 @@ class BusinessLocationActivity : AppCompatActivity(), OnMapReadyCallback {
         }
         else{
             val locationClient = LocationServices.getFusedLocationProviderClient(this)
-            locationClient.lastLocation.addOnSuccessListener { location ->
+            locationClient.lastLocation.addOnSuccessListener { location : Location? ->
                 if (location != null){
                     this.location.value = LatLng(location.latitude, location.longitude)
                 }

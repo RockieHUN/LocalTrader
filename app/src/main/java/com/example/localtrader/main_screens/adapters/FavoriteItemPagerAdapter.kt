@@ -31,6 +31,9 @@ class FavoriteItemPagerAdapter(
         val favoritesButton = itemView.findViewById<ImageButton>(R.id.favorite_button)
         val priceView = itemView.findViewById<TextView>(R.id.price)
         val descriptionView = itemView.findViewById<TextView>(R.id.product_description)
+        val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
+        val productNameView = itemView.findViewById<TextView>(R.id.product_name)
+        val orderButton = itemView.findViewById<ImageButton>(R.id.order_button)
     }
 
     override fun onCreateViewHolder(
@@ -47,6 +50,13 @@ class FavoriteItemPagerAdapter(
 
         holder.priceView.text = currentItem.price.toString()
         holder.descriptionView.text = currentItem.description
+        holder.businessNameView.text = currentItem.businessName
+        holder.productNameView.text = currentItem.name
+
+
+        holder.orderButton.setOnClickListener{
+            listener.onOrderButtonClick(currentItem)
+        }
 
         holder.favoritesButton.setOnClickListener {
             listener.onFavoriteButtonClick(currentItem)
@@ -63,6 +73,7 @@ class FavoriteItemPagerAdapter(
 
     interface MyOnClickListener {
         fun onFavoriteButtonClick(product : Product)
+        fun onOrderButtonClick(product : Product)
     }
 
     override fun getItemCount(): Int = items.size

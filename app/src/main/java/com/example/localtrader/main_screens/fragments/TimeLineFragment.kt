@@ -163,7 +163,7 @@ class TimeLineFragment : Fragment(),
         }
         else{
             val locationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-            locationClient.lastLocation.addOnSuccessListener { location ->
+            locationClient.lastLocation.addOnSuccessListener { location : Location? ->
                 if (location != null){
                     deviceLocation.value = location
                     userViewModel.saveLocationData(location.longitude, location.latitude, auth.currentUser!!.uid)

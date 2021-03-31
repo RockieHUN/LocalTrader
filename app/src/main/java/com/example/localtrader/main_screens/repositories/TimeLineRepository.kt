@@ -7,10 +7,13 @@ import com.example.localtrader.business.models.Business
 import com.example.localtrader.location.MyLocation
 import com.example.localtrader.main_screens.api.RetrofitInstance
 import com.example.localtrader.product.models.Product
+import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import retrofit2.Response
+import java.lang.Error
 
 class TimeLineRepository (
     private val lifecycleOwner: LifecycleOwner
@@ -23,9 +26,16 @@ class TimeLineRepository (
 
 
     suspend fun getLocalBusinesses(location : MyLocation) {
-        val response =  RetrofitInstance.api.getLocalBusinesses(location)
-        if (response.isSuccessful){
-            Log.d("body ", response.body()?.get(0)?.businessId.toString())
+
+        var response : Response<List<Business>>? = null
+        try{
+            response =  RetrofitInstance.api.getLocalBusinesses(location)
+        }
+        catch (e : Error){
+            Firebase.crashlytics.log(e.toString())
+        }
+
+        if (response != null && response.isSuccessful){
             localBusinesses.value = response.body()
         }
     }

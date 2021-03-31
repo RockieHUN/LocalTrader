@@ -16,6 +16,7 @@ import com.example.localtrader.databinding.FragmentFavoritesBinding
 import com.example.localtrader.main_screens.adapters.FavoriteItemPagerAdapter
 import com.example.localtrader.product.models.Product
 import com.example.localtrader.viewmodels.FavoritesViewModel
+import com.example.localtrader.viewmodels.ProductViewModel
 
 class FavoritesFragment : Fragment(),
     FavoriteItemPagerAdapter.MyOnClickListener,
@@ -26,6 +27,7 @@ class FavoritesFragment : Fragment(),
     private lateinit var productForDeletetion : Product
 
     private val favoritesViewModel : FavoritesViewModel by activityViewModels()
+    private val productViewModel : ProductViewModel by activityViewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +82,11 @@ class FavoritesFragment : Fragment(),
     override fun onFavoriteButtonClick(product: Product) {
         productForDeletetion = product
         showAlertDialog()
+    }
+
+    override fun onOrderButtonClick(product: Product) {
+        productViewModel.product = product
+        findNavController().navigate(R.id.action_favoritesFragment_to_createOrderFragment)
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {
