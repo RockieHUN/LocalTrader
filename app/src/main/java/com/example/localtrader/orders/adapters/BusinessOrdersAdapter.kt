@@ -27,36 +27,21 @@ class BusinessOrdersAdapter (
 
     private val firestore = Firebase.firestore
 
-    inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+    inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
         val item = itemView.findViewById<ConstraintLayout>(R.id.item)
         val productNameView = itemView.findViewById<TextView>(R.id.product_name)
         val ordererView = itemView.findViewById<TextView>(R.id.orderer)
-        val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
         val priceView = itemView.findViewById<TextView>(R.id.product_price)
         val dateView = itemView.findViewById<TextView>(R.id.date)
         val statusView = itemView.findViewById<TextView>(R.id.status)
         val productCountView = itemView.findViewById<TextView>(R.id.count)
-        val acceptLayerView = itemView.findViewById<ConstraintLayout>(R.id.accept_layer)
-        val counterImageView = itemView.findViewById<ImageView>(R.id.imageView)
-        val acceptButton = itemView.findViewById<ImageButton>(R.id.accept_button)
-        val declineButton = itemView.findViewById<ImageButton>(R.id.decline_button)
 
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View?) {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClick(position)
-            }
-        }
     }
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(order: OrderRequest)
+        fun onItemLongClick(order : OrderRequest)
     }
 
     override fun onCreateViewHolder(
@@ -72,67 +57,34 @@ class BusinessOrdersAdapter (
         val currentItem = items[position]
 
         holder.productNameView.text = currentItem.productName
-        //holder.businessNameView.text = currentItem.bu
         holder.priceView.text = currentItem.sum.toString()
         holder.dateView.text = currentItem.date
         holder.productCountView.text = currentItem.count.toString()
         holder.ordererView.text = "${currentItem.clientFirstName} ${currentItem.clientLastName}"
 
+        if (currentItem.status == OrderStatus.WAITING_FOR_CONFIRMATION){
+            holder.item.setOnClickListener {
+                listener.onItemClick(currentItem)
+            }
+        }
+
+        if (currentItem.status != OrderStatus.WAITING_FOR_CONFIRMATION && currentItem.status != OrderStatus.DECLINED){
+            holder.item.setOnLongClickListener {
+                listener.onItemLongClick(currentItem)
+                true
+            }
+        }
+
 
         //do stuff based on status
         when(currentItem.status){
             OrderStatus.WAITING_FOR_CONFIRMATION ->{
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_WAITING_FOR_CONFIRMATION))
                 holder.statusView.text = context.resources.getString(R.string.order_status_not_confirmed)
-                holder.statusView.visibility = View.GONE
-                holder.counterImageView.visibility = View.GONE
-                holder.productCountView.visibility = View.GONE
-                holder.acceptLayerView.visibility = View.VISIBLE
-
-                //if order ACCEPTED
-                holder.acceptButton.setOnClickListener {
-                    firestore.collection("orderRequests")
-                        .document(currentItem.orderRequestId)
-                        .update("status", OrderStatus.ACCEPTED)
-                        .addOnSuccessListener {
-                            holder.acceptLayerView.visibility = View.GONE
-                            holder.statusView.visibility = View.VISIBLE
-                            holder.counterImageView.visibility = View.VISIBLE
-                            holder.productCountView.visibility = View.VISIBLE
-                            holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_ACCEPTED))
-
-                            //update adapter items
-                            var newList = items
-                            newList[position].status = OrderStatus.ACCEPTED
-                            newList = newList.sortedWith(OrderComparator)
-                            updateData(newList)
-                        }
-                }
-
-                //if order declined
-                holder.declineButton.setOnClickListener {
-                    firestore.collection("orderRequests")
-                        .document(currentItem.orderRequestId)
-                        .update("status", OrderStatus.DECLINED)
-                        .addOnSuccessListener {
-                            holder.acceptLayerView.visibility = View.GONE
-                            holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_DECLINED))
-                            holder.statusView.visibility = View.VISIBLE
-                            holder.counterImageView.visibility = View.VISIBLE
-                            holder.productCountView.visibility = View.VISIBLE
-
-                            //update adapter items
-                            var newList = items
-                            newList[position].status = OrderStatus.DECLINED
-                            newList = newList.sortedWith(OrderComparator)
-                            updateData(newList)
-                        }
-                }
             }
-
             OrderStatus.ACCEPTED ->{
                 holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_ACCEPTED))
                 holder.statusView.text = context.resources.getString(R.string.order_status_accepted)
-                //TODO: ITEM ONCLICK
             }
 
             OrderStatus.DECLINED -> {
@@ -140,6 +92,15 @@ class BusinessOrdersAdapter (
                 holder.statusView.text = context.resources.getString(R.string.order_status_declined)
             }
 
+            OrderStatus.WORKING_ON_IT ->{
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_WORKING_ON_IT))
+                holder.statusView.text = context.resources.getString(R.string.order_status_working_on_it)
+            }
+
+            OrderStatus.DONE ->{
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_DONE))
+                holder.statusView.text = context.resources.getString(R.string.order_status_done)
+            }
 
         }
     }

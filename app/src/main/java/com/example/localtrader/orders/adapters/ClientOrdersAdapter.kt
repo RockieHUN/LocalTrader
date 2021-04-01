@@ -31,7 +31,6 @@ class ClientOrdersAdapter (
         val statusView = itemView.findViewById<TextView>(R.id.status)
         val productCountView = itemView.findViewById<TextView>(R.id.count)
 
-
         init {
             itemView.setOnClickListener(this)
         }
@@ -61,7 +60,7 @@ class ClientOrdersAdapter (
         val currentItem = items[position]
 
         holder.productNameView.text = currentItem.productName
-        //holder.businessNameView.text = currentItem.bu
+        holder.businessNameView.text = currentItem.businessName
         holder.priceView.text = currentItem.sum.toString()
         holder.dateView.text = currentItem.date
         holder.productCountView.text = currentItem.count.toString()

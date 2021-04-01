@@ -8,17 +8,15 @@ class OrderComparator {
     companion object : Comparator<OrderRequest> {
         override fun compare(a: OrderRequest, b: OrderRequest): Int {
 
-            return when {
+            if (a.status < b.status) return -1
+            if (a.status > b.status) return 1
+            if (a.status == b.status){
+                return if (MyDateTime.stringToDateTime(a.date) < MyDateTime.stringToDateTime(b.date)) -1
+                else 1
 
-                (a.status < b.status) && (MyDateTime.stringToDateTime(a.date) > MyDateTime.stringToDateTime(b.date)) -> -1
-                (a.status < b.status) && (MyDateTime.stringToDateTime(a.date) < MyDateTime.stringToDateTime(b.date)) -> 1
-
-                (a.status == b.status) && (MyDateTime.stringToDateTime(a.date) < MyDateTime.stringToDateTime(b.date)) -> 1
-                (a.status == b.status) && (MyDateTime.stringToDateTime(a.date) > MyDateTime.stringToDateTime(b.date)) -> -1
-
-                (a.status > b.status) -> 1
-                else -> 0
             }
+
+            return 0
         }
     }
 }

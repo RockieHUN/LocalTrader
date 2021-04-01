@@ -113,8 +113,11 @@
     <string name="order_status_not_confirmed">Megerősítésre vár</string>
     <string name="order_status_accepted">Elfogadva</string>
     <string name="order_status_declined">Elutasítva</string>
+    <string name="order_status_working_on_it"> Folyamatban </string>
+    <string name="order_status_done"> Elkészítve </string>
     <string name="no_orders_yet">Jelenleg nincsenek megrendelések!</string>
     <string name="chat_editText_hint"> Gépelje be az üzenetet…</string>
+    <string name="accept_order"> Elvállalja a rendelést?</string>
 
     <!-- Favorites -->
     <string name="delete_favorite"> Bíztosan törli a kedvencek közül? </string>

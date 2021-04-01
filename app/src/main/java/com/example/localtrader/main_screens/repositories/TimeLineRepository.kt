@@ -26,8 +26,8 @@ class TimeLineRepository (
 
 
     suspend fun getLocalBusinesses(location : MyLocation) {
-
         var response : Response<List<Business>>? = null
+
         try{
             response =  RetrofitInstance.api.getLocalBusinesses(location)
         }

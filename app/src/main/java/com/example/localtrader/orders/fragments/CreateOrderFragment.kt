@@ -106,6 +106,7 @@ class CreateOrderFragment : Fragment(),
 
         return OrderRequest(
             businessId = product.businessId,
+            businessName = product.businessName,
             clientId = auth.currentUser!!.uid,
             clientFirstName = user!!.firstname,
             clientLastName = user.lastname,

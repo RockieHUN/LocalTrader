@@ -6,6 +6,7 @@ import com.example.localtrader.utils.constants.OrderStatus
 data class OrderRequest (
     var orderRequestId : String = "",
     var businessId : String = "",
+    var businessName : String = "",
     var clientId : String = "",
     var clientFirstName : String = "",
     var clientLastName : String = "",

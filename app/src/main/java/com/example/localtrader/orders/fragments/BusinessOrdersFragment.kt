@@ -5,22 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
+import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentBusinessOrdersBinding
 import com.example.localtrader.orders.adapters.BusinessOrdersAdapter
+import com.example.localtrader.orders.models.OrderRequest
 import com.example.localtrader.repositories.OrdersRepository
 import com.example.localtrader.utils.comparators.OrderComparator
+import com.example.localtrader.utils.constants.OrderStatus
 import com.example.localtrader.viewmodels.UserViewModel
 
-class BusinessOrdersFragment : Fragment(), BusinessOrdersAdapter.OnItemClickListener {
-
+class BusinessOrdersFragment : Fragment(),
+    BusinessOrdersAdapter.OnItemClickListener,
+    SelectDialogFragment.OnSelectedListener,
+    YesNoDialogFragment.NoticeDialogListener
+{
     private lateinit var binding : FragmentBusinessOrdersBinding
     private lateinit var ordersRepository: OrdersRepository
-
     private val userViewModel : UserViewModel by activityViewModels()
+    private var orderRequest : OrderRequest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +45,6 @@ class BusinessOrdersFragment : Fragment(), BusinessOrdersAdapter.OnItemClickList
     }
 
     private fun createRecycle(){
-
         val adapter = BusinessOrdersAdapter(this, listOf(), requireContext())
         binding.recycleView.adapter = adapter
         binding.recycleView.layoutManager = LinearLayoutManager(context)
@@ -55,8 +61,47 @@ class BusinessOrdersFragment : Fragment(), BusinessOrdersAdapter.OnItemClickList
         ordersRepository.loadBusinessOrders(userViewModel.user.value!!.businessId)
     }
 
-    override fun onItemClick(position: Int) {
-        return
+    override fun onItemClick(order: OrderRequest) {
+        orderRequest = order
+        val yesNoDialog = YesNoDialogFragment(resources.getString(R.string.accept_order),this)
+        yesNoDialog.show(requireActivity().supportFragmentManager, null)
+    }
+
+    override fun onItemLongClick(order: OrderRequest) {
+        orderRequest = order
+        val selectDialog = SelectDialogFragment(this)
+        selectDialog.show(requireActivity().supportFragmentManager, null)
+    }
+
+    override fun onDialogItemSelected(which: Int) {
+
+        if (orderRequest != null){
+            var newStatus = orderRequest!!.status
+            when (which){
+                0 -> newStatus = OrderStatus.WORKING_ON_IT
+                1 -> newStatus = OrderStatus.DONE
+                //todo: delete
+            }
+
+            val businessId = userViewModel.user.value!!.businessId
+            ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, newStatus)
+        }
+
+    }
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        if (orderRequest != null){
+            val businessId = userViewModel.user.value!!.businessId
+            ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, 2)
+        }
+
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        if (orderRequest != null){
+            val businessId = userViewModel.user.value!!.businessId
+            ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, 5)
+        }
     }
 
 

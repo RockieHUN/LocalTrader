@@ -45,5 +45,15 @@ class OrdersRepository {
             }
     }
 
+    fun updateOrderStatus(businessId : String, orderRequestId : String, newStatus : Int){
+        firestore.collection("orderRequests")
+            .document(orderRequestId)
+            .update("status", newStatus)
+            .addOnSuccessListener {
+                loadBusinessOrders(businessId)
+            }
+
+    }
+
 
 }
