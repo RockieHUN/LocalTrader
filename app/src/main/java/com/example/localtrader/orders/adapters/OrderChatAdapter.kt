@@ -4,19 +4,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.localtrader.R
 import com.example.localtrader.orders.models.ChatMessage
+import com.example.localtrader.utils.diffUtils.ChatMessageDiffUtil
 
-class OrderChatAdapter (): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class OrderChatAdapter (
+    private val userId : String,
+    private val listener : OnContentUpdateListener
+        ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private val items = mutableListOf<ChatMessage>()
-
-    companion object {
-        const val RECEIVED = 1
-        const val SENT = 2
-    }
-
+    private var items = listOf<ChatMessage>()
 
     inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener{
@@ -34,8 +33,7 @@ class OrderChatAdapter (): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
 
-    inner class RecievedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener {
+    inner class RecievedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
         val messageView = itemView.findViewById<TextView>(R.id.message_text)
 
@@ -43,16 +41,12 @@ class OrderChatAdapter (): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             val currentItem = items[position]
             messageView.text = currentItem.message
         }
-
-        override fun onClick(v: View?) {
-            val position = adapterPosition
-            /*if (position != RecyclerView.NO_POSITION) {
-                listener.onItemClick(position)
-            }*/
-        }
     }
 
-
+    override fun getItemViewType(position: Int): Int {
+        if (items[position].senderId == userId) return 2
+        else return 1
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return if (viewType == 2){
@@ -65,22 +59,28 @@ class OrderChatAdapter (): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (items[position].type == RECEIVED) {
+        if (items[position].senderId != userId) {
             (holder as RecievedMessageViewHolder).bind(position)
         } else {
             (holder as SentMessageViewHolder).bind(position)
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return items[position].type
-    }
 
     override fun getItemCount(): Int = items.size
 
 
-    fun addItem(message : ChatMessage){
-        items.add(message)
-        notifyDataSetChanged()
+    fun updateData(messages : List<ChatMessage>){
+        val diffUtil = ChatMessageDiffUtil(items, messages)
+        val diffResult = DiffUtil.calculateDiff(diffUtil)
+        items = messages
+        diffResult.dispatchUpdatesTo(this)
+        listener.onContentUpdate(items.size - 1)
     }
+
+    interface OnContentUpdateListener{
+        fun onContentUpdate(position : Int)
+    }
+
+
 }

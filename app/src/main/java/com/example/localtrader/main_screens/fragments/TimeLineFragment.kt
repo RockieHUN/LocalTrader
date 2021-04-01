@@ -59,7 +59,7 @@ class TimeLineFragment : Fragment(),
     private lateinit var repository : TimeLineRepository
 
     private val locationRequestCode = 1000
-    private val deviceLocation : MutableLiveData<Location> = MutableLiveData()
+    private val deviceLocation : MutableLiveData<Location?> = MutableLiveData()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -210,12 +210,15 @@ class TimeLineFragment : Fragment(),
         binding.recycleLocalBusinesses.setHasFixedSize(true)
 
         repository.localBusinesses.observe(viewLifecycleOwner, { businesses ->
-            Log.d("size ", businesses.size.toString())
            adapter.updateData(businesses)
         })
 
         deviceLocation.observe(viewLifecycleOwner,{
-            val location = MyLocation(longitude = it.longitude, latitude = it.latitude)
+            var location : MyLocation? = null
+            if (it != null){
+                location = MyLocation(longitude = it.longitude, latitude = it.latitude)
+            }
+
             lifecycleScope.launch {
                 repository.getLocalBusinesses(location)
             }

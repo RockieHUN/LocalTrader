@@ -1,6 +1,7 @@
 package com.example.localtrader.business.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +18,7 @@ import com.example.localtrader.databinding.FragmentBusinessProfileBinding
 import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
 import com.example.localtrader.utils.comparators.DateComparator
-import com.example.localtrader.viewmodels.BusinessViewModel
-import com.example.localtrader.viewmodels.NavigationViewModel
-import com.example.localtrader.viewmodels.ProductViewModel
-import com.example.localtrader.viewmodels.UserViewModel
+import com.example.localtrader.viewmodels.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -41,6 +39,7 @@ class BusinessProfileFragment : Fragment(),
     private val businessViewModel : BusinessViewModel by activityViewModels()
     private val productViewModel : ProductViewModel by activityViewModels()
     private val navigationViewModel : NavigationViewModel by activityViewModels()
+    private val chatViewModel : ChatViewModel by activityViewModels()
     private lateinit var uid : String
     
 
@@ -106,6 +105,8 @@ class BusinessProfileFragment : Fragment(),
         }
 
         binding.chatButton.setOnClickListener {
+            chatViewModel.clientId = auth.currentUser!!.uid
+            chatViewModel.businessId = businessViewModel.businessId
             findNavController().navigate(R.id.action_businessProfileFragment_to_orderChatFragment)
         }
     }

@@ -34,7 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cardView8"
+                android:id="@+id/orderButtonHolder"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="18dp"
@@ -60,7 +60,7 @@
                 app:cardCornerRadius="18dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginBottom="5dp"
-                app:layout_constraintBottom_toTopOf="@+id/cardView8"
+                app:layout_constraintBottom_toTopOf="@+id/orderButtonHolder"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <ImageButton
@@ -70,7 +70,7 @@
                     android:background="@null"
                     android:src="@drawable/ic_baseline_favorite_36"
                     android:tint="@color/liked"
-                    app:layout_constraintBottom_toTopOf="@+id/cardView8"
+                    app:layout_constraintBottom_toTopOf="@+id/orderButtonHolder"
                     app:layout_constraintEnd_toEndOf="parent" />
 
             </androidx.cardview.widget.CardView>

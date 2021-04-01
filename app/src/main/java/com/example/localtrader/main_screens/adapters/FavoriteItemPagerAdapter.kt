@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.product.models.Product
 import com.example.localtrader.utils.diffUtils.ProductDiffUtil
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
@@ -23,6 +25,7 @@ class FavoriteItemPagerAdapter(
 ) : RecyclerView.Adapter<FavoriteItemPagerAdapter.DataViewHolder>() {
 
     private val storage = Firebase.storage
+    private val auth = Firebase.auth
 
 
     inner class DataViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,7 +36,7 @@ class FavoriteItemPagerAdapter(
         val descriptionView = itemView.findViewById<TextView>(R.id.product_description)
         val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
         val productNameView = itemView.findViewById<TextView>(R.id.product_name)
-        val orderButton = itemView.findViewById<ImageButton>(R.id.order_button)
+        val orderbuttonHolder = itemView.findViewById<CardView>(R.id.orderButtonHolder)
     }
 
     override fun onCreateViewHolder(
@@ -54,9 +57,15 @@ class FavoriteItemPagerAdapter(
         holder.productNameView.text = currentItem.name
 
 
-        holder.orderButton.setOnClickListener{
-            listener.onOrderButtonClick(currentItem)
+        if (auth.currentUser != null && auth.currentUser!!.uid != currentItem.ownerId){
+            holder.orderbuttonHolder.setOnClickListener{
+                listener.onOrderButtonClick(currentItem)
+            }
         }
+        else{
+            holder.orderbuttonHolder.visibility = View.GONE
+        }
+
 
         holder.favoritesButton.setOnClickListener {
             listener.onFavoriteButtonClick(currentItem)

@@ -25,11 +25,17 @@ class TimeLineRepository (
     val popularProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
 
 
-    suspend fun getLocalBusinesses(location : MyLocation) {
+    suspend fun getLocalBusinesses(location : MyLocation?) {
         var response : Response<List<Business>>? = null
 
         try{
-            response =  RetrofitInstance.api.getLocalBusinesses(location)
+            if (location != null){
+                response =  RetrofitInstance.api.getLocalBusinesses(location)
+            }
+            else{
+                response = RetrofitInstance.api.getLocalBusinesses()
+            }
+
         }
         catch (e : Error){
             Firebase.crashlytics.log(e.toString())

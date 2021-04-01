@@ -12,5 +12,5 @@ interface ApiInterface {
     suspend fun getLocalBusinesses(@Body location : MyLocation) : Response<List<Business>>
 
     @POST("getLocalBusinesses")
-    suspend fun getLocalBusinesses2() : Response<List<Business>>
+    suspend fun getLocalBusinesses() : Response<List<Business>>
 }

@@ -1,6 +1,9 @@
 package com.example.localtrader.orders.models
 
+import com.google.firebase.Timestamp
+
 data class ChatMessage(
-    var type : Int = 2,
-    var message : String = ""
+    var senderId : String = "",
+    var message : String = "",
+    var date : Timestamp = Timestamp.now()
 )
