@@ -1,7 +1,7 @@
 package com.example.localtrader.main_screens.api
 
 import com.example.localtrader.business.models.Business
-import com.example.localtrader.location.MyLocation
+import com.example.localtrader.location.models.MyLocation
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

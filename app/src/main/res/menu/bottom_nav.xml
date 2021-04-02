@@ -13,10 +13,18 @@
         android:title="@string/favoritesIcon"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/messagesFragment"
+        android:icon="@drawable/ic_baseline_chat_menu"
+        android:title="@string/chatIcon"
+        app:showAsAction="ifRoom"
+        />
+    <item
         android:id="@+id/ordersFragment"
         android:icon="@drawable/ic_order_history"
         android:title="@string/ordersIcon"
         app:showAsAction="ifRoom" />
+
+
     <!--item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_baseline_account_circle_24"

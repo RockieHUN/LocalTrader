@@ -38,6 +38,7 @@
     <string name="favoritesIcon"> Kedvencek </string>
     <string name="ordersIcon"> Rendelések </string>
     <string name="profileIcon"> Profil </string>
+    <string name="chatIcon"> Üzenetek </string>
 
 
     <!-- Timeline -->
@@ -134,6 +135,11 @@
     <string name="bug_description">Leírás</string>
     <string name="bug_description_hint">Írja le részletesen a tapasztalt hibát…</string>
     <string name="thanks_the_report"> Köszönjük a visszajelzést!</string>
+
+
+    <!-- Messages -->
+    <string name="messages_header"> Üzenetek </string>
+
 
     <string name="ok"> OK </string>
 

@@ -37,6 +37,7 @@ class FavoriteItemPagerAdapter(
         val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
         val productNameView = itemView.findViewById<TextView>(R.id.product_name)
         val orderbuttonHolder = itemView.findViewById<CardView>(R.id.orderButtonHolder)
+        val orderButtonView = itemView.findViewById<ImageButton>(R.id.order_button)
     }
 
     override fun onCreateViewHolder(
@@ -58,7 +59,7 @@ class FavoriteItemPagerAdapter(
 
 
         if (auth.currentUser != null && auth.currentUser!!.uid != currentItem.ownerId){
-            holder.orderbuttonHolder.setOnClickListener{
+            holder.orderButtonView.setOnClickListener{
                 listener.onOrderButtonClick(currentItem)
             }
         }

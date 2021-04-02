@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +24,7 @@ import com.example.localtrader.NoticeDialog
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentTimeLineBinding
-import com.example.localtrader.location.MyLocation
+import com.example.localtrader.location.models.MyLocation
 import com.example.localtrader.location.PermissionRequests
 import com.example.localtrader.main_screens.adapters.PopularProductsAdapter
 import com.example.localtrader.main_screens.adapters.LocalBusinessesAdapter

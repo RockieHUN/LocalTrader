@@ -62,6 +62,7 @@
                         android:id="@+id/profile_picture_holder"
                         android:layout_width="200dp"
                         android:layout_height="200dp"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:layout_marginTop="15dp"
                         app:cardCornerRadius="100dp"
                         app:layout_constraintEnd_toEndOf="parent"

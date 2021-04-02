@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.example.localtrader.business.models.Business
-import com.example.localtrader.location.MyLocation
+import com.example.localtrader.location.models.MyLocation
 import com.example.localtrader.main_screens.api.RetrofitInstance
 import com.example.localtrader.product.models.Product
 import com.google.firebase.crashlytics.ktx.crashlytics

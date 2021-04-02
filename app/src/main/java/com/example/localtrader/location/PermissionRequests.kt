@@ -9,8 +9,6 @@ class PermissionRequests {
 
     companion object{
 
-        var locationPermission = false
-
         fun requestLocationPermissionFragment(fragment : Fragment, permissionId : Int){
             fragment.requestPermissions(
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),

@@ -80,7 +80,9 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/business_section"
+                            android:foreground="?android:attr/selectableItemBackground"
                             android:layout_width="match_parent"
+                            android:padding="5dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp">
 
@@ -114,6 +116,8 @@
                             android:id="@+id/bug_report_section"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:padding="5dp"
                             android:layout_marginTop="10dp">
 
                             <ImageView
@@ -143,6 +147,8 @@
                             android:id="@+id/logout_section"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:padding="5dp"
                             android:layout_marginTop="10dp">
 
                             <ImageView

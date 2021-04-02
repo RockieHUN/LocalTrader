@@ -259,4 +259,13 @@
         android:name="com.example.localtrader.authentication.fragments.UserAgreementsFragment"
         android:label="fragment_user_agreements"
         tools:layout="@layout/fragment_user_agreements" />
+    <fragment
+        android:id="@+id/messagesFragment"
+        android:name="com.example.localtrader.main_screens.fragments.MessagesFragment"
+        android:label="fragment_messages"
+        tools:layout="@layout/fragment_messages" >
+        <action
+            android:id="@+id/action_messagesFragment_to_timeLineFragment"
+            app:destination="@id/timeLineFragment" />
+    </fragment>
 </navigation>

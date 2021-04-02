@@ -59,6 +59,7 @@ class BusinessLocationActivity : AppCompatActivity(), OnMapReadyCallback {
                 mMap.addMarker(MarkerOptions().position(currentLocation).title("Vállalkozás helye"))
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation))
                 mMap.moveCamera(CameraUpdateFactory.zoomTo(zoomLevel))
+                location.removeObservers(this)
             }
         })
         getLocation()

@@ -1,4 +1,4 @@
-package com.example.localtrader.location
+package com.example.localtrader.location.models
 
 data class MyLocation(
     var longitude : Double,
