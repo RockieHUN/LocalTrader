@@ -1,4 +1,4 @@
-package com.example.localtrader.orders.adapters
+package com.example.localtrader.chat.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.localtrader.R
-import com.example.localtrader.orders.models.ChatMessage
+import com.example.localtrader.chat.models.ChatMessage
 import com.example.localtrader.utils.diffUtils.ChatMessageDiffUtil
 
-class OrderChatAdapter (
+class ChatAdapter (
     private val userId : String,
     private val listener : OnContentUpdateListener
         ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {

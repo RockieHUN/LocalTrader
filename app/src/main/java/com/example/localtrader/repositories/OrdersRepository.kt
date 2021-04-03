@@ -55,5 +55,14 @@ class OrdersRepository {
 
     }
 
+    fun deleteOrder(orderRequestId: String, businessId: String){
+        firestore.collection("orderRequests")
+            .document(orderRequestId)
+            .delete()
+            .addOnSuccessListener {
+                loadBusinessOrders(businessId)
+            }
+    }
+
 
 }

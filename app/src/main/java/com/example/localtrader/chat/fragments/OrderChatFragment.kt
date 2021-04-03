@@ -1,7 +1,6 @@
-package com.example.localtrader.orders.fragments
+package com.example.localtrader.chat.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,23 +9,23 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
-import com.example.localtrader.databinding.FragmentOrderChatBinding
-import com.example.localtrader.orders.adapters.OrderChatAdapter
-import com.example.localtrader.orders.models.ChatMessage
-import com.example.localtrader.viewmodels.ChatViewModel
+import com.example.localtrader.chat.adapters.ChatAdapter
+import com.example.localtrader.chat.models.ChatMessage
+import com.example.localtrader.databinding.FragmentChatBinding
+
+import com.example.localtrader.viewmodels.MessagesViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class OrderChatFragment : Fragment(),
-        OrderChatAdapter.OnContentUpdateListener
+        ChatAdapter.OnContentUpdateListener
 {
 
-    private val chatViewModel : ChatViewModel by activityViewModels()
+    private val messagesViewModel : MessagesViewModel by activityViewModels()
 
     private lateinit var auth : FirebaseAuth
-    private lateinit var binding : FragmentOrderChatBinding
-
+    private lateinit var binding : FragmentChatBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +38,7 @@ class OrderChatFragment : Fragment(),
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_order_chat, container, false)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_chat, container, false)
         setUpVisuals()
         createRecycle()
         setUpListeners()
@@ -70,7 +69,7 @@ class OrderChatFragment : Fragment(),
                     message = messageText
                 )
 
-                chatViewModel.sendMessage(message)
+                messagesViewModel.sendMessage(message)
             }
         }
 
@@ -79,17 +78,17 @@ class OrderChatFragment : Fragment(),
 
     private fun createRecycle(){
         if (auth.currentUser != null){
-            val adapter = OrderChatAdapter(auth.currentUser!!.uid, this)
+            val adapter = ChatAdapter(auth.currentUser!!.uid, this)
             binding.recycleView.adapter = adapter
             val verticalLayout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding.recycleView.layoutManager = verticalLayout
             binding.recycleView.setHasFixedSize(true)
 
-            chatViewModel.messages.observe(viewLifecycleOwner,{ messages ->
+            messagesViewModel.chatItemMessages.observe(viewLifecycleOwner,{ messages ->
                 adapter.updateData(messages)
             })
 
-            chatViewModel.loadChat()
+            messagesViewModel.loadChat()
         }
 
     }

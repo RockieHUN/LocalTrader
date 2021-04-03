@@ -1,4 +1,4 @@
-package com.example.localtrader.orders.models
+package com.example.localtrader.chat.models
 
 import com.google.firebase.Timestamp
 

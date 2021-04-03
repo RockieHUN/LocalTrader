@@ -45,9 +45,10 @@
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
-                            android:layout_height="420dp"
+                            android:layout_height="0dp"
                             android:alpha="0.6"
                             android:background="@color/black"
+                            app:layout_constraintBottom_toBottomOf="@+id/blur_image"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent" />
@@ -113,6 +114,7 @@
 
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:visibility="gone"
                             android:id="@+id/constraintLayout4"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -124,12 +126,12 @@
 
 
                             <TextView
-                                android:textColor="@color/white"
                                 android:id="@+id/rating"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:text="5.00"
+                                android:textColor="@color/white"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@+id/rating_text"
@@ -137,12 +139,12 @@
                                 app:layout_constraintTop_toBottomOf="@id/rating_text" />
 
                             <TextView
-                                android:textColor="@color/white"
                                 android:id="@+id/product_number"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:text="124"
+                                android:textColor="@color/white"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@+id/product_number_text"
@@ -151,12 +153,12 @@
 
 
                             <TextView
-                                android:textColor="@color/white"
                                 android:id="@+id/placeholder"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
                                 android:text="51"
+                                android:textColor="@color/white"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
                                 app:layout_constraintEnd_toEndOf="@+id/textView9"
@@ -165,58 +167,61 @@
                                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
                             <TextView
-                                android:textColor="@color/white"
                                 android:id="@+id/rating_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/business_rating"
+                                android:textColor="@color/white"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
 
                             <TextView
-                                android:textColor="@color/white"
                                 android:id="@+id/product_number_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/business_product_number"
+                                android:textColor="@color/white"
                                 app:layout_constraintEnd_toStartOf="@+id/rating_text"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
-                                android:textColor="@color/white"
                                 android:id="@+id/textView9"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Még nem tudom"
+                                android:textColor="@color/white"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/rating_text"
                                 app:layout_constraintTop_toTopOf="parent" />
 
 
-                            <TextView
-                                android:textColor="@color/white"
-                                android:id="@+id/business_description"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:text="description"
-                                android:textAlignment="center"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/rating" />
+
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <TextView
+                            android:id="@+id/business_description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="description"
+                            android:padding="5dp"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
+                            app:layout_constraintBottom_toBottomOf="@+id/blur_image"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.0"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" >
+                            app:layout_constraintStart_toStartOf="parent">
 
 
                             <ImageButton
@@ -224,10 +229,10 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="10dp"
-                                android:tint="@color/white"
                                 android:layout_marginBottom="5dp"
                                 android:background="@null"
                                 android:src="@drawable/ic_baseline_more_horiz_24"
+                                android:tint="@color/white"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent" />
                         </androidx.constraintlayout.widget.ConstraintLayout>

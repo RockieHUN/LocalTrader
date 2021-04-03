@@ -75,15 +75,20 @@ class BusinessOrdersFragment : Fragment(),
 
     override fun onDialogItemSelected(which: Int) {
 
+        val businessId = userViewModel.user.value!!.businessId
+
         if (orderRequest != null){
             var newStatus = orderRequest!!.status
             when (which){
                 0 -> newStatus = OrderStatus.WORKING_ON_IT
                 1 -> newStatus = OrderStatus.DONE
-                //todo: delete
+                2 -> {
+                    ordersRepository.deleteOrder(orderRequest!!.orderRequestId, businessId)
+                    return
+                }
             }
 
-            val businessId = userViewModel.user.value!!.businessId
+
             ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, newStatus)
         }
 
@@ -92,15 +97,14 @@ class BusinessOrdersFragment : Fragment(),
     override fun onDialogPositiveClick(dialog: DialogFragment) {
         if (orderRequest != null){
             val businessId = userViewModel.user.value!!.businessId
-            ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, 2)
+            ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, OrderStatus.ACCEPTED)
         }
-
     }
 
     override fun onDialogNegativeClick(dialog: DialogFragment) {
         if (orderRequest != null){
             val businessId = userViewModel.user.value!!.businessId
-            ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, 5)
+            ordersRepository.updateOrderStatus(businessId, orderRequest!!.orderRequestId, OrderStatus.DECLINED)
         }
     }
 

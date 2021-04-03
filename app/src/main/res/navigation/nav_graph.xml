@@ -247,7 +247,7 @@
     </fragment>
     <fragment
         android:id="@+id/orderChatFragment"
-        android:name="com.example.localtrader.orders.fragments.OrderChatFragment"
+        android:name="com.example.localtrader.chat.fragments.OrderChatFragment"
         android:label="OrderChatFragment" />
     <fragment
         android:id="@+id/bugReportFragment"
@@ -261,7 +261,7 @@
         tools:layout="@layout/fragment_user_agreements" />
     <fragment
         android:id="@+id/messagesFragment"
-        android:name="com.example.localtrader.main_screens.fragments.MessagesFragment"
+        android:name="com.example.localtrader.chat.fragments.MessagesFragment"
         android:label="fragment_messages"
         tools:layout="@layout/fragment_messages" >
         <action

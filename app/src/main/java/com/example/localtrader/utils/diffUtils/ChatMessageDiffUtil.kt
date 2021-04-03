@@ -1,7 +1,7 @@
 package com.example.localtrader.utils.diffUtils
 
 import androidx.recyclerview.widget.DiffUtil
-import com.example.localtrader.orders.models.ChatMessage
+import com.example.localtrader.chat.models.ChatMessage
 
 class ChatMessageDiffUtil(
     private val oldItems : List<ChatMessage>,

@@ -1,7 +1,6 @@
 package com.example.localtrader.business.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
+import com.example.localtrader.chat.models.ChatInfo
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
 import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
@@ -39,7 +39,7 @@ class BusinessProfileFragment : Fragment(),
     private val businessViewModel : BusinessViewModel by activityViewModels()
     private val productViewModel : ProductViewModel by activityViewModels()
     private val navigationViewModel : NavigationViewModel by activityViewModels()
-    private val chatViewModel : ChatViewModel by activityViewModels()
+    private val messagesViewModel : MessagesViewModel by activityViewModels()
     private lateinit var uid : String
     
 
@@ -105,8 +105,13 @@ class BusinessProfileFragment : Fragment(),
         }
 
         binding.chatButton.setOnClickListener {
-            chatViewModel.clientId = auth.currentUser!!.uid
-            chatViewModel.businessId = businessViewModel.businessId
+            val chatInfo = ChatInfo(
+                businessId = businessViewModel.businessId,
+                userId = auth.currentUser!!.uid,
+                businessName = businessViewModel.business.value!!.name,
+                userName = "${userViewModel.user.value!!.firstname} ${userViewModel.user.value!!.lastname}"
+            )
+            messagesViewModel.chatInfo = chatInfo
             findNavController().navigate(R.id.action_businessProfileFragment_to_orderChatFragment)
         }
     }
