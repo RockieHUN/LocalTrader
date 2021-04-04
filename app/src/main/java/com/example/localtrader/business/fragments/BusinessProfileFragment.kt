@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
-import com.example.localtrader.chat.models.ChatInfo
+import com.example.localtrader.chat.models.ChatLoadInformation
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
 import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
@@ -105,13 +105,12 @@ class BusinessProfileFragment : Fragment(),
         }
 
         binding.chatButton.setOnClickListener {
-            val chatInfo = ChatInfo(
+            val chatLoadInformation = ChatLoadInformation(
                 businessId = businessViewModel.businessId,
                 userId = auth.currentUser!!.uid,
-                businessName = businessViewModel.business.value!!.name,
-                userName = "${userViewModel.user.value!!.firstname} ${userViewModel.user.value!!.lastname}"
+                whoIsTheOther = 2
             )
-            messagesViewModel.chatInfo = chatInfo
+            messagesViewModel.chatLoadInformation = chatLoadInformation
             findNavController().navigate(R.id.action_businessProfileFragment_to_orderChatFragment)
         }
     }
@@ -206,7 +205,6 @@ class BusinessProfileFragment : Fragment(),
             findNavController().navigate(id)
         }
     }
-
 
     override fun onItemClick(position: Int) {
         return

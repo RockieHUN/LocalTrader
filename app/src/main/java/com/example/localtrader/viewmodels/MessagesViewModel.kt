@@ -1,32 +1,64 @@
 package com.example.localtrader.viewmodels
 
+import android.widget.TextView
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.localtrader.chat.models.ChatInfo
+import com.example.localtrader.authentication.models.User
+import com.example.localtrader.business.models.Business
+import com.example.localtrader.chat.models.ChatLoadInformation
 import com.example.localtrader.chat.models.ChatMessage
 import com.example.localtrader.chat.models.MessageInfo
+import com.example.localtrader.utils.comparators.FirebaseDateComparator
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
 
 class MessagesViewModel(): ViewModel() {
 
-    var chatInfo : ChatInfo? = null
+    var chatLoadInformation : ChatLoadInformation? = null
+
     private val firestore = Firebase.firestore
     val chatItemMessages : MutableLiveData<List<ChatMessage>> = MutableLiveData()
     val messagesInfoList : MutableLiveData<List<MessageInfo>> = MutableLiveData()
 
 
-    fun loadChat(){
-        if (chatInfo == null) return
+    fun loadChat(header : TextView){
+        if (chatLoadInformation == null) return
+        val businessId = chatLoadInformation!!.businessId
+        val userId = chatLoadInformation!!.userId
+        val whoIsTheOther = chatLoadInformation!!.whoIsTheOther
+
+        if (whoIsTheOther == 1){
+            firestore.collection("users")
+                .document(userId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val user : User? = snapshot.toObject()
+                    if (user != null){
+                        header.text = "${user.firstname} ${user.lastname}"
+                    }
+                }
+        }
+        else{
+            firestore.collection("businesses")
+                .document(businessId)
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val business : Business? = snapshot.toObject()
+                    if (business != null){
+                        header.text = business.name
+                    }
+                }
+        }
 
         firestore.collection("businesses")
-            .document(chatInfo!!.businessId)
+            .document(businessId)
             .collection("chatCollection")
-            .document(chatInfo!!.userId)
-            .collection(chatInfo!!.userId)
+            .document(userId)
+            .collection(userId)
             .orderBy("date", Query.Direction.ASCENDING)
             .limit(20)
             .addSnapshotListener{ snapshot, e ->
@@ -42,7 +74,7 @@ class MessagesViewModel(): ViewModel() {
             }
     }
 
-    fun loadMessages(userId : String){
+    fun loadMessages(userId : String, businessId : String?){
         firestore.collection("users")
             .document(userId)
             .collection("chatCollection")
@@ -50,7 +82,27 @@ class MessagesViewModel(): ViewModel() {
             .limit(20)
             .get()
             .addOnSuccessListener { snapshot ->
-                messagesInfoList.value = snapshot.toObjects<MessageInfo>()
+                var messages = snapshot.toObjects<MessageInfo>().toMutableList()
+
+                if (businessId != null){
+                    firestore.collection("businesses")
+                        .document(businessId)
+                        .collection("chatCollection")
+                        .orderBy("last_message_date", Query.Direction.DESCENDING)
+                        .limit(20)
+                        .get()
+                        .addOnSuccessListener { snapshot2 ->
+                            messages.addAll(snapshot2.toObjects())
+                            messages = messages.sortedWith(FirebaseDateComparator).toMutableList()
+                            messagesInfoList.value = messages
+                        }
+                        .addOnFailureListener{
+                            messagesInfoList.value = messages
+                        }
+                }
+                else{
+                    messagesInfoList.value = messages
+                }
             }
     }
 
@@ -62,51 +114,76 @@ class MessagesViewModel(): ViewModel() {
     // PRIVATE FUNCTIONS
 
     private fun addMessageToBusiness(message : ChatMessage){
-        if (chatInfo == null) return
+        if (chatLoadInformation == null) return
+        val businessId = chatLoadInformation!!.businessId
+        val userId = chatLoadInformation!!.userId
 
         //add message
         firestore.collection("businesses")
-            .document(chatInfo!!.businessId)
+            .document(businessId)
             .collection("chatCollection")
-            .document(chatInfo!!.userId)
-            .collection(chatInfo!!.userId)
+            .document(userId)
+            .collection(userId)
             .add(message)
 
         //update the date of the last modification and friend? name
-        val map = mapOf(
-            "last_message_date" to  message.date,
-            "last_message" to message.message,
-            "client" to chatInfo!!.userName)
+        firestore.collection("users")
+            .document(userId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val user : User? = snapshot.toObject()
+                if (user != null){
+                    val info = MessageInfo(
+                        senderName = "${user.firstname} ${user.lastname}",
+                        last_message = message.message,
+                        last_message_date = message.date,
+                        senderId = userId,
+                        senderType = 1
+                    )
+                    firestore.collection("businesses")
+                        .document(businessId)
+                        .collection("chatCollection")
+                        .document(userId)
+                        .set(info)
+                }
+            }
 
-        firestore.collection("businesses")
-            .document(chatInfo!!.businessId)
-            .collection("chatCollection")
-            .document(chatInfo!!.userId)
-            .set(map)
+
     }
 
     private fun addMessageToUser(message : ChatMessage){
-        if (chatInfo == null) return
+        if (chatLoadInformation== null) return
+        val businessId = chatLoadInformation!!.businessId
+        val userId = chatLoadInformation!!.userId
 
         //add message
         firestore.collection("users")
-            .document(chatInfo!!.userId)
+            .document(userId)
             .collection("chatCollection")
-            .document(chatInfo!!.businessId)
-            .collection(chatInfo!!.businessId)
+            .document(businessId)
+            .collection(businessId)
             .add(message)
 
         //update the date of the last modification and friend? name
-        val map = mapOf(
-            "last_message_date" to  message.date,
-            "last_message" to  message.message,
-            "client" to chatInfo!!.businessName
-        )
+        firestore.collection("businesses")
+            .document(businessId)
+            .get()
+            .addOnSuccessListener { snapshot ->
+                val business : Business? = snapshot.toObject()
+                if (business!= null){
+                    val info = MessageInfo(
+                        senderName = business.name,
+                        last_message = message.message,
+                        last_message_date = message.date,
+                        senderId = businessId,
+                        senderType = 2)
 
-        firestore.collection("users")
-            .document(chatInfo!!.userId)
-            .collection("chatCollection")
-            .document(chatInfo!!.businessId)
-            .set(map)
+                    firestore.collection("users")
+                        .document(userId)
+                        .collection("chatCollection")
+                        .document(businessId)
+                        .set(info)
+                }
+            }
     }
 }

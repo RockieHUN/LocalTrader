@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class OrderChatFragment : Fragment(),
+class ChatFragment : Fragment(),
         ChatAdapter.OnContentUpdateListener
 {
 
@@ -72,7 +72,6 @@ class OrderChatFragment : Fragment(),
                 messagesViewModel.sendMessage(message)
             }
         }
-
     }
 
 
@@ -88,7 +87,7 @@ class OrderChatFragment : Fragment(),
                 adapter.updateData(messages)
             })
 
-            messagesViewModel.loadChat()
+            messagesViewModel.loadChat(binding.header)
         }
 
     }
