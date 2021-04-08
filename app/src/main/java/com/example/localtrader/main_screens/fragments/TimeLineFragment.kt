@@ -1,14 +1,19 @@
 package com.example.localtrader.main_screens.fragments
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.appcompat.widget.SearchView
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
@@ -44,6 +49,7 @@ import kotlin.concurrent.timerTask
 class TimeLineFragment : Fragment(),
     PopularProductsAdapter.OnItemClickListener,
     LocalBusinessesAdapter.OnItemClickListener,
+    SearchView.OnQueryTextListener,
     NoticeDialog.OnDismissListener
 {
     private lateinit var binding : FragmentTimeLineBinding
@@ -53,7 +59,7 @@ class TimeLineFragment : Fragment(),
     private val businessViewModel : BusinessViewModel by activityViewModels()
     private val productViewModel : ProductViewModel by activityViewModels()
     private val navigationViewModel : NavigationViewModel by activityViewModels()
-    private lateinit var dataStoreViewModel : DataStoreViewModel
+    //private lateinit var dataStoreViewModel : DataStoreViewModel
 
     private lateinit var repository : TimeLineRepository
 
@@ -64,7 +70,7 @@ class TimeLineFragment : Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        dataStoreViewModel = ViewModelProvider(requireActivity()).get(DataStoreViewModel::class.java)
+        //dataStoreViewModel = ViewModelProvider(requireActivity()).get(DataStoreViewModel::class.java)
         auth = Firebase.auth
         navigationViewModel.origin = 1
     }
@@ -88,6 +94,7 @@ class TimeLineFragment : Fragment(),
         setUpVisuals()
         setUpListeners()
 
+        searchLogic()
         recyclePopularProducts()
         locationData()
         recycleLocalBusinesses()
@@ -118,6 +125,22 @@ class TimeLineFragment : Fragment(),
         binding.profilePicture.setOnClickListener {
             findNavController().navigate(R.id.action_timeLineFragment_to_profileFragment)
         }
+    }
+
+    //------------------------------- SEARCH ----------------------------------
+    private fun searchLogic(){
+        binding.searchView.setOnQueryTextListener(this)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText != null) {
+            Log.d("search", newText)
+        }
+        return true
     }
 
     // ------------------------------------------------- LOCATION ---------------------------------------------------
@@ -174,8 +197,6 @@ class TimeLineFragment : Fragment(),
         }
     }
 
-
-
     // ---------------------------------------------------- FEED - Recycle Views --------------------------------------------
 
     //set recommended products recycle view
@@ -209,7 +230,7 @@ class TimeLineFragment : Fragment(),
         binding.recycleLocalBusinesses.setHasFixedSize(true)
 
         repository.localBusinesses.observe(viewLifecycleOwner, { businesses ->
-           adapter.updateData(businesses)
+           adapter.updateData(businesses.shuffled())
         })
 
         deviceLocation.observe(viewLifecycleOwner,{
@@ -219,7 +240,7 @@ class TimeLineFragment : Fragment(),
             }
 
             lifecycleScope.launch {
-                repository.getLocalBusinesses(location)
+                repository.getLocalBusinesses(location, requireContext())
             }
         })
 

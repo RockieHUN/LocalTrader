@@ -59,7 +59,7 @@ class MessagesViewModel(): ViewModel() {
             .collection("chatCollection")
             .document(userId)
             .collection(userId)
-            .orderBy("date", Query.Direction.ASCENDING)
+            .orderBy("date", Query.Direction.DESCENDING)
             .limit(20)
             .addSnapshotListener{ snapshot, e ->
 
@@ -69,7 +69,7 @@ class MessagesViewModel(): ViewModel() {
                 }
 
                 if (snapshot != null && !snapshot.isEmpty){
-                    chatItemMessages.value = snapshot.toObjects<ChatMessage>()
+                    chatItemMessages.value = snapshot.toObjects<ChatMessage>().reversed()
                 }
             }
     }

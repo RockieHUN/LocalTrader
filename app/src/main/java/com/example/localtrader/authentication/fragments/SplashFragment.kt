@@ -12,6 +12,8 @@ import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 
 
 class SplashFragment : Fragment() {
@@ -63,7 +65,6 @@ class SplashFragment : Fragment() {
         else{
             findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
         }
-
     }
 
 

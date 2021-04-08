@@ -14,6 +14,7 @@ import com.example.localtrader.chat.models.ChatMessage
 import com.example.localtrader.databinding.FragmentChatBinding
 
 import com.example.localtrader.viewmodels.MessagesViewModel
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -45,6 +46,12 @@ class ChatFragment : Fragment(),
         return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        messagesViewModel.chatItemMessages.removeObservers(viewLifecycleOwner)
+        messagesViewModel.chatItemMessages.value = listOf()
+    }
+
     private fun setUpVisuals(){
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
     }
@@ -66,7 +73,8 @@ class ChatFragment : Fragment(),
                 val uid = auth.currentUser!!.uid
                 val message = ChatMessage(
                     senderId = uid,
-                    message = messageText
+                    message = messageText,
+                    date = Timestamp.now()
                 )
 
                 messagesViewModel.sendMessage(message)
