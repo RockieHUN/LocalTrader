@@ -84,7 +84,7 @@ class MessagesViewModel(): ViewModel() {
             .addOnSuccessListener { snapshot ->
                 var messages = snapshot.toObjects<MessageInfo>().toMutableList()
 
-                if (businessId != null){
+                if (businessId != null && businessId != ""){
                     firestore.collection("businesses")
                         .document(businessId)
                         .collection("chatCollection")

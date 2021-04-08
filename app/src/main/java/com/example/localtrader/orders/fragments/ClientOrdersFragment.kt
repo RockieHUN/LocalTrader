@@ -44,7 +44,7 @@ class ClientOrdersFragment : Fragment(), ClientOrdersAdapter.OnItemClickListener
 
 
         ordersRepository.clientOrders.observe(viewLifecycleOwner,{ orders ->
-            if (orders.isNotEmpty()) binding.noOrdersYet.visibility = View.GONE
+            if (orders.isEmpty()) binding.noOrdersHolder.visibility = View.VISIBLE
             val sortedList = orders.sortedWith(OrderComparator)
             adapter.updateData(sortedList)
         })

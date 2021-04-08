@@ -139,6 +139,7 @@
 
     <!-- Messages -->
     <string name="messages_header"> Üzenetek </string>
+    <string name="messages_no_items"> A beszélgetései itt fognak megjelenni. </string>
 
 
     <string name="ok"> OK </string>

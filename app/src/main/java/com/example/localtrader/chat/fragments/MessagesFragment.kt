@@ -48,8 +48,9 @@ class MessagesFragment : Fragment(), MessagesAdapter.OnItemClickListener {
         binding.recycleView.layoutManager = verticalLayout
         binding.recycleView.setHasFixedSize(true)
 
-        messagesViewModel.messagesInfoList.observe(viewLifecycleOwner, {
-            adapter.updateData(it)
+        messagesViewModel.messagesInfoList.observe(viewLifecycleOwner, { messages->
+            if (messages.isEmpty()) binding.noItemsHolder.visibility = View.VISIBLE
+            adapter.updateData(messages)
         })
         if (auth.currentUser != null)
             messagesViewModel.loadMessages(auth.currentUser!!.uid, userViewModel.user.value?.businessId)
