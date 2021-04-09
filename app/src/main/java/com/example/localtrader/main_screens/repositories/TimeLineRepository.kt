@@ -5,9 +5,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.location.models.MyLocation
-import com.example.localtrader.retrofit.NetworkResponse
+import com.example.localtrader.retrofit.networking.NetworkResponse
 import com.example.localtrader.retrofit.RetrofitInstance
 import com.example.localtrader.product.models.Product
+import com.example.localtrader.retrofit.models.SearchResult
+import com.example.localtrader.retrofit.models.SearchTerm
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -23,6 +25,7 @@ class TimeLineRepository (
 
     val localBusinesses : MutableLiveData<List<Business>> = MutableLiveData()
     val popularProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
+    val searchResults : MutableLiveData<List<SearchResult>> = MutableLiveData()
 
 
     suspend fun getLocalBusinesses(location : MyLocation?, context : Context) {
@@ -41,6 +44,18 @@ class TimeLineRepository (
                 }
             }
 
+        }
+        catch (e : Error){
+            Firebase.crashlytics.log(e.toString())
+        }
+    }
+
+    suspend fun search(searchTerm : SearchTerm, context : Context){
+        try{
+            val response = RetrofitInstance.getInstance(context).search(searchTerm)
+            if (response is NetworkResponse.Success){
+                searchResults.value = response.body
+            }
         }
         catch (e : Error){
             Firebase.crashlytics.log(e.toString())

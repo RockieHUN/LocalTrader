@@ -111,6 +111,10 @@ class ProfileFragment : Fragment(),
             findNavController().navigate(R.id.action_profileFragment_to_timeLineFragment)
         }
 
+        binding.favoritesSection.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_favoritesFragment)
+        }
+
         binding.logoutSection.setOnClickListener {
             val dialog = YesNoDialogFragment(resources.getString(R.string.logout_confirmation),this)
             dialog.show(requireActivity().supportFragmentManager, null)

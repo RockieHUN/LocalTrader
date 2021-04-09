@@ -8,9 +8,9 @@
         android:title="@string/mainIcon"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/favoritesFragment"
-        android:icon="@drawable/ic_baseline_favorite_24"
-        android:title="@string/favoritesIcon"
+        android:id="@+id/feedFragment"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="@string/feedIcon"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/messagesFragment"

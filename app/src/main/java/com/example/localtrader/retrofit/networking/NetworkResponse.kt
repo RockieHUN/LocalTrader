@@ -1,4 +1,4 @@
-package com.example.localtrader.retrofit
+package com.example.localtrader.retrofit.networking
 
 import java.io.IOException
 

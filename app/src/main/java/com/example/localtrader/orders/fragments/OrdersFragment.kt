@@ -1,4 +1,4 @@
-package com.example.localtrader.main_screens.fragments
+package com.example.localtrader.orders.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

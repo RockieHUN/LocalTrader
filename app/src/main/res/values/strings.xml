@@ -35,7 +35,7 @@
 
     <!-- Bottom nav menu -->
     <string name="mainIcon"> Kezdőlap </string>
-    <string name="favoritesIcon"> Kedvencek </string>
+    <string name="feedIcon"> Felfedezés </string>
     <string name="ordersIcon"> Rendelések </string>
     <string name="profileIcon"> Profil </string>
     <string name="chatIcon"> Üzenetek </string>
@@ -56,6 +56,7 @@
     <string name="my_business"> Vállalkozásom </string>
     <string name="create_business"> Új vállalkozás</string>
     <string name="logout"> Kijelentkezés </string>
+    <string name="favoritesText"> Kedvencek </string>
     <string name="report_bug"> Hiba jelentése</string>
     <string name="logout_confirmation"> Biztosan kijelentkezik?</string>
 

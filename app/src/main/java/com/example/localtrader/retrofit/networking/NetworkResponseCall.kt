@@ -1,4 +1,4 @@
-package com.example.localtrader.retrofit
+package com.example.localtrader.retrofit.networking
 
 import okhttp3.Request
 import okhttp3.ResponseBody

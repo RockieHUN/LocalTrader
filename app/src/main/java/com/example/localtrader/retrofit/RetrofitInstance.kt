@@ -1,6 +1,7 @@
 package com.example.localtrader.retrofit
 
 import android.content.Context
+import com.example.localtrader.retrofit.networking.NetworkResponseAdapterFactory
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

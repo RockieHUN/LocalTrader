@@ -1,4 +1,4 @@
-package com.example.localtrader.retrofit
+package com.example.localtrader.retrofit.networking
 
 import retrofit2.Call
 import retrofit2.CallAdapter

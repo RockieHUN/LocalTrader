@@ -5,7 +5,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main_screens.fragments.OrdersFragment">
+    tools:context=".orders.fragments.OrdersFragment">
 
 
     <androidx.viewpager2.widget.ViewPager2

@@ -17,8 +17,7 @@ class ChatAdapter (
 
     private var items = listOf<ChatMessage>()
 
-    inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
-        View.OnClickListener{
+    inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
         val messageView = itemView.findViewById<TextView>(R.id.message_text)
 
@@ -27,9 +26,6 @@ class ChatAdapter (
             messageView.text = currentItem.message
         }
 
-        override fun onClick(v: View?) {
-            return
-        }
     }
 
 

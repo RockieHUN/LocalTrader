@@ -117,10 +117,13 @@
         <action
             android:id="@+id/action_profileFragment_to_bugReportFragment"
             app:destination="@id/bugReportFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_favoritesFragment"
+            app:destination="@id/favoritesFragment" />
     </fragment>
     <fragment
         android:id="@+id/ordersFragment"
-        android:name="com.example.localtrader.main_screens.fragments.OrdersFragment"
+        android:name="com.example.localtrader.orders.fragments.OrdersFragment"
         android:label="ClientOrdersFragment"
         tools:layout="@layout/fragment_orders">
         <action
@@ -271,4 +274,9 @@
             android:id="@+id/action_messagesFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/feedFragment"
+        android:name="com.example.localtrader.feed.FeedFragment"
+        android:label="fragment_feed"
+        tools:layout="@layout/fragment_feed" />
 </navigation>
