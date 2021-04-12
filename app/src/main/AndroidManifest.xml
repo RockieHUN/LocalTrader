@@ -25,6 +25,14 @@
         android:theme="@style/Theme.LocalTrader">
 
 
+        <!--  AdMob -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5232015652815177~5944286548" />
+            <!--android:value="ca-app-pub-3940256099942544/2247696110"/> -->
+
+
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

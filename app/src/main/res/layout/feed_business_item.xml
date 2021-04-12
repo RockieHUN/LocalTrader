@@ -7,6 +7,7 @@
 
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
@@ -141,8 +142,5 @@
 
 
     </androidx.cardview.widget.CardView>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

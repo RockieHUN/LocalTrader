@@ -6,12 +6,15 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.localtrader.databinding.ActivityMainBinding
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
+        initAdMod()
+
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/myTopic")
         supportActionBar?.hide()
 
@@ -19,5 +22,11 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.fragment)
         val bottomNav = binding.bottomNavigationView
         bottomNav.setupWithNavController(navController)
+
+
+    }
+
+    private fun initAdMod(){
+        MobileAds.initialize(this) {}
     }
 }

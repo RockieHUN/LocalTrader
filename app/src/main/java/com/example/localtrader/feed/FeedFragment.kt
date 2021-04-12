@@ -1,6 +1,7 @@
 package com.example.localtrader.feed
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentFeedBinding
 import com.example.localtrader.feed.adapters.FeedAdapter
+import com.example.localtrader.feed.models.FeedAdItem
+import com.example.localtrader.feed.models.FeedItem
 import com.example.localtrader.retrofit.models.SearchTerm
 import kotlinx.coroutines.launch
 
@@ -45,6 +48,7 @@ SearchView.OnQueryTextListener{
         binding.recycleView.setHasFixedSize(true)
 
         feedViewModel.feedItems.observe(viewLifecycleOwner, { feedItems ->
+            //val newFeedItems = addAdsToFeed(feedItems)
             adapter.updateData(feedItems)
         })
         feedViewModel.loadFeed(viewLifecycleOwner)
@@ -59,5 +63,16 @@ SearchView.OnQueryTextListener{
 
         }
         return true
+    }
+
+    private fun addAdsToFeed(feedItems : List<FeedItem>) : List<FeedItem>{
+        val newFeedItems = feedItems.toMutableList()
+        val atEveryXIndex = 2
+        val numberOfAds = feedItems.size / atEveryXIndex
+
+        for (i in 1..numberOfAds)
+        newFeedItems.add(i*atEveryXIndex, FeedAdItem())
+
+        return newFeedItems
     }
 }

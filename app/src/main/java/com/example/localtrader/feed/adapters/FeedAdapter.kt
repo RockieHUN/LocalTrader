@@ -1,6 +1,7 @@
 package com.example.localtrader.feed.adapters
 
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
+import com.example.localtrader.feed.models.FeedAdItem
 import com.example.localtrader.feed.models.FeedBusinessItem
 import com.example.localtrader.feed.models.FeedItem
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.nativead.MediaView
+import com.google.android.gms.ads.nativead.NativeAd
+import com.google.android.gms.ads.nativead.NativeAdOptions
+import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
@@ -57,12 +67,51 @@ class FeedAdapter(
 
         fun bind(position: Int){
             val currentItem = items[position]
+
+            //TODO: Clear ads from memory
+
+
+            val adAppIconView = itemView.findViewById<ImageView>(R.id.ad_app_icon)
+            val adHeaderView = itemView.findViewById<TextView>(R.id.ad_headline)
+            val adAdvertiserNameView = itemView.findViewById<TextView>(R.id.ad_advertiser_name)
+            //val mediaView = itemView.findViewById<MediaView>(R.id.media_view)
+
+            val adloader = AdLoader.Builder(activity, "ca-app-pub-3940256099942544/2247696110")
+                .forNativeAd { ad : NativeAd ->
+
+                    if (ad.icon!= null)
+                    adAppIconView.setImageDrawable(ad.icon!!.drawable)
+
+                    //if (ad.mediaContent!= null){
+                    //    mediaView.setMediaContent(ad.mediaContent!!)
+                    //}
+
+                    adHeaderView.text = ad.headline
+                    adAdvertiserNameView.text = ad.advertiser
+
+
+                    itemView as NativeAdView
+                    itemView.setNativeAd(ad)
+                }
+                .withAdListener(object : AdListener(){
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        Log.d("MYAD", "failed to load ad ${error}")
+                    }
+                })
+                .withNativeAdOptions(
+                    NativeAdOptions.Builder()
+                        .build()
+                )
+                .build()
+
+            adloader.loadAd(AdRequest.Builder().build())
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
             is FeedBusinessItem -> 1
+            is FeedAdItem -> 3
             else -> 0
         }
     }
@@ -73,6 +122,9 @@ class FeedAdapter(
             1 -> BusinessViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.feed_business_item, parent, false)
             )
+            3 -> AdViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.feed_ad_item, parent, false)
+            )
             else -> BusinessViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.feed_business_item, parent, false)
             )
@@ -80,8 +132,9 @@ class FeedAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (items[position] is FeedBusinessItem){
-            (holder as BusinessViewHolder).bind(position)
+        when (items[position]){
+            is FeedBusinessItem -> (holder as BusinessViewHolder).bind(position)
+            is FeedAdItem -> (holder as AdViewHolder).bind(position)
         }
     }
 

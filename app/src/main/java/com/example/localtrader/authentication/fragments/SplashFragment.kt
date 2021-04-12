@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.viewmodels.UserViewModel
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -37,6 +38,7 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpVisuals()
+       // initAdMod()
         tryToLogin()
     }
 
@@ -67,5 +69,10 @@ class SplashFragment : Fragment() {
         }
     }
 
+    private fun initAdMod(){
+        MobileAds.initialize(requireContext()) {
+            //tryToLogin()
+        }
+    }
 
 }
