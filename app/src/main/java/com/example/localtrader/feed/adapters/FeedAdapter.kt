@@ -24,6 +24,10 @@ import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.util.logging.Handler
 
 class FeedAdapter(
     private val activity : Activity
@@ -79,12 +83,8 @@ class FeedAdapter(
             val adloader = AdLoader.Builder(activity, "ca-app-pub-3940256099942544/2247696110")
                 .forNativeAd { ad : NativeAd ->
 
-                    if (ad.icon!= null)
-                    adAppIconView.setImageDrawable(ad.icon!!.drawable)
 
-                    //if (ad.mediaContent!= null){
-                    //    mediaView.setMediaContent(ad.mediaContent!!)
-                    //}
+                    if (ad.icon!= null)  adAppIconView.setImageDrawable(ad.icon!!.drawable)
 
                     adHeaderView.text = ad.headline
                     adAdvertiserNameView.text = ad.advertiser
@@ -105,6 +105,7 @@ class FeedAdapter(
                 .build()
 
             adloader.loadAd(AdRequest.Builder().build())
+
         }
     }
 

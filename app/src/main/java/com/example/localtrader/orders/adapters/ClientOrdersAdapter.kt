@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.FtsOptions
 import com.example.localtrader.R
 import com.example.localtrader.orders.models.OrderRequest
 import com.example.localtrader.utils.constants.OrderStatus
@@ -77,6 +78,14 @@ class ClientOrdersAdapter (
             OrderStatus.DECLINED -> {
                 holder.statusView.text = context.resources.getString(R.string.order_status_declined)
                 holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_DECLINED))
+            }
+            OrderStatus.WORKING_ON_IT ->{
+                holder.statusView.text = context.resources.getString(R.string.order_status_working_on_it)
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_WORKING_ON_IT))
+            }
+            OrderStatus.DONE ->{
+                holder.statusView.text = context.resources.getString(R.string.order_status_done)
+                holder.item.setBackgroundColor(Color.parseColor(OrderStatus.COLOR_DONE))
             }
 
         }

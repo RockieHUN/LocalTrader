@@ -4,4 +4,10 @@
         <item name="colorControlNormal">@color/white</item>
         <item name="android:textSize">20sp</item>
     </style>
+
+    <style name="Splash" parent="Theme.AppCompat">
+        <item name="android:windowBackground">@drawable/splash_view</item>
+    </style>
+
 </resources>
+

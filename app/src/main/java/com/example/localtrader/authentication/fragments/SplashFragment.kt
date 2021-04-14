@@ -38,7 +38,6 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setUpVisuals()
-       // initAdMod()
         tryToLogin()
     }
 
@@ -66,12 +65,6 @@ class SplashFragment : Fragment() {
         }
         else{
             findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
-        }
-    }
-
-    private fun initAdMod(){
-        MobileAds.initialize(requireContext()) {
-            //tryToLogin()
         }
     }
 

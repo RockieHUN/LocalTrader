@@ -13,7 +13,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initAdMod()
+
 
         FirebaseMessaging.getInstance().subscribeToTopic("/topics/myTopic")
         supportActionBar?.hide()
@@ -26,7 +26,5 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun initAdMod(){
-        MobileAds.initialize(this) {}
-    }
+
 }
