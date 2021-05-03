@@ -1,4 +1,4 @@
-package com.example.localtrader.retrofit.models
+package com.example.localtrader.search.models
 
 data class SearchTerm(
     var searchTerm : String = ""

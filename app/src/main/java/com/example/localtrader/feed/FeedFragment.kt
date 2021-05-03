@@ -1,28 +1,30 @@
 package com.example.localtrader.feed
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentFeedBinding
 import com.example.localtrader.feed.adapters.FeedAdapter
 import com.example.localtrader.feed.models.FeedAdItem
 import com.example.localtrader.feed.models.FeedItem
-import com.example.localtrader.retrofit.models.SearchTerm
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 
-class FeedFragment : Fragment(),
-SearchView.OnQueryTextListener{
+class FeedFragment : Fragment()
+{
 
     private lateinit var binding : FragmentFeedBinding
     private val feedViewModel : FeedViewModel by activityViewModels()
@@ -37,8 +39,15 @@ SearchView.OnQueryTextListener{
         savedInstanceState: Bundle?
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false)
+        setUpListeners()
         createRecycle()
         return binding.root
+    }
+
+    private fun setUpListeners(){
+        binding.searchIcon.setOnClickListener{
+            findNavController().navigate(R.id.action_feedFragment_to_searchFragment)
+        }
     }
 
     private fun createRecycle(){
@@ -51,26 +60,41 @@ SearchView.OnQueryTextListener{
 
 
         feedViewModel.feedItems.observe(viewLifecycleOwner, { feedItems ->
-            val newFeedItems = addAdsToFeed(feedItems)
-            adapter.updateData(newFeedItems)
+            //val newFeedItems = addAdsToFeed(feedItems)
+            adapter.updateData(feedItems)
         })
         feedViewModel.loadFeed(viewLifecycleOwner)
+        addScrollListener()
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
-    }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) {
+    private fun addScrollListener(){
 
-        }
-        return true
+        binding.recycleView.addOnScrollListener( object : RecyclerView.OnScrollListener(){
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+
+                val itemCount = feedViewModel.feedItems.value!!.size
+                val layoutManager = binding.recycleView.layoutManager as LinearLayoutManager
+
+                val firstPosition = layoutManager.findFirstVisibleItemPosition()
+                val lastPosition = layoutManager.findLastVisibleItemPosition()
+
+                Log.d("MYFEED", "last: ${lastPosition} total: ${itemCount}")
+                if (lastPosition >= itemCount - 3) {
+                    GlobalScope.launch {
+                        feedViewModel.loadNextItems()
+                    }
+                }
+            }
+        })
     }
 
     private fun addAdsToFeed(feedItems : List<FeedItem>) : List<FeedItem>{
         val newFeedItems = feedItems.toMutableList()
-        val atEveryXIndex = 2
+        val atEveryXIndex = 5
         val numberOfAds = feedItems.size / atEveryXIndex
 
         for (i in 1..numberOfAds)

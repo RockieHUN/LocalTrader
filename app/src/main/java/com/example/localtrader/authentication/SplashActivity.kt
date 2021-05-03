@@ -17,11 +17,12 @@ class SplashActivity : Activity() {
         val intent = Intent(this, MainActivity :: class.java)
         startActivity(intent)
         finish()
-
     }
 
     private fun initAdMod(){
-        MobileAds.initialize(this) {}
+        MobileAds.initialize(this) {
+
+        }
     }
 
 

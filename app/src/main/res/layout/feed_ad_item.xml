@@ -53,13 +53,13 @@
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
                     android:backgroundTint="@color/primary"
-                    android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:padding="3dp"
                         android:text="Reklám"
                         android:textColor="@color/white"
                         android:textStyle="bold" />
@@ -75,10 +75,11 @@
 
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/ad_text_holder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:cardCornerRadius="10dp"
-
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/guideline3"
                     app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -89,6 +90,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:padding="5dp"
                         android:background="@color/primary">
 
                         <TextView

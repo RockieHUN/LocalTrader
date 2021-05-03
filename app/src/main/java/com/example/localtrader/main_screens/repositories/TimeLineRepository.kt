@@ -8,8 +8,8 @@ import com.example.localtrader.location.models.MyLocation
 import com.example.localtrader.retrofit.networking.NetworkResponse
 import com.example.localtrader.retrofit.RetrofitInstance
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.retrofit.models.SearchResult
-import com.example.localtrader.retrofit.models.SearchTerm
+import com.example.localtrader.search.models.SearchResult
+import com.example.localtrader.search.models.SearchTerm
 import com.google.firebase.crashlytics.ktx.crashlytics
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore

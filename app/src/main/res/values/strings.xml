@@ -142,6 +142,8 @@
     <string name="messages_header"> Üzenetek </string>
     <string name="messages_no_items"> A beszélgetései itt fognak megjelenni. </string>
 
+    <!--Feed -->
+    <string name="feed_no_more_text"> A felfedezési lista végére ért!</string>
 
     <string name="ok"> OK </string>
 
