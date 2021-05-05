@@ -1,5 +1,6 @@
 package com.example.localtrader.authentication.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +10,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
-import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
+
 
 
 class SplashFragment : Fragment() {
@@ -64,7 +63,11 @@ class SplashFragment : Fragment() {
 
         }
         else{
-            findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+            val sharedPref = requireActivity().getSharedPreferences("onBoard", Context.MODE_PRIVATE)
+            val played = sharedPref.getBoolean("played",false)
+
+            if (played) findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+            else findNavController().navigate(R.id.action_splashFragment_to_onBoardFragment)
         }
     }
 

@@ -12,6 +12,15 @@
     <!--Notification Dialog texts -->
     <string name="notification_location_data">Az alkalmazás helyadatokat használ annak érdekében, hogy jobb szolgáltatásokat nyújtson, valamint személyre szabott ajánlásokat jelenítsen meg. A helyadatok felhasználását később is engedélyezheti az eszköz beállításaiban.</string>
 
+
+    <!--OnBoarding screen -->
+    <string name="onboard_first_header">Üdvözöl a LocalTrader!</string>
+    <string name="onboard_first_text"> Köszönjük, hogy az applikációnkat választotta! Mindent megteszünk annak érdekében, hogy Önnek a lehető legjobb felhasználói élményt nyújtsuk!</string>
+    <string name="onboard_second_header"> Vállalkozások </string>
+    <string name="onboard_second_text"> Fedezzen fel közeli kézműves kisvállalkozókat és lépjen kapcsolatba velük, ha megtetszik egy általuk hírdetett termék, vagy ajda el saját kézműves termékeit.</string>
+    <string name="onboard_third_header"> Rendelések kezelése</string>
+    <string name="onboard_third_text"> Kezelje egyszerűen a saját vagy vállakozása rendeléseit egy könnyed és leegyszerüsített rendszer segítségével. Indítson beszélgetéseket a termékek átvételével és kézbesítésével kapcsolatban és használja az általunk bíztosított statisztikai adatokat.</string>
+
     <!-- Authentication -->
     <string name="registration_text"> Regisztráció </string>
     <string name="firstname_text"> Vezetéknév </string>
