@@ -212,8 +212,7 @@ class BusinessProfileFragment : Fragment(),
 
     override fun myOnClickListener(product: Product) {
         productViewModel.product = product
-        val dialog = ProductProfileFragment()
-        dialog.show(requireActivity().supportFragmentManager, null)
+        findNavController().navigate(R.id.action_businessProfileFragment_to_productProfileFragment)
     }
 
     override fun scrollToPositionZero() {

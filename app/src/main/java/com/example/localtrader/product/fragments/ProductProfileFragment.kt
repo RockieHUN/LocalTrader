@@ -1,11 +1,16 @@
 package com.example.localtrader.product.fragments
 
+import android.app.AlertDialog
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -23,17 +28,17 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
-class ProductProfileFragment : DialogFragment() {
-    private lateinit var binding : FragmentProductProfileBinding
+class ProductProfileFragment : Fragment(){
     private lateinit var storage : FirebaseStorage
     private lateinit var firestore : FirebaseFirestore
     private lateinit var auth : FirebaseAuth
 
     private val productViewModel : ProductViewModel by activityViewModels()
-    private val navigationViewModel : NavigationViewModel by activityViewModels()
     private val userViewModel : UserViewModel by activityViewModels()
     private val favoritesViewModel : FavoritesViewModel by activityViewModels()
 
+
+    private lateinit var binding : FragmentProductProfileBinding
     private var isLayerVisible : Boolean = true
 
 
@@ -46,7 +51,7 @@ class ProductProfileFragment : DialogFragment() {
 
     }
 
-    override fun onCreateView(
+   override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
@@ -59,29 +64,11 @@ class ProductProfileFragment : DialogFragment() {
         return binding.root
     }
 
-   /* override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return activity?.let {
-            val builder = AlertDialog.Builder(it)
-            val inflater = requireActivity().layoutInflater;
 
-            builder.setView(inflater.inflate(R.layout.fragment_product_profile, null))
-
-            builder.create()
-        } ?: throw IllegalStateException("Activity cannot be null")
-    }*/
 
     private fun setUpListeners(){
-        binding.productImage.setOnClickListener {
-            switchLayer()
-        }
-
         binding.orderButton.setOnClickListener {
-            this.dismiss()
-            when(navigationViewModel.origin){
-                1 -> findNavController().navigate(R.id.action_timeLineFragment_to_createOrderFragment)
-                2 -> findNavController().navigate(R.id.action_businessProfileFragment_to_createOrderFragment)
-                3 -> findNavController().navigate(R.id.action_productGridFragment_to_createOrderFragment)
-            }
+           findNavController().navigate(R.id.action_productProfileFragment_to_createOrderFragment)
         }
 
         binding.favoriteButton.setOnClickListener {
@@ -90,8 +77,9 @@ class ProductProfileFragment : DialogFragment() {
     }
 
     private fun setUpVisuals(){
+        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         if (userViewModel.user.value!!.businessId == productViewModel.product.businessId){
-            binding.orderButton.visibility = View.GONE
+            binding.orderButtonHolder.visibility = View.GONE
         }
 
         favoritesViewModel.likeButtonVisual(productViewModel.product, binding.favoriteButton)
@@ -111,25 +99,10 @@ class ProductProfileFragment : DialogFragment() {
                     .into(binding.productImage)
             }
 
-        binding.productDescription.text = product.description
+        binding.productDescription .text = product.description
         binding.price.text = product.price.toString()
-    }
-
-    private fun switchLayer(){
-        if (isLayerVisible){
-            binding.infoLayout.animate()
-                .alpha(0f)
-                .duration = 200L
-
-            isLayerVisible = false
-        }
-        else{
-            binding.infoLayout.animate()
-                .alpha(1f)
-                .duration = 200L
-
-            isLayerVisible = true
-        }
+        binding.businessName.text = product.businessName
+        binding.productName.text = product.name
     }
 
 

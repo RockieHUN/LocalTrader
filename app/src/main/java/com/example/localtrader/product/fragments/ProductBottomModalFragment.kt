@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentProductBottomModalBinding
@@ -46,9 +47,7 @@ class ProductBottomModalFragment : BottomSheetDialogFragment(), YesNoDialogFragm
     private fun setUpListeners()
     {
         binding.showProductButton.setOnClickListener {
-            val dialog = ProductProfileFragment()
-            dialog.show(requireActivity().supportFragmentManager, null)
-            this.dismiss()
+            findNavController().navigate(R.id.action_productBottomModalFragment_to_productProfileFragment)
         }
 
         binding.deleteProductButton.setOnClickListener {

@@ -77,8 +77,7 @@ class ProductGridFragment : Fragment(),
             findNavController().navigate(R.id.action_productGridFragment_to_productBottomModalFragment)
         }
         else{
-            val dialog = ProductProfileFragment()
-            dialog.show(requireActivity().supportFragmentManager, null)
+            findNavController().navigate(R.id.action_productGridFragment_to_productProfileFragment)
         }
     }
 

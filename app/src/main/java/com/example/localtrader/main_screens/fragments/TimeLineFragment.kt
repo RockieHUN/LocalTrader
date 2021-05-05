@@ -228,13 +228,6 @@ class TimeLineFragment : Fragment(),
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.VISIBLE
     }
 
-    private fun showDialog(){
-        val dialog = ProductProfileFragment()
-        dialog.show(requireActivity().supportFragmentManager, null)
-    }
-
-
-
     private fun showUserData() {
         userViewModel.downloadUri.observe(viewLifecycleOwner, { uri ->
             Glide.with(requireContext())
@@ -277,7 +270,7 @@ class TimeLineFragment : Fragment(),
 
     override fun myPopProductOnItemClick(product: Product) {
         productViewModel.product = product
-        showDialog()
+        findNavController().navigate(R.id.action_timeLineFragment_to_productProfileFragment)
     }
 
     override fun myRecBusinessOnItemClick(business: Business) {
