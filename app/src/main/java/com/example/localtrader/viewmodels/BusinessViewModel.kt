@@ -17,7 +17,9 @@ class BusinessViewModel : ViewModel() {
     val business : MutableLiveData<Business> = MutableLiveData()
 
     // 1 when coming from profile
-    // 2 when coming from  timeline
+    // 2 when coming from timeline
+    // 3 when coming from feed
+    // 4 when coming from search
     var originFragment : Int = 1
 
     fun loadBusiness(businessId : String)

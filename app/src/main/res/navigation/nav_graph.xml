@@ -211,6 +211,15 @@
         <action
             android:id="@+id/action_businessProfileFragment_to_productProfileFragment"
             app:destination="@id/productProfileFragment" />
+        <action
+            android:id="@+id/action_businessProfileFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_businessProfileFragment_to_feedFragment2"
+            app:destination="@id/feedFragment" />
+        <action
+            android:id="@+id/action_businessProfileFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
     </fragment>
     <fragment
         android:id="@+id/createProductFragment"
@@ -291,11 +300,24 @@
         <action
             android:id="@+id/action_feedFragment_to_searchFragment"
             app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_businessProfileFragment"
+            app:destination="@id/businessProfileFragment" />
+        <action
+            android:id="@+id/action_feedFragment_to_timeLineFragment"
+            app:destination="@id/timeLineFragment" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.localtrader.search.SearchFragment"
-        android:label="SearchFragment" />
+        android:label="SearchFragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_businessProfileFragment"
+            app:destination="@id/businessProfileFragment" />
+        <action
+            android:id="@+id/action_searchFragment_to_feedFragment"
+            app:destination="@id/feedFragment" />
+    </fragment>
     <fragment
         android:id="@+id/onBoardFragment"
         android:name="com.example.localtrader.onboard.OnBoardFragment"

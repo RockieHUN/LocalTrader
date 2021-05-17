@@ -199,6 +199,8 @@ class BusinessProfileFragment : Fragment(),
         when (origin) {
             1 -> id = R.id.action_businessProfileFragment_to_profileFragment
             2 -> id = R.id.action_businessProfileFragment_to_timeLineFragment
+            3 -> id = R.id.action_businessProfileFragment_to_feedFragment
+            4 -> id = R.id.action_businessProfileFragment_to_searchFragment
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {

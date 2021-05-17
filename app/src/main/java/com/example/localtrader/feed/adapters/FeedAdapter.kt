@@ -31,11 +31,16 @@ import kotlinx.coroutines.launch
 import java.util.logging.Handler
 
 class FeedAdapter(
-    private val activity : Activity
+    private val activity : Activity,
+    private val listener : onItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = listOf<FeedItem>()
     private var storage = Firebase.storage
+
+    interface onItemClickListener{
+        fun onBusinessClick(id : String)
+    }
 
     //ViewHolders
     inner class BusinessViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
@@ -43,12 +48,17 @@ class FeedAdapter(
         val logoView = itemView.findViewById<ImageView>(R.id.business_logo)
         val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
         val businessDescriptionView = itemView.findViewById<TextView>(R.id.business_description)
+        val item = itemView.findViewById<CardView>(R.id.item)
 
         fun bind(position: Int){
             val currentItem = items[position] as FeedBusinessItem
 
             businessDescriptionView.text = currentItem.description
             businessNameView.text = currentItem.name
+
+            item.setOnClickListener {
+                listener.onBusinessClick(currentItem.businessId)
+            }
 
             storage.reference.child("businesses/${currentItem.businessId}/logo")
                 .downloadUrl

@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -16,18 +17,18 @@ import com.example.localtrader.databinding.FragmentFeedBinding
 import com.example.localtrader.feed.adapters.FeedAdapter
 import com.example.localtrader.feed.models.FeedAdItem
 import com.example.localtrader.feed.models.FeedItem
+import com.example.localtrader.viewmodels.BusinessViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 
-class FeedFragment : Fragment()
+class FeedFragment : Fragment(),
+    FeedAdapter.onItemClickListener
 {
 
     private lateinit var binding : FragmentFeedBinding
     private val feedViewModel : FeedViewModel by activityViewModels()
+    private val businessViewModel : BusinessViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,10 +49,14 @@ class FeedFragment : Fragment()
         binding.searchIcon.setOnClickListener{
             findNavController().navigate(R.id.action_feedFragment_to_searchFragment)
         }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this){
+            findNavController().navigate(R.id.action_feedFragment_to_timeLineFragment)
+        }
     }
 
     private fun createRecycle(){
-        val adapter = FeedAdapter(requireActivity())
+        val adapter = FeedAdapter(requireActivity(), this)
         binding.recycleView.adapter = adapter
         val verticalLayout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recycleView.layoutManager = verticalLayout
@@ -98,8 +103,14 @@ class FeedFragment : Fragment()
         val numberOfAds = feedItems.size / atEveryXIndex
 
         for (i in 1..numberOfAds)
-        newFeedItems.add(i*atEveryXIndex, FeedAdItem())
+        newFeedItems.add(i * atEveryXIndex, FeedAdItem())
 
         return newFeedItems
+    }
+
+    override fun onBusinessClick(id: String) {
+        businessViewModel.businessId = id
+        businessViewModel.originFragment = 3
+        findNavController().navigate(R.id.action_feedFragment_to_businessProfileFragment)
     }
 }

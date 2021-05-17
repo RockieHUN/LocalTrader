@@ -7,23 +7,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.addCallback
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentSearchBinding
 import com.example.localtrader.search.adapters.SearchAdapter
+import com.example.localtrader.viewmodels.BusinessViewModel
 
 class SearchFragment : Fragment(),
-SearchView.OnQueryTextListener{
+SearchView.OnQueryTextListener,
+SearchAdapter.onItemClickListener{
 
     private lateinit var binding : FragmentSearchBinding
     private val searchViewModel : SearchViewModel by activityViewModels()
+    private val businessViewModel : BusinessViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -32,6 +36,7 @@ SearchView.OnQueryTextListener{
     ): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false)
         setUpVisuals()
+        setUpListeners()
         startSearchEvent()
         return binding.root
     }
@@ -51,8 +56,14 @@ SearchView.OnQueryTextListener{
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
     }
 
+    private fun setUpListeners(){
+        requireActivity().onBackPressedDispatcher.addCallback(this){
+            findNavController().navigate(R.id.action_searchFragment_to_feedFragment)
+        }
+    }
+
     private fun createRecycle(){
-        val adapter = SearchAdapter()
+        val adapter = SearchAdapter(this)
         binding.recycleView.adapter = adapter
         val verticalLayout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recycleView.layoutManager = verticalLayout
@@ -76,5 +87,11 @@ SearchView.OnQueryTextListener{
             searchViewModel.search(newText, requireContext())
         }
         return true
+    }
+
+    override fun onItemClicked(id : String) {
+        businessViewModel.businessId = id
+        businessViewModel.originFragment = 4
+        findNavController().navigate(R.id.action_searchFragment_to_businessProfileFragment)
     }
 }
