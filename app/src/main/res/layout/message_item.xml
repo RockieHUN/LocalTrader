@@ -46,7 +46,6 @@
                 android:layout_marginStart="10dp"
                 android:ellipsize="marquee"
                 android:singleLine="true"
-                android:text="Name Name"
                 android:textSize="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cardView8"
@@ -59,7 +58,6 @@
                 android:layout_marginStart="10dp"
                 android:ellipsize="marquee"
                 android:singleLine="true"
-                android:text="Message message message"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/cardView8"
                 app:layout_constraintTop_toBottomOf="@+id/name" />

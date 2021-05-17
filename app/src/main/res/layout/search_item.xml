@@ -54,7 +54,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="result"
                 android:textAlignment="viewStart"
                 android:textSize="22sp"
                 app:layout_constraintEnd_toEndOf="parent"
