@@ -3,158 +3,171 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.example.localtrader.utils.MySwipeRefresh
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".main_screens.fragments.TimeLineFragment">
+        android:layout_height="wrap_content">
 
-        <ScrollView
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:context=".main_screens.fragments.TimeLineFragment">
 
-
-            <LinearLayout
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:background="@color/primary"
-                    android:padding="10dp"
-                    android:id="@+id/timeline_header"
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/cardView7"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:layout_marginStart="15dp"
-                        app:cardCornerRadius="24dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent">
+                    <!--Header -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:background="@color/primary"
+                        android:padding="10dp"
+                        android:id="@+id/timeline_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/profile_picture"
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/cardView7"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:foreground="?android:attr/selectableItemBackground"
+                            android:layout_marginStart="15dp"
+                            app:cardCornerRadius="24dp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+
+                            <ImageView
+                                android:id="@+id/profile_picture"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:id="@+id/greeting"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/timeline_greeting2"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/cardView7"
+                            app:layout_constraintStart_toEndOf="@+id/cardView7"
+                            app:layout_constraintTop_toTopOf="@+id/cardView7" />
+
+                        <TextView
+                            android:id="@+id/last_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:text="Ákos"
+                            android:textColor="@color/white"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/cardView7"
+                            app:layout_constraintStart_toEndOf="@id/greeting"
+                            app:layout_constraintTop_toTopOf="@+id/cardView7" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="2dp"
+                            android:text="@string/exclamation_mark"
+                            android:textSize="24sp"
+                            app:layout_constraintBottom_toBottomOf="@+id/cardView7"
+                            app:layout_constraintStart_toEndOf="@id/last_name"
+                            app:layout_constraintTop_toTopOf="@+id/cardView7" />
+
+                        <TextView
+                            android:id="@+id/header_conversation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/header_conversation"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/cardView7" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+                    <!-- products -->
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/recommended_products"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/recommended_products_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/recommended_products"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycle_recommendedProducts"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            />
+                            android:layout_height="220dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/recommended_products_text"
+                            tools:listitem="@layout/product_item" />
 
-                    </androidx.cardview.widget.CardView>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-                    <TextView
-                        android:id="@+id/greeting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:text="@string/timeline_greeting2"
-                        android:textSize="24sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/cardView7"
-                        app:layout_constraintStart_toEndOf="@+id/cardView7"
-                        app:layout_constraintTop_toTopOf="@+id/cardView7" />
 
-                    <TextView
-                        android:id="@+id/last_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="Ákos"
-                        android:textColor="@color/white"
-                        android:textSize="24sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/cardView7"
-                        app:layout_constraintStart_toEndOf="@id/greeting"
-                        app:layout_constraintTop_toTopOf="@+id/cardView7" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="2dp"
-                        android:text="@string/exclamation_mark"
-                        android:textSize="24sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/cardView7"
-                        app:layout_constraintStart_toEndOf="@id/last_name"
-                        app:layout_constraintTop_toTopOf="@+id/cardView7" />
-
-                    <TextView
-                        android:id="@+id/header_conversation"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/header_conversation"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/cardView7" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/recommended_products"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/recommended_products_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/recommended_products"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycle_recommendedProducts"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/popular_firms"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:orientation="horizontal"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/recommended_products_text"
-                        tools:listitem="@layout/product_item" />
+                        android:layout_height="wrap_content">
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/popular_firms_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginTop="15dp"
+                            android:text="@string/popular_firms"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/popular_firms"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/popular_firms_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="15dp"
-                        android:text="@string/popular_firms"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recycle_local_businesses"
-                        android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:layout_marginTop="5dp"
-                        android:orientation="horizontal"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/popular_firms_text"
-                        tools:listitem="@layout/product_item" />
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recycle_local_businesses"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/popular_firms_text"
+                            tools:listitem="@layout/business_item" />
 
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            </LinearLayout>
+                </LinearLayout>
 
 
-        </ScrollView>
+            </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.example.localtrader.utils.MySwipeRefresh>
 </layout>
