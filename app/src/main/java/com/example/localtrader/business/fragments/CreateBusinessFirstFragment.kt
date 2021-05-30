@@ -25,16 +25,11 @@ class CreateBusinessFirstFragment : Fragment() {
     private lateinit var binding : FragmentCreateBusinessFirstBinding
     private val creationViewModel : CreateBusinessViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_business_first, container, false)
         setSpinner()
@@ -62,7 +57,6 @@ class CreateBusinessFirstFragment : Fragment() {
     private fun setUpVisuals()
     {
         requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
-
     }
 
     private fun setUpListeners()
@@ -124,9 +118,9 @@ class CreateBusinessFirstFragment : Fragment() {
                 creationViewModel.business.description = description
                 findNavController().navigate(R.id.action_createBusinessFirstFragment_to_createBusinessSecondFragment)
             }
-            1 -> showErrorMessage("A logó feltöltése kötelező!")
-            2 -> showErrorMessage("A vállalkozás nevének legalább 3 karakterből kell állnia!")
-            3 -> showErrorMessage("A vállalkozás leírása kötelező!")
+            1 -> showErrorMessage(resources.getString(R.string.error_missing_image))
+            2 -> showErrorMessage(resources.getString(R.string.error_business_name))
+            3 -> showErrorMessage(resources.getString(R.string.error_business_description))
         }
     }
 
@@ -142,7 +136,7 @@ class CreateBusinessFirstFragment : Fragment() {
     {
         return if (creationViewModel.business.imageUri == null) 1
         else if (name.length < 3) 2
-        else if (description.length < 1 ) 3
+        else if (description.isEmpty()) 3
         else 0
     }
 

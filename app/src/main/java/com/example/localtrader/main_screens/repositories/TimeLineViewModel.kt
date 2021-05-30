@@ -27,6 +27,7 @@ class TimeLineViewModel : ViewModel(){
     private val loadMutex = Mutex()
 
 
+
     val localBusinesses : MutableLiveData<List<Business>> = MutableLiveData()
     val popularProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
     val searchResults : MutableLiveData<List<SearchResult>> = MutableLiveData()

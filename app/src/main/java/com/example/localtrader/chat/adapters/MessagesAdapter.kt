@@ -54,7 +54,7 @@ class MessagesAdapter(
     private fun loadImage(item : MessageInfo, imageView : ImageView){
         //if type is "user"
         if (item.senderType == 1){
-            storage.reference.child("users/${item.senderId}/profilePicture").downloadUrl
+            storage.reference.child("users/${item.senderId}/profilePicture/PROFILE_IMAGE_300").downloadUrl
                 .addOnSuccessListener { uri ->
                     Glide.with(activity)
                         .load(uri)
@@ -65,7 +65,7 @@ class MessagesAdapter(
 
         //if type is "business"
         else{
-            storage.reference.child("businesses/${item.senderId}/logo").downloadUrl
+            storage.reference.child("businesses/${item.senderId}/BUSINESS_IMAGE_400").downloadUrl
                 .addOnSuccessListener { uri ->
                     Glide.with(activity)
                         .load(uri)

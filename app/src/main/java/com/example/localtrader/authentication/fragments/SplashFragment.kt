@@ -2,13 +2,18 @@ package com.example.localtrader.authentication.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.authentication.AuthActivity
+import com.example.localtrader.authentication.models.User
+import com.example.localtrader.authentication.viewmodels.AuthViewModel
 import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -17,12 +22,10 @@ import com.google.firebase.ktx.Firebase
 
 
 class SplashFragment : Fragment() {
-    private lateinit var auth : FirebaseAuth
-    private val userViewModel : UserViewModel by activityViewModels()
+    private val authViewModel : AuthViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
     }
 
     override fun onCreateView(
@@ -36,30 +39,30 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpVisuals()
         tryToLogin()
     }
 
     override fun onPause() {
         super.onPause()
-        userViewModel.removeUserObservers(viewLifecycleOwner)
-    }
-
-    private fun setUpVisuals()
-    {
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
     }
 
 
     private fun tryToLogin()
     {
 
-        if (auth.currentUser != null)
+        if (authViewModel.isLoggedIn())
         {
-            userViewModel.user.observe(viewLifecycleOwner, {
-                findNavController().navigate(R.id.action_splashFragment_to_timeLineFragment)
+            authViewModel.user.observe(viewLifecycleOwner, object : Observer<User> {
+                override fun onChanged(t: User?) {
+                    if (t != null) (requireActivity() as AuthActivity).startMainActivity(t)
+                    else{
+                        authViewModel.logOut()
+                        findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                    }
+                    authViewModel.user.removeObserver(this)
+                }
             })
-            userViewModel.loadUserData(auth.currentUser!!.uid)
+            authViewModel.loadUser()
 
         }
         else{

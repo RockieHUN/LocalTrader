@@ -19,7 +19,7 @@ class ChatAdapter (
 
     inner class SentMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
-        val messageView = itemView.findViewById<TextView>(R.id.message_text)
+        private val messageView: TextView = itemView.findViewById(R.id.message_text)
 
         fun bind(position : Int){
             val currentItem = items[position]
@@ -29,9 +29,9 @@ class ChatAdapter (
     }
 
 
-    inner class RecievedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+    inner class ReceivedMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
-        val messageView = itemView.findViewById<TextView>(R.id.message_text)
+        private val messageView: TextView = itemView.findViewById(R.id.message_text)
 
         fun bind(position: Int){
             val currentItem = items[position]
@@ -40,8 +40,8 @@ class ChatAdapter (
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (items[position].senderId == userId) return 2
-        else return 1
+        return if (items[position].senderId == userId) 2
+        else 1
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -49,14 +49,14 @@ class ChatAdapter (
             SentMessageViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.chat_sent_item, parent, false)
             )
-        } else RecievedMessageViewHolder(
+        } else ReceivedMessageViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.chat_recieved_item, parent, false)
         )
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (items[position].senderId != userId) {
-            (holder as RecievedMessageViewHolder).bind(position)
+            (holder as ReceivedMessageViewHolder).bind(position)
         } else {
             (holder as SentMessageViewHolder).bind(position)
         }

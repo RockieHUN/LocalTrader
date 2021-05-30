@@ -8,6 +8,7 @@ import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -15,14 +16,11 @@ import com.example.localtrader.R
 import com.example.localtrader.business.adapters.BusinessProfileAdapter
 import com.example.localtrader.chat.models.ChatLoadInformation
 import com.example.localtrader.databinding.FragmentBusinessProfileBinding
-import com.example.localtrader.product.fragments.ProductProfileFragment
 import com.example.localtrader.product.models.Product
 import com.example.localtrader.utils.comparators.DateComparator
 import com.example.localtrader.viewmodels.*
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 
@@ -32,10 +30,9 @@ class BusinessProfileFragment : Fragment(),
 {
 
     private lateinit var binding : FragmentBusinessProfileBinding
-    private lateinit var auth : FirebaseAuth
-    private lateinit var storage : FirebaseStorage
+    private val auth = Firebase.auth
+    private val storage = Firebase.storage
 
-    private val userViewModel : UserViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
     private val productViewModel : ProductViewModel by activityViewModels()
     private val navigationViewModel : NavigationViewModel by activityViewModels()
@@ -45,16 +42,13 @@ class BusinessProfileFragment : Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        auth = Firebase.auth
-        storage = Firebase.storage
         navigationViewModel.origin = 2
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_business_profile, container, false)
         setBusinessData()
         return binding.root
@@ -71,21 +65,13 @@ class BusinessProfileFragment : Fragment(),
     override fun onResume() {
         super.onResume()
 
-        if (auth.currentUser == null)
+        if (auth.currentUser != null)
         {
-            findNavController().navigate(R.id.action_businessProfileFragment_to_loginFragment)
-        }
-        else{
             uid = auth.currentUser!!.uid
         }
 
         hideEditingTools()
 
-    }
-
-    override fun onPause() {
-        super.onPause()
-        userViewModel.removeBusinessObservers(viewLifecycleOwner)
     }
 
     private fun setUpVisuals()
@@ -144,16 +130,26 @@ class BusinessProfileFragment : Fragment(),
         binding.recycleView.layoutManager = horizontalLayout
         binding.recycleView.setHasFixedSize(true)
 
-        productViewModel.businessProducts.observe(viewLifecycleOwner,{ productList ->
-            if (productList.isEmpty()){
-                binding.noItemsHolder.visibility = View.VISIBLE
+        productViewModel.businessProducts.observe(viewLifecycleOwner,object : Observer<List<Product>>{
+
+            override fun onChanged(productList: List<Product>?) {
+                if (productList == null){
+                    productViewModel.businessProducts.removeObserver(this)
+                    return
+                }
+
+                if (productList.isEmpty()){
+                    binding.noItemsHolder.visibility = View.VISIBLE
+                }
+                else{
+                    binding.noItemsHolder.visibility = View.GONE
+                }
+
+                //sort list by date
+                val sortedList = productList.sortedWith(DateComparator).toMutableList()
+                adapter.updateData(sortedList)
             }
-            else{
-                binding.noItemsHolder.visibility = View.GONE
-            }
-            //sort list by date
-            val sortedList = productList.sortedWith(DateComparator).toMutableList()
-            adapter.updateData(sortedList)
+
         })
 
         productViewModel.loadBusinessProducts(businessId)
@@ -171,19 +167,22 @@ class BusinessProfileFragment : Fragment(),
                 binding.businessCategory.text = business.category
                 binding.businessDescription.text = business.description
 
-                storage.reference.child("businesses/${businessId}/logo")
+                storage.reference.child("businesses/${businessId}/BUSINESS_IMAGE_720")
                     .downloadUrl
                     .addOnSuccessListener { uri ->
-
-                        Glide.with(requireActivity())
-                            .load(uri)
-                            .centerCrop()
-                            .into(binding.blurImage)
-
                         Glide.with(requireActivity())
                             .load(uri)
                             .centerCrop()
                             .into(binding.businessProfilePicture)
+                    }
+
+                storage.reference.child("businesses/${businessId}/BUSINESS_IMAGE_1080")
+                    .downloadUrl
+                    .addOnSuccessListener { uri ->
+                        Glide.with(requireActivity())
+                            .load(uri)
+                            .centerCrop()
+                            .into(binding.blurImage)
                     }
             }
         })

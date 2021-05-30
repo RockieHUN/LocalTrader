@@ -1,4 +1,4 @@
-package com.example.localtrader.utils
+package com.example.localtrader.utils.imageUtils
 
 import android.app.Activity
 import android.graphics.Bitmap
@@ -19,8 +19,7 @@ class ImageUtils {
                 val aspectRatio = image.width.toDouble() / image.height.toDouble()
                 val targetWidth = (maxRes * aspectRatio).toInt()
 
-                val result = Bitmap.createScaledBitmap(image, targetWidth, maxRes, false)
-                return result
+                return Bitmap.createScaledBitmap(image, targetWidth, maxRes, false)
 
             } else {
                 if (image.width <= maxRes) { // if image width already smaller than the required width
@@ -30,13 +29,12 @@ class ImageUtils {
                 val aspectRatio = image.height.toDouble() / image.width.toDouble()
                 val targetHeight = (maxRes * aspectRatio).toInt()
 
-                val result = Bitmap.createScaledBitmap(image, maxRes, targetHeight, false)
-                return result
+                return Bitmap.createScaledBitmap(image, maxRes, targetHeight, false)
             }
         }
 
 
-        suspend fun uriToScaledBitmap(activity: Activity, uri : Uri, maxRes : Int) : Bitmap{
+        private fun uriToScaledBitmap(activity: Activity, uri : Uri, maxRes : Int) : Bitmap{
 
             val inputStream = activity.contentResolver.openInputStream(uri)
             val byteArray = inputStream?.readBytes()
@@ -53,24 +51,24 @@ class ImageUtils {
         }
 
 
-        suspend fun bitmapToByteArray(bitmap : Bitmap) : ByteArray{
+        private fun bitmapToByteArray(bitmap : Bitmap) : ByteArray{
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, stream)
             return stream.toByteArray()
         }
 
         //resize uri and return the bytearray
-        suspend fun resizeImageUriTo(activity: Activity, imageUri : Uri, maxRes : Int) : ByteArray
+        fun resizeImageUriTo(activity: Activity, imageUri : Uri, imageSize : ImageSize) : ResizedImage
         {
-            val scaledBitmap = uriToScaledBitmap(activity, imageUri, maxRes)
-            return bitmapToByteArray(scaledBitmap)
+            val scaledBitmap = uriToScaledBitmap(activity, imageUri, imageSize.value)
+            return ResizedImage(imageSize.name,bitmapToByteArray(scaledBitmap))
         }
 
         //resize bitmap and return the bytearray
-        suspend fun resizeImageBitmapTo(activity: Activity, imageBitmap : Bitmap, maxRes : Int) : ByteArray
+        fun resizeImageBitmapTo(imageBitmap : Bitmap, imageSize: ImageSize) : ResizedImage
         {
-            val scaledBitmap = resizeImage(imageBitmap, maxRes)
-            return bitmapToByteArray(scaledBitmap)
+            val scaledBitmap = resizeImage(imageBitmap, imageSize.value)
+            return ResizedImage(imageSize.name, bitmapToByteArray(scaledBitmap))
         }
 
     }

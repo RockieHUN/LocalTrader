@@ -23,7 +23,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.LocalTrader">
-
+        <activity android:name=".authentication.AuthActivity"></activity>
         <!-- AdMob -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
@@ -50,28 +50,23 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
                 <action android:name="com.google.android.c2dm.intent.RECIEVE" />
             </intent-filter>
-        </service>
-
-        <!-- ACTIVITIES -->
-
+        </service> <!-- ACTIVITIES -->
         <activity
             android:name=".authentication.SplashActivity"
-            android:theme="@style/Splash"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait"/>
-
-        <!-- Maps activity -->
+            android:screenOrientation="portrait" /> <!-- Maps activity -->
         <activity
             android:name=".location.BusinessLocationActivity"
-            android:label="@string/title_activity_business_location" /> <!-- Main activity -->
+            android:label="@string/title_activity_business_location" />
     </application>
 
 </manifest>

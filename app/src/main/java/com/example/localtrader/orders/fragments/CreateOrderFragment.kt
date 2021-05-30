@@ -48,7 +48,7 @@ class CreateOrderFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_order, container, false)
         setUpVisuals()
@@ -86,7 +86,7 @@ class CreateOrderFragment : Fragment(),
         binding.productName.text = product.name
         binding.sum.text = round(product.price).toString()
 
-        storage.reference.child("products/${product.productId}/image").downloadUrl
+        storage.reference.child("products/${product.productId}/PRODUCT_IMAGE_400").downloadUrl
             .addOnSuccessListener { uri ->
                 Glide.with(requireActivity())
                     .load(uri)

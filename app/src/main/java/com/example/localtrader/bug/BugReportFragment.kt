@@ -11,49 +11,34 @@ import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.example.localtrader.R
 import com.example.localtrader.bug.models.BugReport
 import com.example.localtrader.databinding.FragmentBugReportBinding
-import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.utils.MySnackBar
-import com.example.localtrader.utils.constants.ImageSize
+import com.example.localtrader.utils.imageUtils.FirebaseImageUploader
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class BugReportFragment : Fragment() {
 
     private lateinit var binding : FragmentBugReportBinding
-    private lateinit var auth : FirebaseAuth
-    private lateinit var firestore : FirebaseFirestore
-    private lateinit var storage : FirebaseStorage
+    private val auth = Firebase.auth
+    private val firestore = Firebase.firestore
 
     private val userViewModel : UserViewModel by activityViewModels()
 
     private var imageUri : Uri? = null
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        auth = Firebase.auth
-        firestore = Firebase.firestore
-        storage = Firebase.storage
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_bug_report,container,false)
         setUpVisuals()
@@ -131,33 +116,39 @@ class BugReportFragment : Fragment() {
                         .addOnSuccessListener {
 
                             if (imageUri != null){
-                                val resizedImage : MutableLiveData<ByteArray> = MutableLiveData()
-                                resizedImage.observe(viewLifecycleOwner,{ byteArray ->
-                                    storage.reference.child("bugReports/${documentReference.id}").putBytes(byteArray)
-                                        .addOnSuccessListener {
-                                            stopLoading()
+                                val uploadPath = "bugReports/${documentReference.id}"
+                                val uploader = FirebaseImageUploader.Builder()
+                                    .withActivity(requireActivity())
+                                    .withLifecycle(viewLifecycleOwner)
+                                    .toPath(uploadPath)
+                                    .imageUri(imageUri!!)
+                                    .imageType(FirebaseImageUploader.BUG_REPORT_IMAGE)
+                                    .build()
+
+                                uploader.isCompleted.observe(viewLifecycleOwner, object : Observer<Boolean>{
+                                    override fun onChanged( isCompleted : Boolean?) {
+                                        if (isCompleted == null) return
+
+                                        if (isCompleted){
                                             MySnackBar.createSnackBar(binding.screenRoot,resources.getString(R.string.thanks_the_report))
                                         }
-                                        .addOnFailureListener{
-                                            stopLoading()
-                                            showErrorToUser()
+                                        else{
+                                            MySnackBar.createSnackBar(binding.screenRoot, resources.getString(R.string.error_failed_picture_upload))
                                         }
+
+                                        stopLoading()
+                                        uploader.isCompleted.removeObserver(this)
+                                    }
                                 })
 
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    resizedImage.postValue( ImageUtils.resizeImageUriTo(
-                                        requireActivity(),
-                                        imageUri!!,
-                                        ImageSize.BUG_REPORT_IMAGE_SIZE
-                                    ))
+                                lifecycleScope.launch {
+                                    uploader.uploadAll()
                                 }
                             }
-
                             else{
                                 stopLoading()
                                 MySnackBar.createSnackBar(binding.screenRoot,resources.getString(R.string.thanks_the_report))
                             }
-
                         }
                         .addOnFailureListener {
                             stopLoading()

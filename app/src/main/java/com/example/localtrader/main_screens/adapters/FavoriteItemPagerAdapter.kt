@@ -72,7 +72,7 @@ class FavoriteItemPagerAdapter(
             listener.onFavoriteButtonClick(currentItem)
         }
 
-        storage.reference.child("products/${currentItem.productId}/image")
+        storage.reference.child("products/${currentItem.productId}/PRODUCT_IMAGE_1920")
             .downloadUrl.addOnSuccessListener { uri ->
                 Glide.with(activity)
                     .load(uri)

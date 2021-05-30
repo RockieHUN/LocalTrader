@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.localtrader.feed.models.FeedBusinessItem
 import com.example.localtrader.feed.models.FeedItem
 import com.example.localtrader.feed.models.FeedLoadItem
@@ -11,6 +12,7 @@ import com.example.localtrader.feed.models.FeedNoMoreItem
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.sync.Mutex
 import okhttp3.internal.notify
 
@@ -52,16 +54,13 @@ class FeedViewModel : ViewModel() {
             //.startAt(businessPreviousItemId)
             .limit(MAX_FEED_ITEMS)
             .get()
-            .addOnSuccessListener {
-
-            }
     }
 
     suspend fun loadNextItems(){
 
         if (mutex.isLocked) return
         mutex.lock(this)
-
+        Log.d("MYFEED", "load next")
         firestore.collection("businesses")
             .orderBy("businessId")
             .startAfter(businessLastItemId)
@@ -83,7 +82,6 @@ class FeedViewModel : ViewModel() {
 
                 //get feed items and remove the loading item from the end of the list
                 val newList = feedItems.value
-                //newList!!.removeAt(newList.size - 1)
                 newList!!.removeLast()
 
                 //add the new items to the feed items

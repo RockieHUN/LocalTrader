@@ -11,19 +11,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.localtrader.MainActivity
 import com.example.localtrader.R
 import com.example.localtrader.YesNoDialogFragment
-import com.example.localtrader.business.models.CreationalBusiness
 import com.example.localtrader.databinding.FragmentProfileBinding
 import com.example.localtrader.viewmodels.BusinessViewModel
-import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 
@@ -32,35 +27,22 @@ class ProfileFragment : Fragment(),
 {
 
     private lateinit var binding : FragmentProfileBinding
-    private lateinit var auth : FirebaseAuth
-    private lateinit var fireStore : FirebaseFirestore
-    private lateinit var storage : FirebaseStorage
-
-    private lateinit var uid : String
+    private val auth = Firebase.auth
+    private val  storage = Firebase.storage
 
     private val userViewModel : UserViewModel by activityViewModels()
-    private val creationViewModel : CreateBusinessViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        auth = Firebase.auth
-        fireStore = Firebase.firestore
-        storage = Firebase.storage
-
-        uid = auth.currentUser!!.uid
-    }
+    private val profileImagePath ="users/${auth.currentUser!!.uid}/profilePicture/PROFILE_IMAGE_1080"
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_profile,container, false)
-        loadProfileData()
+        showUserData()
         hasBusiness()
         return binding.root
     }
@@ -72,20 +54,6 @@ class ProfileFragment : Fragment(),
         setUpListeners()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        if (auth.currentUser == null)
-        {
-            findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
-        }
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-        userViewModel.removeBusinessObservers(viewLifecycleOwner)
-    }
 
     private fun setUpVisuals()
     {
@@ -135,45 +103,28 @@ class ProfileFragment : Fragment(),
         }
     }
 
-    private fun loadProfileData()
-    {
-        uid = auth.currentUser!!.uid
 
-        //load user information
-        val user = userViewModel.user.value
-        if  (user == null)
-        {
-           fireStore.collection("users")
-               .document(uid)
-               .get()
-               .addOnSuccessListener { document ->
-                   binding.userName.text = "${document["firstname"] as String} ${document["lastname"] as String}"
-                   binding.userEmail.text = document["email"] as String
-               }
-        }
-        else
-        {
-            binding.userName.text = "${user?.firstname} ${user?.lastname}"
-            binding.userEmail.text = user.email
-        }
+    private fun showUserData(){
+        val user = userViewModel.user.value ?: return
 
-        //load profile image
-        if (userViewModel.downloadUri.value != null)
-        {
-            Glide.with(requireContext())
-                .load(userViewModel.downloadUri.value)
-                .placeholder(R.drawable.ic_baseline_account_circle_24)
-                .centerCrop()
-                .into(binding.profilePicture)
-        }
+        storage.reference.child(profileImagePath).downloadUrl
+            .addOnSuccessListener { uri ->
+                Glide.with(requireContext())
+                    .load(uri)
+                    .placeholder(R.drawable.ic_baseline_account_circle_24)
+                    .centerCrop()
+                    .into(binding.profilePicture)
+            }
+
+        val text = "${user.firstname} ${user.lastname}"
+        binding.userName.text = text
+        binding.userEmail.text = user.email
     }
 
 
     private fun logout()
     {
-        creationViewModel.business = CreationalBusiness()
-        auth.signOut()
-        findNavController().navigate(R.id.action_profileFragment_to_loginFragment)
+        (requireActivity() as MainActivity).finishActivity()
     }
 
     override fun onDialogPositiveClick(dialog: DialogFragment) {

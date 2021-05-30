@@ -67,7 +67,7 @@ class BusinessProfileAdapter (
         holder.productNameView.text = currentItem.name
         holder.productPriceView.text = "${currentItem.price} RON"
 
-        storage.reference.child("products/${currentItem.productId}/image")
+        storage.reference.child("products/${currentItem.productId}/PRODUCT_IMAGE_400")
             .downloadUrl
             .addOnSuccessListener { uri ->
                 Glide.with(activity)

@@ -1,7 +1,6 @@
 package com.example.localtrader.main_screens.adapters
 
 import android.app.Activity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,7 +65,7 @@ class LocalBusinessesAdapter(
         holder.businessNameView.text = currentItem.name
         holder.businessCategoryView.text = currentItem.category
 
-        storage.reference.child("businesses/${currentItem.businessId}/logo")
+        storage.reference.child("businesses/${currentItem.businessId}/BUSINESS_IMAGE_400")
             .downloadUrl
             .addOnSuccessListener { uri ->
                 Glide.with(activity)

@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +24,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.localtrader.NoticeDialog
 import com.example.localtrader.R
+import com.example.localtrader.authentication.models.User
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentTimeLineBinding
 import com.example.localtrader.location.models.MyLocation
@@ -35,6 +38,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -46,23 +50,24 @@ class TimeLineFragment : Fragment(),
     LocalBusinessesAdapter.OnItemClickListener,
     SwipeRefreshLayout.OnRefreshListener
      {
-    private lateinit var binding: FragmentTimeLineBinding
-    private lateinit var auth: FirebaseAuth
+         private lateinit var binding: FragmentTimeLineBinding
+         private val userViewModel: UserViewModel by activityViewModels()
+         private val businessViewModel: BusinessViewModel by activityViewModels()
+         private val productViewModel: ProductViewModel by activityViewModels()
+         private val navigationViewModel: NavigationViewModel by activityViewModels()
+         private val timelineViewModel: TimeLineViewModel by activityViewModels()
 
-    private val userViewModel: UserViewModel by activityViewModels()
-    private val businessViewModel: BusinessViewModel by activityViewModels()
-    private val productViewModel: ProductViewModel by activityViewModels()
-    private val navigationViewModel: NavigationViewModel by activityViewModels()
-    private val timelineViewModel: TimeLineViewModel by activityViewModels()
+         private val locationRequestCode = 1000
+         private val deviceLocation: MutableLiveData<Location?> = MutableLiveData()
 
-    private val locationRequestCode = 1000
-    private val deviceLocation: MutableLiveData<Location?> = MutableLiveData()
+         private val auth = Firebase.auth
+         private val storage = Firebase.storage
+         private val profileImagePath ="users/${auth.currentUser!!.uid}/profilePicture/PROFILE_IMAGE_300"
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        auth = Firebase.auth
         navigationViewModel.origin = 1
     }
 
@@ -72,14 +77,8 @@ class TimeLineFragment : Fragment(),
     ): View? {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_time_line, container, false)
-        setGreeting()
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         showUserData()
+        setGreeting()
 
         setUpVisuals()
         setUpListeners()
@@ -87,16 +86,17 @@ class TimeLineFragment : Fragment(),
         recyclePopularProducts()
         locationData()
         recycleLocalBusinesses()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
     }
 
     override fun onResume() {
         super.onResume()
         showUserData()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        userViewModel.removeAllObserver(viewLifecycleOwner)
     }
 
     private fun setUpListeners() {
@@ -234,18 +234,22 @@ class TimeLineFragment : Fragment(),
     }
 
     private fun showUserData() {
-        userViewModel.downloadUri.observe(viewLifecycleOwner, { uri ->
-            Glide.with(requireContext())
-                .load(uri)
-                .placeholder(R.drawable.ic_baseline_account_circle_24)
-                .circleCrop()
-                .into(binding.profilePicture)
-        })
 
-        userViewModel.user.observe(viewLifecycleOwner, {
-            val lastname = userViewModel.user.value?.lastname
+        storage.reference.child(profileImagePath)
+            .downloadUrl
+            .addOnSuccessListener{ uri ->
+                Glide.with(requireContext())
+                    .load(uri)
+                    .placeholder(R.drawable.ic_baseline_account_circle_24)
+                    .circleCrop()
+                    .into(binding.profilePicture)
+            }
 
-            binding.lastName.text = lastname
+        userViewModel.user.observe(viewLifecycleOwner, object : Observer<User?> {
+            override fun onChanged(user: User?) {
+                binding.lastName.text = user!!.lastname
+                userViewModel.user.removeObserver(this)
+            }
         })
     }
 

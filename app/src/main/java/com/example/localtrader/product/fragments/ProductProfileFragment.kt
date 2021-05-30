@@ -1,15 +1,10 @@
 package com.example.localtrader.product.fragments
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,44 +12,24 @@ import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentProductProfileBinding
 import com.example.localtrader.viewmodels.FavoritesViewModel
-import com.example.localtrader.viewmodels.NavigationViewModel
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 class ProductProfileFragment : Fragment(){
-    private lateinit var storage : FirebaseStorage
-    private lateinit var firestore : FirebaseFirestore
-    private lateinit var auth : FirebaseAuth
+    private val storage = Firebase.storage
 
     private val productViewModel : ProductViewModel by activityViewModels()
     private val userViewModel : UserViewModel by activityViewModels()
     private val favoritesViewModel : FavoritesViewModel by activityViewModels()
 
-
     private lateinit var binding : FragmentProductProfileBinding
-    private var isLayerVisible : Boolean = true
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        storage = Firebase.storage
-        firestore = Firebase.firestore
-        auth = Firebase.auth
-
-    }
 
    override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_profile, container, false)
 
@@ -63,7 +38,6 @@ class ProductProfileFragment : Fragment(){
         setProductData()
         return binding.root
     }
-
 
 
     private fun setUpListeners(){
@@ -90,7 +64,7 @@ class ProductProfileFragment : Fragment(){
     private fun setProductData()
     {
         val product = productViewModel.product
-        storage.reference.child("products/${product.productId}/image")
+        storage.reference.child("products/${product.productId}/PRODUCT_IMAGE_1920")
             .downloadUrl
             .addOnSuccessListener { uri->
                 Glide.with(requireActivity())

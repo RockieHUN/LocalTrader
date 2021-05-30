@@ -17,9 +17,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.authentication.models.RegistrationUser
 import com.example.localtrader.authentication.models.User
+import com.example.localtrader.authentication.viewmodels.AuthViewModel
 import com.example.localtrader.databinding.FragmentRegisterBinding
 import com.example.localtrader.utils.MySnackBar
-import com.example.localtrader.viewmodels.UserViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -37,7 +37,7 @@ class RegisterFragment : Fragment() {
     private lateinit var auth : FirebaseAuth
     private lateinit var db : FirebaseFirestore
 
-    private val userViewModel : UserViewModel by activityViewModels()
+    private val authViewModel : AuthViewModel by activityViewModels()
 
     private lateinit var data : RegistrationUser
     private var errorMessage = "none"
@@ -56,7 +56,7 @@ class RegisterFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_register,container,false)
         return binding.root
@@ -72,7 +72,6 @@ class RegisterFragment : Fragment() {
 
     private fun setUpVisuals()
     {
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         binding.circularProgress.visibility = View.GONE
     }
 
@@ -175,9 +174,8 @@ class RegisterFragment : Fragment() {
             return false
         }
 
-        //val emailRegex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}\$".toRegex()
         //must contain least 8 characters, 1 number, 1 upper and 1 lowercase [duplicate]
-        val passwordRegex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$".toRegex();
+        val passwordRegex = "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$".toRegex()
 
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches())
@@ -213,13 +211,12 @@ class RegisterFragment : Fragment() {
                     binding.submitButton.visibility = View.VISIBLE
                     binding.circularProgress.visibility = View.GONE
 
-                    if (task.exception?.message!! == "The email address is already in use by another account.")
-                    {
-                        errorMessage = "Ez az e-mail cím már használatban van!"
-                    }
-                    else{
-                        errorMessage = "A regisztráció ismeretlen okból nem sikerült. Próbálja újra később"
-                    }
+                    errorMessage =
+                        if (task.exception?.message!! == "The email address is already in use by another account.") {
+                            "Ez az e-mail cím már használatban van!"
+                        } else{
+                            "A regisztráció ismeretlen okból nem sikerült. Próbálja újra később"
+                        }
                     lifecycleScope.launch{
                         MySnackBar.createSnackBar(binding.screenRoot, errorMessage)
                     }
@@ -247,7 +244,7 @@ class RegisterFragment : Fragment() {
                 }
 
             //add to viewModel
-            userViewModel.user.value = newUser
+            authViewModel.user.value = newUser
 
             findNavController().navigate(R.id.action_registerFragment_to_finishRegistrationFragment)
         }

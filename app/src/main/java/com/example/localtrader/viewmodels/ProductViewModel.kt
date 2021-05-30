@@ -9,7 +9,7 @@ import com.google.firebase.ktx.Firebase
 
 class ProductViewModel : ViewModel() {
 
-    val businessProducts : MutableLiveData<MutableList<Product>> = MutableLiveData()
+    val businessProducts : MutableLiveData<List<Product>> = MutableLiveData()
     var product : Product = Product()
 
     private val firestore = Firebase.firestore
@@ -19,7 +19,7 @@ class ProductViewModel : ViewModel() {
             .whereEqualTo("businessId",businessId)
             .get()
             .addOnSuccessListener { documents ->
-                businessProducts.value = documents.toObjects<Product>().toMutableList()
+                businessProducts.value = documents.toObjects()
             }
     }
 }

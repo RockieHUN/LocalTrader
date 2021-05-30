@@ -30,9 +30,10 @@ class FeedFragment : Fragment(),
     private val feedViewModel : FeedViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
 
+    private lateinit var adapter : FeedAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -43,6 +44,21 @@ class FeedFragment : Fragment(),
         setUpListeners()
         createRecycle()
         return binding.root
+    }
+
+    override fun onPause() {
+        feedViewModel.feedItems.removeObservers(viewLifecycleOwner)
+        super.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        feedViewModel.feedItems.observe(viewLifecycleOwner, { feedItems ->
+            //val newFeedItems = addAdsToFeed(feedItems)
+            //Log.d("MYFEED", "${feedItems}")
+            adapter.updateData(feedItems)
+        })
+
     }
 
     private fun setUpListeners(){
@@ -56,18 +72,16 @@ class FeedFragment : Fragment(),
     }
 
     private fun createRecycle(){
-        val adapter = FeedAdapter(requireActivity(), this)
+        adapter = FeedAdapter(requireActivity(), this)
         binding.recycleView.adapter = adapter
         val verticalLayout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recycleView.layoutManager = verticalLayout
         binding.recycleView.setHasFixedSize(true)
 
+        Log.d("MYFEED","add observer")
 
 
-        feedViewModel.feedItems.observe(viewLifecycleOwner, { feedItems ->
-            //val newFeedItems = addAdsToFeed(feedItems)
-            adapter.updateData(feedItems)
-        })
+
         feedViewModel.loadFeed(viewLifecycleOwner)
         addScrollListener()
     }
@@ -88,7 +102,8 @@ class FeedFragment : Fragment(),
                 val lastPosition = layoutManager.findLastVisibleItemPosition()
 
                 Log.d("MYFEED", "last: ${lastPosition} total: ${itemCount}")
-                if (lastPosition >= itemCount - 3) {
+                if (lastPosition >= itemCount - 1) {
+
                     GlobalScope.launch {
                         feedViewModel.loadNextItems()
                     }

@@ -24,7 +24,7 @@ class ProductGridRecycleAdapter (
 
     inner class DataViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView), View.OnClickListener{
 
-        val imageView = itemView.findViewById<ImageView>(R.id.product_image)
+        val imageView: ImageView = itemView.findViewById(R.id.product_image)
 
         init {
             itemView.setOnClickListener(this)
@@ -56,7 +56,7 @@ class ProductGridRecycleAdapter (
     override fun onBindViewHolder(holder: DataViewHolder, position: Int) {
         val currentItem = items[position]
 
-        storage.reference.child("products/${currentItem.productId}/image")
+        storage.reference.child("products/${currentItem.productId}/PRODUCT_IMAGE_400")
             .downloadUrl
             .addOnSuccessListener { uri ->
                 Glide.with(activity)

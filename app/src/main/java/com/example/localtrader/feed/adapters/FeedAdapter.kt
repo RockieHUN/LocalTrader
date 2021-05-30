@@ -179,6 +179,7 @@ class FeedAdapter(
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         items = newItems
         diffResult.dispatchUpdatesTo(this)
+        //notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = items.size

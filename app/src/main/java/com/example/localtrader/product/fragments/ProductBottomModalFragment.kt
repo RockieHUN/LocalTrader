@@ -13,10 +13,8 @@ import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentProductBottomModalBinding
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 
@@ -24,21 +22,16 @@ class ProductBottomModalFragment : BottomSheetDialogFragment(), YesNoDialogFragm
 
     private lateinit var binding : FragmentProductBottomModalBinding
     private val productViewModel : ProductViewModel by activityViewModels()
-    private lateinit var firestore : FirebaseFirestore
-    private lateinit var storage : FirebaseStorage
+    private val firestore = Firebase.firestore
+    private val storage = Firebase.storage
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        firestore = Firebase.firestore
-        storage = Firebase.storage
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-       binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_bottom_modal, container, false)
+    ): View {
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_product_bottom_modal, container, false)
         setUpListeners()
         return binding.root
     }
@@ -71,6 +64,7 @@ class ProductBottomModalFragment : BottomSheetDialogFragment(), YesNoDialogFragm
             .delete()
             .addOnSuccessListener {
 
+                //TODO: DELETE
                 storage.reference.child("products/${productId}/image")
                     .delete()
                     .addOnSuccessListener {

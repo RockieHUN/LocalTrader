@@ -14,26 +14,20 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.databinding.FragmentCreateProductBinding
 import com.example.localtrader.product.models.Product
-import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.utils.MySnackBar
-import com.example.localtrader.utils.constants.ImageSize
+import com.example.localtrader.utils.imageUtils.FirebaseImageUploader
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class CreateProductFragment : Fragment() {
@@ -42,35 +36,21 @@ class CreateProductFragment : Fragment() {
 
     private val userViewModel : UserViewModel by activityViewModels()
     private val businessViewModel : BusinessViewModel by activityViewModels()
-    private lateinit var auth : FirebaseAuth
-    private lateinit var firestore : FirebaseFirestore
-    private lateinit var storage : FirebaseStorage
+    private val auth = Firebase.auth
+    private val firestore = Firebase.firestore
 
-    private  var g_imageUri : Uri? = null
-    private var g_imageBitmap : Bitmap? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        auth = Firebase.auth
-        firestore = Firebase.firestore
-        storage = Firebase.storage
-    }
+    private  var globalImageUri : Uri? = null
+    private var globalImageBitmap : Bitmap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_create_product, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         setUpVisuals()
         setUpListeners()
+        return binding.root
     }
 
     private fun setUpVisuals()
@@ -101,7 +81,7 @@ class CreateProductFragment : Fragment() {
             try {
                 startActivityForResult(takePictureIntent, 1)
             } catch (e: ActivityNotFoundException) {
-                animateError("Ismeretlen hiba merült fel. Próbálja úrja később");
+                animateError("Ismeretlen hiba merült fel. Próbálja úrja később")
             }
         }
     }
@@ -118,15 +98,15 @@ class CreateProductFragment : Fragment() {
         if (requestCode == 1 && resultCode == RESULT_OK) {
             val imageBitmap = data?.extras?.get("data") as Bitmap
             binding.productImage.setImageBitmap(imageBitmap)
-            g_imageUri = null
-            g_imageBitmap = imageBitmap
+            globalImageUri = null
+            globalImageBitmap = imageBitmap
         }
 
         if (requestCode == 2 && resultCode == RESULT_OK && data != null && data.data != null) {
             val imageUri = data.data!!
             binding.productImage.setImageURI(imageUri)
-            g_imageBitmap = null
-            g_imageUri = imageUri
+            globalImageBitmap = null
+            globalImageUri = imageUri
         }
     }
 
@@ -169,44 +149,48 @@ class CreateProductFragment : Fragment() {
                         .update("productId", documentReference.id)
                         .addOnSuccessListener {
 
-                            val reference = storage.reference
-                            val path = reference.child("products/${documentReference.id}/image")
-
-                            val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
-
-                            resizedImage.observe(viewLifecycleOwner, { byteArray ->
-                                path.putBytes(byteArray)
-                                    .addOnSuccessListener {
-                                        stopLoading()
-                                        findNavController().navigate(R.id.action_createProductFragment_to_businessProfileFragment)
-                                    }
-                                    .addOnFailureListener{ e->
-                                        Firebase.crashlytics.log("$e")
-                                        stopLoading()
-                                    }
-                            })
+                            val uploadPath = "products/${documentReference.id}"
+                            val uploader : FirebaseImageUploader
 
                             //resize the bitmap
-                            if (g_imageBitmap != null){
-                                //resize image
-                                lifecycleScope.launch {
-                                    resizedImage.value = ImageUtils.resizeImageBitmapTo(
-                                        requireActivity(),
-                                        g_imageBitmap!!,
-                                        ImageSize.PRODUCT_IMAGE_SIZE
-                                    )
-                                }
+                            if (globalImageBitmap != null){
+                                uploader = FirebaseImageUploader.Builder()
+                                    .withActivity(requireActivity())
+                                    .withLifecycle(viewLifecycleOwner)
+                                    .toPath(uploadPath)
+                                    .imageBitmap(globalImageBitmap!!)
+                                    .imageType(FirebaseImageUploader.PRODUCT_IMAGE)
+                                    .build()
                             }
-
                             //resize the uri
                             else{
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    resizedImage.postValue(ImageUtils.resizeImageUriTo(
-                                        requireActivity(),
-                                        g_imageUri!!,
-                                        ImageSize.PRODUCT_IMAGE_SIZE
-                                    ))
+                                uploader = FirebaseImageUploader.Builder()
+                                    .withActivity(requireActivity())
+                                    .withLifecycle(viewLifecycleOwner)
+                                    .toPath(uploadPath)
+                                    .imageUri(globalImageUri!!)
+                                    .imageType(FirebaseImageUploader.PRODUCT_IMAGE)
+                                    .build()
+                            }
+
+                            uploader.isCompleted.observe(viewLifecycleOwner, object : Observer<Boolean>{
+                                override fun onChanged(isCompleted : Boolean?) {
+                                    if (isCompleted == null) return
+
+                                    if (isCompleted){
+                                        findNavController().navigate(R.id.action_createProductFragment_to_businessProfileFragment)
+                                    }
+                                    else{
+                                        MySnackBar.createSnackBar(binding.screenRoot, resources.getString(R.string.error_failed_picture_upload))
+                                    }
+
+                                    stopLoading()
+                                    uploader.isCompleted.removeObserver(this)
                                 }
+                            })
+
+                            lifecycleScope.launch {
+                                uploader.uploadAll()
                             }
                         }
                             //add product id
@@ -225,7 +209,7 @@ class CreateProductFragment : Fragment() {
     }
 
     private fun dataIsValid(productName : String, productDescription : String) : Boolean{
-        if (g_imageUri == null && g_imageBitmap == null){
+        if (globalImageUri == null && globalImageBitmap == null){
             stopLoading()
             animateError("A kép feltöltése kötelező!")
             return false

@@ -8,13 +8,15 @@ import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.authentication.AuthActivity
+import com.example.localtrader.authentication.models.User
+import com.example.localtrader.authentication.viewmodels.AuthViewModel
 import com.example.localtrader.databinding.FragmentLoginBinding
 import com.example.localtrader.utils.MySnackBar
-import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
@@ -22,20 +24,15 @@ import kotlinx.coroutines.launch
 
 class LoginFragment : Fragment() {
 
-    private lateinit var auth: FirebaseAuth
+    private val auth = Firebase.auth
     private lateinit var binding: FragmentLoginBinding
-    private val userViewModel : UserViewModel by activityViewModels()
+    private val authViewModel : AuthViewModel by activityViewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        auth = Firebase.auth
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
         return binding.root
     }
@@ -45,12 +42,9 @@ class LoginFragment : Fragment() {
 
         setUpVisuals()
         setUpListeners()
-
-
     }
 
     private fun setUpVisuals() {
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         binding.circularProgress.visibility = View.GONE
     }
 
@@ -59,7 +53,6 @@ class LoginFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
         }
-
 
         binding.toLogin.setOnClickListener {
             findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
@@ -92,11 +85,14 @@ class LoginFragment : Fragment() {
 
                 if (task.isSuccessful) {
 
-                    userViewModel.user.observe(viewLifecycleOwner, {
-                        findNavController().navigate(R.id.action_loginFragment_to_timeLineFragment)
+                    authViewModel.user.observe(viewLifecycleOwner, object : Observer<User> {
+                        override fun onChanged(t: User?) {
+                            (requireActivity() as AuthActivity).startMainActivity(t!!)
+                            authViewModel.user.removeObserver(this)
+                        }
+
                     })
-                    userViewModel.loadUserData(auth.currentUser!!.uid)
-                    ///MySharedPref.saveToSharedPref(requireContext(), email, password)
+                    authViewModel.loadUser()
 
                 } else {
 

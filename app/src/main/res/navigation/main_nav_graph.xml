@@ -3,75 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/timeLineFragment">
 
-    <fragment
-        android:id="@+id/splashFragment"
-        android:name="com.example.localtrader.authentication.fragments.SplashFragment"
-        android:label="fragment_splash"
-        tools:layout="@layout/fragment_splash">
-        <action
-            android:id="@+id/action_splashFragment_to_registerFragment"
-            app:destination="@id/registerFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left" />
-        <action
-            android:id="@+id/action_splashFragment_to_timeLineFragment"
-            app:destination="@id/timeLineFragment" />
-        <action
-            android:id="@+id/action_splashFragment_to_onBoardFragment"
-            app:destination="@id/onBoardFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.example.localtrader.authentication.fragments.RegisterFragment"
-        android:label="fragment_register"
-        tools:layout="@layout/fragment_register">
-        <action
-            android:id="@+id/action_registerFragment_to_finishRegistrationFragment"
-            app:destination="@id/finishRegistrationFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left"
-            app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right" />
-        <action
-            android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left"
-            app:popEnterAnim="@anim/from_left"
-            app:popExitAnim="@anim/to_right" />
-        <action
-            android:id="@+id/action_registerFragment_to_userAgreementsFragment"
-            app:destination="@id/userAgreementsFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/finishRegistrationFragment"
-        android:name="com.example.localtrader.authentication.fragments.FinishRegistrationFragment"
-        android:label="fragment_finish_registration"
-        tools:layout="@layout/fragment_finish_registration">
-        <action
-            android:id="@+id/action_finishRegistrationFragment_to_timeLineFragment"
-            app:destination="@id/timeLineFragment"
-            app:enterAnim="@anim/from_right"
-            app:exitAnim="@anim/to_left" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.localtrader.authentication.fragments.LoginFragment"
-        android:label="LoginFragment"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment"
-            app:enterAnim="@anim/from_left"
-            app:exitAnim="@anim/to_right"
-            app:popEnterAnim="@anim/from_right"
-            app:popExitAnim="@anim/to_left" />
-        <action
-            android:id="@+id/action_loginFragment_to_timeLineFragment"
-            app:destination="@id/timeLineFragment" />
-    </fragment>
     <fragment
         android:id="@+id/timeLineFragment"
         android:name="com.example.localtrader.main_screens.fragments.TimeLineFragment"
@@ -111,9 +44,6 @@
             app:exitAnim="@anim/to_top"
             app:popEnterAnim="@anim/from_top"
             app:popExitAnim="@anim/to_bottom" />
-        <action
-            android:id="@+id/action_profileFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_profileFragment_to_businessProfileFragment"
             app:destination="@id/businessProfileFragment" />
@@ -171,9 +101,6 @@
         android:label="fragment_create_business_second"
         tools:layout="@layout/fragment_create_business_second">
         <action
-            android:id="@+id/action_createBusinessSecondFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-        <action
             android:id="@+id/action_createBusinessSecondFragment_to_businessProfileFragment"
             app:destination="@id/businessProfileFragment" />
         <action
@@ -193,9 +120,6 @@
         <action
             android:id="@+id/action_businessProfileFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
-        <action
-            android:id="@+id/action_businessProfileFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
         <action
             android:id="@+id/action_businessProfileFragment_to_timeLineFragment"
             app:destination="@id/timeLineFragment" />
@@ -276,11 +200,6 @@
         android:label="BugReportFragment" />
 
     <fragment
-        android:id="@+id/userAgreementsFragment"
-        android:name="com.example.localtrader.authentication.fragments.UserAgreementsFragment"
-        android:label="fragment_user_agreements"
-        tools:layout="@layout/fragment_user_agreements" />
-    <fragment
         android:id="@+id/messagesFragment"
         android:name="com.example.localtrader.chat.fragments.MessagesFragment"
         android:label="fragment_messages"
@@ -317,14 +236,6 @@
         <action
             android:id="@+id/action_searchFragment_to_feedFragment"
             app:destination="@id/feedFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/onBoardFragment"
-        android:name="com.example.localtrader.onboard.OnBoardFragment"
-        android:label="OnBoardFragment" >
-        <action
-            android:id="@+id/action_onBoardFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
     </fragment>
     <fragment
         android:id="@+id/productProfileFragment"

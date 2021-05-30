@@ -44,7 +44,6 @@ class PopularProductsAdapter (
     }
 
     interface OnItemClickListener{
-        fun onItemClick(position: Int)
         fun myPopProductOnItemClick (product : Product)
     }
 
@@ -60,7 +59,7 @@ class PopularProductsAdapter (
         holder.productNameView.text = currentItem.name
         holder.businessNameView.text = currentItem.businessName
 
-        storage.reference.child("products/${currentItem.productId}/image")
+        storage.reference.child("products/${currentItem.productId}/PRODUCT_IMAGE_400")
             .downloadUrl.addOnSuccessListener { uri ->
                 Glide.with(activity)
                     .load(uri)

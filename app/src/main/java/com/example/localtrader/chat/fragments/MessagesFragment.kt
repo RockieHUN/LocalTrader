@@ -16,7 +16,6 @@ import com.example.localtrader.chat.models.MessageInfo
 import com.example.localtrader.databinding.FragmentMessagesBinding
 import com.example.localtrader.viewmodels.MessagesViewModel
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -25,17 +24,12 @@ class MessagesFragment : Fragment(), MessagesAdapter.OnItemClickListener {
     private lateinit var binding : FragmentMessagesBinding
     private val messagesViewModel : MessagesViewModel by activityViewModels()
     private val userViewModel : UserViewModel by activityViewModels()
-    private lateinit var auth : FirebaseAuth
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        auth = Firebase.auth
-    }
+    private val auth  = Firebase.auth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_messages, container, false)
         createRecycle()
         return binding.root

@@ -11,50 +11,39 @@ import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.authentication.AuthActivity
+import com.example.localtrader.authentication.viewmodels.AuthViewModel
 import com.example.localtrader.databinding.FragmentFinishRegistrationBinding
-import com.example.localtrader.utils.ImageUtils
-import com.example.localtrader.utils.constants.ImageSize
-import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
+import com.example.localtrader.utils.MySnackBar
+import com.example.localtrader.utils.imageUtils.FirebaseImageUploader
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FinishRegistrationFragment : Fragment() {
 
     private lateinit var binding: FragmentFinishRegistrationBinding
-    private lateinit var storage: FirebaseStorage
-    private lateinit var auth: FirebaseAuth
-    private lateinit var firestore : FirebaseFirestore
+    private lateinit var activity : AuthActivity
 
     private var isImageSelected = false
     private lateinit var profileImageUri: Uri
 
-    private val userViewModel : UserViewModel by activityViewModels()
+    private val auth = Firebase.auth
+    private val authViewModel : AuthViewModel by activityViewModels()
+    private val uploadPath = "users/${auth.currentUser!!.uid}/profilePicture"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        storage = Firebase.storage
-        auth = Firebase.auth
-        firestore = Firebase.firestore
-
+        activity = requireActivity() as AuthActivity
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         binding = DataBindingUtil.inflate(
             inflater,
@@ -74,30 +63,22 @@ class FinishRegistrationFragment : Fragment() {
     }
 
 
-
-
     private fun setUpVisuals() {
-        requireActivity().findViewById<View>(R.id.bottomNavigationView).visibility = View.GONE
         binding.circularProgress.visibility = View.GONE
-
     }
 
     private fun setUpListeners() {
         binding.submitButton.setOnClickListener {
             startLoading()
-
             if (!isImageSelected) {
-                findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
+                activity.startMainActivity(authViewModel.user.value!!)
             } else {
                 uploadImage(profileImageUri)
-                firestore.collection("users")
-                    .document("users")
-                    .update("profileImage","users/${auth.uid}/profilePicture")
             }
 
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
+            activity.startMainActivity(authViewModel.user.value!!)
         }
 
         binding.profilePicture.setOnClickListener {
@@ -119,67 +100,52 @@ class FinishRegistrationFragment : Fragment() {
             val imageUri = data.data!!
             binding.profilePicture.setImageURI(imageUri)
 
-            //save uri to a class variable
             profileImageUri = imageUri
             isImageSelected = true
-            binding.submitButton.text = "Befejezés"
+            binding.submitButton.text = resources.getString(R.string.done)
         }
     }
 
     private fun uploadImage(imageUri: Uri) {
-        val currentUser = auth.currentUser
 
-        if (currentUser != null) {
-            val reference = storage.reference
-            val path = reference.child("users/${auth.uid}/profilePicture")
+        //create uploader object
+        val uploader = FirebaseImageUploader.Builder()
+            .withActivity(requireActivity())
+            .withLifecycle(viewLifecycleOwner)
+            .toPath(uploadPath)
+            .imageUri(imageUri)
+            .imageType(FirebaseImageUploader.PROFILE_IMAGE)
+            .build()
 
-            val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
 
-            //after the image is resized, upload to storage
-            resizedImage.observe(viewLifecycleOwner, { byteArray ->
-
-                path.putBytes(byteArray).addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-
-                        userViewModel.getDownloadUri(currentUser.uid)
-                        findNavController().navigate(R.id.action_finishRegistrationFragment_to_timeLineFragment)
-                    } else {
-                        lifecycleScope.launch {
-                            animateError("Nem sikerült feltölteni a képet. Próbálja újra később")
-                        }
-                        binding.submitButton.text = "Kihagyás"
+            //observe once the object's isCompleted variable
+            uploader.isCompleted.observe(viewLifecycleOwner, object : Observer<Boolean>{
+                override fun onChanged(isCompleted: Boolean?) {
+                    if (isCompleted == null) return
+                    if (isCompleted) {
+                        activity.startMainActivity(authViewModel.user.value!!)
+                    }
+                    else {
+                        isImageSelected = false
+                        MySnackBar.createSnackBar(binding.screenRoot, resources.getString(R.string.error_failed_picture_upload))
+                        binding.submitButton.text = resources.getString(R.string.skip)
                         stopLoading()
                     }
+
+                    uploader.isCompleted.removeObserver(this)
                 }
             })
 
-            //resize image and put to a LiveData variable
-            lifecycleScope.launch(Dispatchers.IO) {
-                resizedImage.postValue(ImageUtils.resizeImageUriTo(requireActivity(), imageUri, ImageSize.USER_PROFILE_SIZE))
-            }
-
+        //start uploading
+        lifecycleScope.launch {
+            uploader.uploadAll()
         }
-    }
-
-    private suspend fun animateError(errorMessage: String) {
-        binding.errorMessage.text = errorMessage
-        val view = binding.errorMessageView
-
-        view.animate()
-            .translationYBy(200f)
-            .duration = 400L
-
-        delay(4000)
-        view.animate()
-            .translationYBy(-200f)
-            .duration = 400L
-
     }
 
     private fun setName()
     {
-        binding.firstName.text = userViewModel.user.value!!.firstname
-        binding.lastName.text = userViewModel.user.value!!.lastname
+        binding.firstName.text = authViewModel.user.value!!.firstname
+        binding.lastName.text = authViewModel.user.value!!.lastname
     }
 
     private fun startLoading() {

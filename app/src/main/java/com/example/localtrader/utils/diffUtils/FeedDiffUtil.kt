@@ -1,9 +1,8 @@
 package com.example.localtrader.utils.diffUtils
 
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
-import com.example.localtrader.feed.models.FeedAdItem
-import com.example.localtrader.feed.models.FeedBusinessItem
-import com.example.localtrader.feed.models.FeedItem
+import com.example.localtrader.feed.models.*
 
 class FeedDiffUtil(
     private val oldItems : List<FeedItem>,
@@ -17,18 +16,28 @@ class FeedDiffUtil(
         val oldItem = oldItems[oldItemPosition]
         val newItem = newItems[newItemPosition]
 
+        //Log.d("MYFEED","${oldItem::class} == ${newItem::class}")
         if (oldItem::class.simpleName != newItem::class.simpleName) return false
-        else{
-            if (newItem is FeedBusinessItem){
-                oldItem as FeedBusinessItem
 
-                if (oldItem.businessId != newItem.businessId) return false
-            }
-            if (newItem is FeedAdItem){
-                oldItem as FeedAdItem
-                if (oldItem.id != newItem.id) return false
-            }
+        if (newItem is FeedBusinessItem) {
+            oldItem as FeedBusinessItem
 
+            return oldItem.businessId == newItem.businessId
+        }
+
+        if (newItem is FeedAdItem){
+            oldItem as FeedAdItem
+            return oldItem.id == newItem.id
+        }
+
+        if (newItem is FeedLoadItem){
+            oldItem as FeedLoadItem
+            return oldItem.id == newItem.id
+        }
+
+        if (newItem is FeedNoMoreItem){
+            oldItem as FeedNoMoreItem
+            return oldItem.id == newItem.id
         }
 
         return true
@@ -38,19 +47,28 @@ class FeedDiffUtil(
         val oldItem = oldItems[oldItemPosition]
         val newItem = newItems[newItemPosition]
 
-        if (oldItem::class.simpleName != newItem::class.simpleName) return false
-        else{
-            if (newItem is FeedBusinessItem){
-                oldItem as FeedBusinessItem
+        if (oldItem::class != newItem::class) return false
 
-                if (!areBusinessContentsTheSame(oldItem, newItem)) return false
-            }
-            if (newItem is FeedAdItem){
-                oldItem as FeedAdItem
-                if (oldItem.id != newItem.id) return false
-            }
-
+        if (newItem is FeedBusinessItem){
+            oldItem as FeedBusinessItem
+            return areBusinessContentsTheSame(oldItem, newItem)
         }
+
+        if (newItem is FeedAdItem){
+            oldItem as FeedAdItem
+            return oldItem.id == newItem.id
+        }
+
+        if (newItem is FeedLoadItem){
+            oldItem as FeedLoadItem
+            return oldItem.id == newItem.id
+        }
+
+        if (newItem is FeedNoMoreItem){
+            oldItem as FeedNoMoreItem
+            return oldItem.id == newItem.id
+        }
+
         return true
     }
 

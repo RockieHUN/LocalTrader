@@ -2,7 +2,6 @@ package com.example.localtrader.business.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -11,28 +10,22 @@ import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.business.models.Business
 import com.example.localtrader.databinding.FragmentCreateBusinessSecondBinding
 import com.example.localtrader.location.BusinessLocationActivity
-import com.example.localtrader.utils.ImageUtils
 import com.example.localtrader.utils.MySnackBar
-import com.example.localtrader.utils.constants.ImageSize
+import com.example.localtrader.utils.imageUtils.FirebaseImageUploader
 import com.example.localtrader.viewmodels.BusinessViewModel
 import com.example.localtrader.viewmodels.CreateBusinessViewModel
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -40,9 +33,8 @@ class CreateBusinessSecondFragment : Fragment() {
     private val LOCATION_REQUEST_CODE = 3
 
     private lateinit var binding: FragmentCreateBusinessSecondBinding
-    private lateinit var auth: FirebaseAuth
-    private lateinit var database: FirebaseFirestore
-    private lateinit var storage: FirebaseStorage
+    private val auth = Firebase.auth
+    private val firestore = Firebase.firestore
 
     private val creationViewModel: CreateBusinessViewModel by activityViewModels()
     private val userViewModel: UserViewModel by activityViewModels()
@@ -51,19 +43,10 @@ class CreateBusinessSecondFragment : Fragment() {
     private lateinit var uid: String
 
 
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        auth = Firebase.auth
-        database = Firebase.firestore
-        storage = Firebase.storage
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(
             inflater,
             R.layout.fragment_create_business_second,
@@ -83,9 +66,7 @@ class CreateBusinessSecondFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (auth.currentUser == null) {
-            findNavController().navigate(R.id.action_createBusinessSecondFragment_to_loginFragment)
-        } else {
+        if (auth.currentUser != null) {
             uid = auth.currentUser!!.uid
         }
 
@@ -186,12 +167,12 @@ class CreateBusinessSecondFragment : Fragment() {
     private fun saveDataToDatabase(business: Business) {
 
         //save business data to firestore
-        database.collection("businesses")
+        firestore.collection("businesses")
             .add(business)
             .addOnSuccessListener { documentReference ->
 
                 //set businessId to owner
-                database.collection("users")
+                firestore.collection("users")
                     .document(uid)
                     .update("businessId", documentReference.id)
                     .addOnSuccessListener {
@@ -200,42 +181,47 @@ class CreateBusinessSecondFragment : Fragment() {
                         userViewModel.user.value!!.businessId = documentReference.id
 
                         //add businessId field to business
-                        database.collection("businesses")
+                        firestore.collection("businesses")
                             .document(documentReference.id)
                             .update("businessId", documentReference.id)
                             .addOnSuccessListener {
 
                                 //save logo to storage
-                                val reference = storage.reference
-                                val path =
-                                    reference.child("businesses/${documentReference.id}/logo")
+                                val uploadPath = "businesses/${documentReference.id}"
 
-                                val resizedImage: MutableLiveData<ByteArray> = MutableLiveData()
+                                //create uploader object
+                                val uploader = FirebaseImageUploader.Builder()
+                                    .withActivity(requireActivity())
+                                    .withLifecycle(viewLifecycleOwner)
+                                    .toPath(uploadPath)
+                                    .imageUri(creationViewModel.business.imageUri!!)
+                                    .imageType(FirebaseImageUploader.BUSINESS_IMAGE)
+                                    .build()
 
-                                resizedImage.observe(viewLifecycleOwner, { byteArray ->
-                                    path.putBytes(byteArray).addOnSuccessListener {
-                                        stopLoading()
+                                //wait for upload completion
+                                uploader.isCompleted.observe(viewLifecycleOwner, object : Observer<Boolean>{
+                                    override fun onChanged(isCompleted: Boolean?) {
+                                        if (isCompleted == null) return
 
-                                        //pass data to business viewModel
-                                        businessViewModel.businessId = documentReference.id
-                                        businessViewModel.businessOwner = auth.currentUser!!.uid
-                                        findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
-                                    }
-                                        .addOnFailureListener { e ->
-                                            Firebase.crashlytics.log("$e")
-                                            stopLoading()
+                                        if (isCompleted){
+                                            businessViewModel.businessId = documentReference.id
+                                            businessViewModel.businessOwner = auth.currentUser!!.uid
                                             findNavController().navigate(R.id.action_createBusinessSecondFragment_to_businessProfileFragment)
                                         }
+                                        else{
+                                            MySnackBar.createSnackBar(binding.screenRoot, resources.getString(R.string.error_failed_picture_upload))
+                                        }
+
+                                        stopLoading()
+                                        uploader.isCompleted.removeObserver(this)
+                                    }
                                 })
 
-                                //resize image
-                                lifecycleScope.launch(Dispatchers.IO) {
-                                    resizedImage.postValue(ImageUtils.resizeImageUriTo(
-                                        requireActivity(),
-                                        creationViewModel.business.imageUri!!,
-                                        ImageSize.BUSINESS_PROFILE_SIZE
-                                    ))
+                                //upload images
+                                lifecycleScope.launch {
+                                    uploader.uploadAll()
                                 }
+
                             }
                             .addOnFailureListener { e->
                                 //if setting the businessId filed to business fails

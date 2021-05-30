@@ -8,6 +8,9 @@
     <string name="error_missing_image"> A kép feltöltése kötelező!</string>
     <string name="error_missing_description"> A leírás kötelező!</string>
     <string name="error_missing_location"> A vállalkozás létrehozásához szükséges a helyadatok megadása! </string>
+    <string name="error_failed_picture_upload"> "Nem sikerült feltölteni a képet. Próbálja újra később" </string>
+    <string name="error_business_name">A vállalkozás nevének legalább 3 karakterből kell állnia!</string>
+    <string name="error_business_description">A vállalkozás leírása kötelező!</string>
 
     <!--Notification Dialog texts -->
     <string name="notification_location_data">Az alkalmazás helyadatokat használ annak érdekében, hogy jobb szolgáltatásokat nyújtson, valamint személyre szabott ajánlásokat jelenítsen meg. A helyadatok felhasználását később is engedélyezheti az eszköz beállításaiban.</string>

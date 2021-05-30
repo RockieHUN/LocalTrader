@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.example.localtrader.MainActivity
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class SplashActivity : Activity() {
@@ -13,8 +14,9 @@ class SplashActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         initAdMod()
+        FirebaseMessaging.getInstance().subscribeToTopic("/topics/myTopic")
 
-        val intent = Intent(this, MainActivity :: class.java)
+        val intent = Intent(this, AuthActivity :: class.java)
         startActivity(intent)
         finish()
     }
