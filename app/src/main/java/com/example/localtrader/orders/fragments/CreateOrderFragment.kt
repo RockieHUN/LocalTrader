@@ -16,34 +16,22 @@ import com.example.localtrader.databinding.FragmentCreateOrderBinding
 import com.example.localtrader.orders.models.OrderRequest
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.example.localtrader.viewmodels.UserViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.crashlytics.ktx.crashlytics
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
 
 class CreateOrderFragment : Fragment(),
     YesNoDialogFragment.NoticeDialogListener {
 
     private lateinit var binding : FragmentCreateOrderBinding
-    private lateinit var storage: FirebaseStorage
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var auth : FirebaseAuth
+    private val storage = Firebase.storage
+    private val firestore = Firebase.firestore
+    private val auth = Firebase.auth
 
     private val productViewModel : ProductViewModel by activityViewModels()
     private val userViewModel : UserViewModel by activityViewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        storage = Firebase.storage
-        firestore = Firebase.firestore
-        auth = Firebase.auth
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +43,6 @@ class CreateOrderFragment : Fragment(),
         setData()
         numberPicker()
         setUpListeners()
-
         return binding.root
     }
 
@@ -72,7 +59,6 @@ class CreateOrderFragment : Fragment(),
     }
 
     private fun numberPicker(){
-
         binding.numberPicker.minValue = 1
         binding.numberPicker.maxValue = 20
         binding.numberPicker.dividerPadding = 10
