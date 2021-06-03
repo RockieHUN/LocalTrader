@@ -54,10 +54,12 @@ class SplashFragment : Fragment() {
         {
             authViewModel.user.observe(viewLifecycleOwner, object : Observer<User> {
                 override fun onChanged(t: User?) {
-                    if (t != null) (requireActivity() as AuthActivity).startMainActivity(t)
+                    if (t != null){
+                            (requireActivity() as AuthActivity).startMainActivity(t)
+                    }
                     else{
                         authViewModel.logOut()
-                        findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+                        findNavController().navigate(R.id.action_splashFragment_to_selectAuthMethodFragment)
                     }
                     authViewModel.user.removeObserver(this)
                 }
@@ -69,7 +71,7 @@ class SplashFragment : Fragment() {
             val sharedPref = requireActivity().getSharedPreferences("onBoard", Context.MODE_PRIVATE)
             val played = sharedPref.getBoolean("played",false)
 
-            if (played) findNavController().navigate(R.id.action_splashFragment_to_registerFragment)
+            if (played) findNavController().navigate(R.id.action_splashFragment_to_selectAuthMethodFragment)
             else findNavController().navigate(R.id.action_splashFragment_to_onBoardFragment)
         }
     }

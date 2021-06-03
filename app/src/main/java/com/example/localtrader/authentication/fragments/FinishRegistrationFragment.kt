@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.localtrader.R
 import com.example.localtrader.authentication.AuthActivity
 import com.example.localtrader.authentication.viewmodels.AuthViewModel
@@ -45,22 +46,13 @@ class FinishRegistrationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        binding = DataBindingUtil.inflate(
-            inflater,
-            R.layout.fragment_finish_registration,
-            container,
-            false
-        )
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_finish_registration, container, false)
+        setUpVisuals()
+        setUpListeners()
+        setUserData()
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        setUpVisuals()
-        setUpListeners()
-        setName()
-    }
 
 
     private fun setUpVisuals() {
@@ -142,10 +134,21 @@ class FinishRegistrationFragment : Fragment() {
         }
     }
 
-    private fun setName()
+    private fun setUserData()
     {
         binding.firstName.text = authViewModel.user.value!!.firstname
         binding.lastName.text = authViewModel.user.value!!.lastname
+
+        if (authViewModel.googleProfileUri != null){
+
+            isImageSelected = true
+            profileImageUri = authViewModel.googleProfileUri!!
+
+            Glide.with(activity)
+                .load(profileImageUri)
+                .centerCrop()
+                .into(binding.profilePicture)
+        }
     }
 
     private fun startLoading() {

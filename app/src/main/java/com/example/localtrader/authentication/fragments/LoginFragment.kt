@@ -28,7 +28,6 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private val authViewModel : AuthViewModel by activityViewModels()
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,11 +50,7 @@ class LoginFragment : Fragment() {
     private fun setUpListeners() {
 
         requireActivity().onBackPressedDispatcher.addCallback(this) {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
-        }
-
-        binding.toLogin.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+            findNavController().navigate(R.id.action_loginFragment_to_selectAuthMethodFragment)
         }
 
         binding.submitButton.setOnClickListener {

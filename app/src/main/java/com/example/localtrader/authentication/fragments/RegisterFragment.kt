@@ -6,8 +6,6 @@ import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,20 +17,22 @@ import com.example.localtrader.authentication.models.User
 import com.example.localtrader.authentication.viewmodels.AuthViewModel
 import com.example.localtrader.databinding.FragmentRegisterBinding
 import com.example.localtrader.utils.MySnackBar
-import java.util.*
-import kotlin.concurrent.timerTask
 
 
 class RegisterFragment : Fragment(),
- Authenticator.AuthenticatorListener{
+    Authenticator.NormalAuthListener{
 
     private lateinit var binding : FragmentRegisterBinding
     private val authViewModel : AuthViewModel by activityViewModels()
+    private lateinit var  authenticator : Authenticator
 
     private var pwShown = false
     private var pwAgainShown = false
 
-    private lateinit var  authenticator : Authenticator
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        authenticator = Authenticator(this)
+    }
 
 
     override fun onCreateView(
@@ -42,8 +42,6 @@ class RegisterFragment : Fragment(),
 
         binding = DataBindingUtil.inflate(inflater,R.layout.fragment_register,container,false)
         setUpVisuals()
-
-        authenticator = Authenticator(this)
         setUpListeners()
         return binding.root
     }
@@ -56,27 +54,11 @@ class RegisterFragment : Fragment(),
 
     private fun setUpListeners()
     {
-        //checking input and registering
+
         binding.submitButton.setOnClickListener{
           registerWithLocalTrader()
         }
 
-        //navigate to login screen
-        binding.toLogin.setOnClickListener{
-            findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-        }
-
-        //callback
-        var callbackCounter = 0
-        requireActivity().onBackPressedDispatcher.addCallback(this) {
-            if (callbackCounter == 0) {
-                Toast.makeText(requireContext(), resources.getString(R.string.press_again_to_exit), Toast.LENGTH_SHORT).show()
-                Timer().schedule(timerTask {
-                    callbackCounter = 0
-                }, 2000)
-                callbackCounter++
-            } else requireActivity().finish()
-        }
 
         binding.termsWarning.setOnClickListener{
             findNavController().navigate(R.id.action_registerFragment_to_userAgreementsFragment)
@@ -108,7 +90,7 @@ class RegisterFragment : Fragment(),
     {
         startLoading()
         val userData = collectData()
-        authenticator.register(Authenticator.AUTH_TYPE_LOCAL_TRADER,userData)
+        authenticator.registerWithLocalTrader(userData)
     }
 
     private fun startLoading() {
@@ -154,8 +136,8 @@ class RegisterFragment : Fragment(),
         stopLoading()
     }
 
-    override fun onCompletion(newUser : User) {
-        authViewModel.user.value = newUser
+    override fun onNormalAuthCompletion(authUser : User) {
+        authViewModel.user.value = authUser
         findNavController().navigate(R.id.action_registerFragment_to_finishRegistrationFragment)
     }
 

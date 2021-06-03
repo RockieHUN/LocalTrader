@@ -1,5 +1,6 @@
 package com.example.localtrader.authentication.viewmodels
 
+import android.net.Uri
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.localtrader.authentication.models.User
@@ -15,8 +16,7 @@ class AuthViewModel : ViewModel() {
 
 
     var user : MutableLiveData<User> = MutableLiveData()
-
-
+    var googleProfileUri : Uri? = null
 
     fun loadUser()
     {

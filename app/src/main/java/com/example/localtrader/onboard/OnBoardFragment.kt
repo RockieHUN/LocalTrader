@@ -76,7 +76,7 @@ class OnBoardFragment : Fragment(),
     override fun thirdToRegister() {
         val sharedPref = requireActivity().getSharedPreferences("onBoard", Context.MODE_PRIVATE)
         sharedPref.edit().putBoolean("played",true).apply()
-        findNavController().navigate(R.id.action_onBoardFragment_to_registerFragment)
+        findNavController().navigate(R.id.action_onBoardFragment_to_selectAuthMethodFragment)
     }
 
 
