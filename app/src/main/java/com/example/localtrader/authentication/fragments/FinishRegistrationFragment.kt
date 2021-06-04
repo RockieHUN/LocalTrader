@@ -24,13 +24,17 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.launch
 
-class FinishRegistrationFragment : Fragment() {
+class FinishRegistrationFragment : Fragment()
+{
+    private val normalAuthType = 1
+    private val googleAuthType = 2
 
     private lateinit var binding: FragmentFinishRegistrationBinding
     private lateinit var activity : AuthActivity
 
     private var isImageSelected = false
-    private lateinit var profileImageUri: Uri
+    private var authType = normalAuthType
+    private var profileImageUri: Uri? = null
 
     private val auth = Firebase.auth
     private val authViewModel : AuthViewModel by activityViewModels()
@@ -54,20 +58,13 @@ class FinishRegistrationFragment : Fragment() {
     }
 
 
-
     private fun setUpVisuals() {
         binding.circularProgress.visibility = View.GONE
     }
 
     private fun setUpListeners() {
         binding.submitButton.setOnClickListener {
-            startLoading()
-            if (!isImageSelected) {
-                activity.startMainActivity(authViewModel.user.value!!)
-            } else {
-                uploadImage(profileImageUri)
-            }
-
+            uploadImage()
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             activity.startMainActivity(authViewModel.user.value!!)
@@ -94,21 +91,51 @@ class FinishRegistrationFragment : Fragment() {
 
             profileImageUri = imageUri
             isImageSelected = true
+            authType = normalAuthType
             binding.submitButton.text = resources.getString(R.string.done)
         }
     }
 
-    private fun uploadImage(imageUri: Uri) {
-
-        //create uploader object
-        val uploader = FirebaseImageUploader.Builder()
+    private fun createUriUploader(): FirebaseImageUploader {
+        return FirebaseImageUploader.Builder()
             .withActivity(requireActivity())
             .withLifecycle(viewLifecycleOwner)
             .toPath(uploadPath)
-            .imageUri(imageUri)
+            .imageUri(profileImageUri!!)
             .imageType(FirebaseImageUploader.PROFILE_IMAGE)
             .build()
+    }
 
+    private fun createUrlUploader(): FirebaseImageUploader {
+        val path = replaceUri(authViewModel.googleProfileUri.toString())
+
+        return FirebaseImageUploader.Builder()
+            .withActivity(requireActivity())
+            .withLifecycle(viewLifecycleOwner)
+            .toPath(uploadPath)
+            .imageUrl(path)
+            .imageType(FirebaseImageUploader.PROFILE_IMAGE)
+            .build()
+    }
+
+    private fun uploadImage() {
+        startLoading()
+
+        if (!isImageSelected) {
+            activity.startMainActivity(authViewModel.user.value!!)
+        } else {
+
+            val uploader = when (authType){
+                normalAuthType ->{
+                    createUriUploader()
+                }
+                googleAuthType ->{
+                    createUrlUploader()
+                }
+                else ->{
+                    createUriUploader()
+                }
+            }
 
             //observe once the object's isCompleted variable
             uploader.isCompleted.observe(viewLifecycleOwner, object : Observer<Boolean>{
@@ -128,9 +155,10 @@ class FinishRegistrationFragment : Fragment() {
                 }
             })
 
-        //start uploading
-        lifecycleScope.launch {
-            uploader.uploadAll()
+            //start uploading
+            lifecycleScope.launch {
+                uploader.uploadAll()
+            }
         }
     }
 
@@ -140,12 +168,15 @@ class FinishRegistrationFragment : Fragment() {
         binding.lastName.text = authViewModel.user.value!!.lastname
 
         if (authViewModel.googleProfileUri != null){
+            val path = replaceUri(authViewModel.googleProfileUri.toString())
 
             isImageSelected = true
+            authType = googleAuthType
             profileImageUri = authViewModel.googleProfileUri!!
+            binding.submitButton.text = resources.getString(R.string.done)
 
             Glide.with(activity)
-                .load(profileImageUri)
+                .load(path)
                 .centerCrop()
                 .into(binding.profilePicture)
         }
@@ -159,5 +190,14 @@ class FinishRegistrationFragment : Fragment() {
     private fun stopLoading() {
         binding.circularProgress.visibility = View.GONE
         binding.submitButton.visibility = View.VISIBLE
+    }
+
+    private fun replaceUri(string : String) : String{
+
+        val regex = Regex("=s\\d+")
+
+        return if (string.contains(regex)) string.replace(regex, "=s1080")
+        else string.plus("=s1080-c")
+
     }
 }

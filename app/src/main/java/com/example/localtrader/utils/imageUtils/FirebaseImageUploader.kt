@@ -2,10 +2,14 @@ package com.example.localtrader.utils.imageUtils
 
 import android.app.Activity
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.*
@@ -14,7 +18,8 @@ class FirebaseImageUploader private constructor(
     private val activity : Activity? = null,
     private val lifecycleOwner: LifecycleOwner? = null,
     private val uri : Uri? = null,
-    private val bitmap : Bitmap? = null,
+    private var bitmap : Bitmap? = null,
+    private val url : String? = null,
     private val path : String? = null,
     private val sizeList: List<ImageSize> = listOf(),
     private val type : Int?
@@ -27,6 +32,10 @@ class FirebaseImageUploader private constructor(
     val isCompleted : MutableLiveData<Boolean> = MutableLiveData()
 
     companion object{
+
+        private const val CONVERT_TYPE_URI = 1
+        private const val CONVERT_TYPE_BITMAP = 2
+        private const val CONVERT_TYPE_URL = 3
 
         private val PROFILE_IMAGE_1080 by lazy { ImageSize("PROFILE_IMAGE_1080",1080) }
         private val PROFILE_IMAGE_300 by lazy { ImageSize("PROFILE_IMAGE_300",300) }
@@ -46,32 +55,62 @@ class FirebaseImageUploader private constructor(
         val BUG_REPORT_IMAGE by lazy { listOf(BUG_REPORT_IMAGE_1920) }
     }
 
-    private suspend fun convert() = coroutineScope {
+    private suspend fun convert() {
 
-        if (activity == null  || type == null){
-            return@coroutineScope
-        }
+        if (activity == null  || type == null) return
 
-        if (type == 1){
-            for (element in sizeList) {
-                coroutines.add(
-                    async (Dispatchers.IO){
-                        ImageUtils.resizeImageUriTo(activity, uri!!, element)
-                    }
-                )
+        when (type){
+            CONVERT_TYPE_URI -> {
+                convertUri()
+            }
+            CONVERT_TYPE_BITMAP -> {
+                convertBitmap()
+            }
+            CONVERT_TYPE_URL -> {
+                convertUrl()
             }
         }
-        else{
-            for (element in sizeList){
-                coroutines.add(
-                    async(Dispatchers.IO){
-                        ImageUtils.resizeImageBitmapTo(bitmap!!, element)
-                    }
-                )
-            }
-        }
+    }
 
-        resizedImages.value = coroutines.awaitAll()
+    private suspend fun convertUri() = coroutineScope{
+        for (element in sizeList) {
+            coroutines.add(
+                async (Dispatchers.IO){
+                    ImageUtils.resizeImageUriTo(activity!!, uri!!, element)
+                }
+            )
+        }
+        resizedImages.postValue(coroutines.awaitAll())
+    }
+
+    private suspend fun convertBitmap() = coroutineScope {
+        for (element in sizeList){
+            coroutines.add(
+                async(Dispatchers.IO){
+                    ImageUtils.resizeImageBitmapTo(bitmap!!, element)
+                }
+            )
+        }
+        resizedImages.postValue(coroutines.awaitAll())
+    }
+
+    private suspend fun convertUrl() = coroutineScope {
+
+        Glide.with(activity!!)
+            .asBitmap()
+            .load(url)
+            .into(object : CustomTarget<Bitmap>(){
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    bitmap = resource
+                    CoroutineScope(Dispatchers.IO).launch {
+                        convertBitmap()
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    return
+                }
+            })
     }
 
     suspend fun uploadAll() {
@@ -116,6 +155,7 @@ class FirebaseImageUploader private constructor(
         private var activity : Activity? = null
         private var uri : Uri? = null
         private var bitmap : Bitmap? = null
+        private var url : String? = null
         private var sizeList: List<ImageSize> = listOf()
         private var lifecycleOwner : LifecycleOwner? = null
         private var path : String? = null
@@ -127,12 +167,17 @@ class FirebaseImageUploader private constructor(
 
         fun imageUri(uri : Uri) = apply{
             this.uri = uri
-            this.type = 1
+            this.type = CONVERT_TYPE_URI
         }
 
         fun imageBitmap (bitmap : Bitmap) = apply{
             this.bitmap = bitmap
-            this.type = 2
+            this.type = CONVERT_TYPE_BITMAP
+        }
+
+        fun imageUrl (url : String) = apply{
+            this.url = url
+            this.type = CONVERT_TYPE_URL
         }
 
         fun toPath (path : String) = apply { this.path = path }
@@ -143,6 +188,7 @@ class FirebaseImageUploader private constructor(
             lifecycleOwner = lifecycleOwner,
             uri = uri,
             bitmap = bitmap,
+            url = url,
             path = path,
             sizeList = sizeList,
             type = type

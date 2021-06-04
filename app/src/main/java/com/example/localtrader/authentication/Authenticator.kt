@@ -8,6 +8,7 @@ import com.example.localtrader.authentication.models.RegistrationUser
 import com.example.localtrader.authentication.models.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
@@ -19,11 +20,12 @@ import com.google.firebase.messaging.FirebaseMessaging
 class Authenticator(
     private val listener : AuthListener
 ) {
-
     private val auth by lazy { Firebase.auth }
     private val firestore by lazy { Firebase.firestore }
     private lateinit var user : RegistrationUser
     private var googleProfileUri : Uri? = null
+
+
 
     //must contain least 8 characters, 1 number, 1 upper and 1 lowercase [duplicate]
     private val passwordRegex by lazy { "^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$".toRegex() }
@@ -38,21 +40,24 @@ class Authenticator(
 
     interface GoogleAuthListener : AuthListener{
         fun onGoogleAuthActivityStart(intent : Intent)
-        fun onGoogleAuthCompletion(authUser: User, googleProfileUri : Uri?)
+        fun onGoogleRegisterCompletion(authUser: User, googleProfileUri : Uri?)
+        fun onGoogleLoginCompletion(authUser: User)
     }
 
-    fun startGoogleAuthActivity(activity : Activity){
-        listener as GoogleAuthListener
-
-        //creating client and getting intent
+    private fun createGoogleClient(activity : Activity): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken("512088991736-jif4r4sog4jmlbahnkv1i61vtg0sirg1.apps.googleusercontent.com")
             .requestEmail()
             .requestProfile()
             .build()
 
-        val intent = GoogleSignIn.getClient(activity ,gso).signInIntent
+        return GoogleSignIn.getClient(activity ,gso)
+    }
 
+    fun startGoogleAuthActivity(activity : Activity){
+        listener as GoogleAuthListener
+        //creating client and getting intent
+        val intent = createGoogleClient(activity).signInIntent
         //starting google auth intent
         listener.onGoogleAuthActivityStart(intent)
     }
@@ -129,7 +134,7 @@ class Authenticator(
             .addOnSuccessListener { snapshot ->
                 if (snapshot.exists()){
                     val authUser = snapshot.toObject<User>()
-                    listener.onGoogleAuthCompletion(authUser!!, googleProfileUri)
+                    listener.onGoogleLoginCompletion(authUser!!)
                 }
                 else{
                     createUserInFirestore(auth.currentUser!!.uid)
@@ -152,7 +157,7 @@ class Authenticator(
                 .set(newUser)
                 .addOnSuccessListener {
                     if (listener is GoogleAuthListener){
-                        listener.onGoogleAuthCompletion(newUser, googleProfileUri)
+                        listener.onGoogleRegisterCompletion(newUser, googleProfileUri)
                     }
 
                     if (listener is NormalAuthListener) {

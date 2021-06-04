@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
+import com.example.localtrader.authentication.AuthActivity
 import com.example.localtrader.authentication.Authenticator
 import com.example.localtrader.authentication.models.User
 import com.example.localtrader.authentication.viewmodels.AuthViewModel
@@ -95,9 +96,15 @@ class SelectAuthMethodFragment : Fragment(),
         MySnackBar.createSnackBar(binding.screenRoot, msg)
     }
 
-    override fun onGoogleAuthCompletion(authUser: User, googleProfileUri : Uri?) {
+    override fun onGoogleRegisterCompletion(authUser: User, googleProfileUri : Uri?) {
         authViewModel.user.value = authUser
+        authViewModel.googleProfileUri = googleProfileUri
         findNavController().navigate(R.id.action_selectAuthMethodFragment_to_finishRegistrationFragment)
+    }
+
+    override fun onGoogleLoginCompletion(authUser: User) {
+        val activity = requireActivity() as AuthActivity
+        activity.startMainActivity(authUser)
     }
 
     override fun onGoogleAuthActivityStart(intent : Intent) {
