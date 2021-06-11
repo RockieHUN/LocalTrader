@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 
 class FeedFragment : Fragment(),
-    FeedAdapter.onItemClickListener
+    FeedAdapter.OnItemClickListener
 {
 
     private lateinit var binding : FragmentFeedBinding
@@ -39,7 +39,7 @@ class FeedFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_feed, container, false)
         setUpListeners()
         createRecycle()
@@ -47,18 +47,23 @@ class FeedFragment : Fragment(),
     }
 
     override fun onPause() {
-        feedViewModel.feedItems.removeObservers(viewLifecycleOwner)
+        feedViewModel.feedManager.feedItems.removeObservers(viewLifecycleOwner)
         super.onPause()
     }
 
     override fun onResume() {
-        super.onResume()
-        feedViewModel.feedItems.observe(viewLifecycleOwner, { feedItems ->
-            //val newFeedItems = addAdsToFeed(feedItems)
-            //Log.d("MYFEED", "${feedItems}")
+        feedViewModel.feedManager.feedItems.observe(viewLifecycleOwner, { feedItems ->
             adapter.updateData(feedItems)
         })
+        super.onResume()
+    }
 
+    override fun onDestroy() {
+        for (item in adapter.adList){
+            item.ad?.destroy()
+            item.ad = null
+        }
+        super.onDestroy()
     }
 
     private fun setUpListeners(){
@@ -72,17 +77,12 @@ class FeedFragment : Fragment(),
     }
 
     private fun createRecycle(){
-        adapter = FeedAdapter(requireActivity(), this)
+        adapter = FeedAdapter(requireActivity(), viewLifecycleOwner,this)
         binding.recycleView.adapter = adapter
         val verticalLayout = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recycleView.layoutManager = verticalLayout
         binding.recycleView.setHasFixedSize(true)
-
-        Log.d("MYFEED","add observer")
-
-
-
-        feedViewModel.loadFeed(viewLifecycleOwner)
+        feedViewModel.loadNextItems()
         addScrollListener()
     }
 
@@ -94,15 +94,16 @@ class FeedFragment : Fragment(),
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
+                if (feedViewModel.feedManager.feedItems.value == null) return
 
-                val itemCount = feedViewModel.feedItems.value!!.size
+                val itemCount = feedViewModel.feedManager.feedItems.value!!.size
                 val layoutManager = binding.recycleView.layoutManager as LinearLayoutManager
 
-                val firstPosition = layoutManager.findFirstVisibleItemPosition()
-                val lastPosition = layoutManager.findLastVisibleItemPosition()
+                val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
 
-                Log.d("MYFEED", "last: ${lastPosition} total: ${itemCount}")
-                if (lastPosition >= itemCount - 1) {
+                Log.d("MYFEED", "last: ${lastVisibleItemPosition} total: ${itemCount}")
+                if (lastVisibleItemPosition >= itemCount - 1) {
 
                     GlobalScope.launch {
                         feedViewModel.loadNextItems()
@@ -110,17 +111,6 @@ class FeedFragment : Fragment(),
                 }
             }
         })
-    }
-
-    private fun addAdsToFeed(feedItems : List<FeedItem>) : List<FeedItem>{
-        val newFeedItems = feedItems.toMutableList()
-        val atEveryXIndex = 5
-        val numberOfAds = feedItems.size / atEveryXIndex
-
-        for (i in 1..numberOfAds)
-        newFeedItems.add(i * atEveryXIndex, FeedAdItem())
-
-        return newFeedItems
     }
 
     override fun onBusinessClick(id: String) {

@@ -3,9 +3,11 @@ package com.example.localtrader.authentication
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.example.localtrader.MainActivity
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 class SplashActivity : Activity() {
@@ -22,9 +24,14 @@ class SplashActivity : Activity() {
     }
 
     private fun initAdMod(){
-        MobileAds.initialize(this) {
 
+        val activity = this
+        GlobalScope.launch(Dispatchers.IO) {
+            MobileAds.initialize(activity) {
+
+            }
         }
+
     }
 
 

@@ -8,18 +8,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.localtrader.R
-import com.example.localtrader.business.models.Business
 import com.example.localtrader.feed.models.*
 import com.example.localtrader.utils.diffUtils.FeedDiffUtil
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
-import com.google.android.gms.ads.nativead.MediaView
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -28,27 +29,53 @@ import com.google.firebase.storage.ktx.storage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import java.util.logging.Handler
 
 class FeedAdapter(
     private val activity : Activity,
-    private val listener : onItemClickListener
+    private val lifecycleOwner: LifecycleOwner,
+    private val listener : OnItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = listOf<FeedItem>()
     private var storage = Firebase.storage
+    private val loadedAd : MutableLiveData<NativeAd> = MutableLiveData()
 
-    interface onItemClickListener{
+    private val adRequest by lazy { AdRequest.Builder().build() }
+    private lateinit var adLoader : AdLoader
+
+    val adList : MutableList<FeedAdItem> = mutableListOf()
+
+    init {
+        GlobalScope.launch(Dispatchers.IO) {
+            adLoader = AdLoader.Builder(activity, "ca-app-pub-3940256099942544/2247696110")
+                .forNativeAd { ad : NativeAd ->
+                    loadedAd.postValue(ad)
+                }
+                .withAdListener(object : AdListener(){
+                    override fun onAdFailedToLoad(error: LoadAdError) {
+                        Log.d("MYAD", "failed to load ad $error")
+                    }
+                })
+                .withNativeAdOptions(
+                    NativeAdOptions.Builder()
+                        .build()
+                )
+                .build()
+        }
+    }
+
+
+    interface OnItemClickListener{
         fun onBusinessClick(id : String)
     }
 
     //ViewHolders
     inner class BusinessViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        val logoView = itemView.findViewById<ImageView>(R.id.business_logo)
-        val businessNameView = itemView.findViewById<TextView>(R.id.business_name)
-        val businessDescriptionView = itemView.findViewById<TextView>(R.id.business_description)
-        val item = itemView.findViewById<CardView>(R.id.item)
+        val logoView: ImageView = itemView.findViewById(R.id.business_logo)
+        val businessNameView: TextView = itemView.findViewById(R.id.business_name)
+        val businessDescriptionView : TextView = itemView.findViewById(R.id.business_description)
+        val item : CardView = itemView.findViewById(R.id.item)
 
         fun bind(position: Int){
             val currentItem = items[position] as FeedBusinessItem
@@ -60,7 +87,9 @@ class FeedAdapter(
                 listener.onBusinessClick(currentItem.businessId)
             }
 
-            storage.reference.child("businesses/${currentItem.businessId}/logo")
+            logoView.setImageResource(android.R.color.transparent)
+
+            storage.reference.child("businesses/${currentItem.businessId}/BUSINESS_IMAGE_400")
                 .downloadUrl
                 .addOnSuccessListener { uri ->
                     Glide.with(activity)
@@ -87,52 +116,63 @@ class FeedAdapter(
 
     inner class AdViewHolder(itemView : View) : RecyclerView.ViewHolder(itemView){
 
-        var loadedAd : NativeAd? = null
+        lateinit var adAppIconView  : ImageView
+        lateinit var adHeaderView : TextView
+        lateinit var adAdvertiserNameView : TextView
+        lateinit var adTextHolderView : CardView
 
         fun bind(position: Int){
             val currentItem = items[position]
 
-            val adAppIconView = itemView.findViewById<ImageView>(R.id.ad_app_icon)
-            val adHeaderView = itemView.findViewById<TextView>(R.id.ad_headline)
-            val adAdvertiserNameView = itemView.findViewById<TextView>(R.id.ad_advertiser_name)
-            val adTextHolderView = itemView.findViewById<CardView>(R.id.ad_text_holder)
+            adAppIconView = itemView.findViewById(R.id.ad_app_icon)
+            adHeaderView = itemView.findViewById(R.id.ad_headline)
+            adAdvertiserNameView = itemView.findViewById(R.id.ad_advertiser_name)
+            adTextHolderView = itemView.findViewById(R.id.ad_text_holder)
 
-            val adloader = AdLoader.Builder(activity, "ca-app-pub-3940256099942544/2247696110")
-                .forNativeAd { ad : NativeAd ->
+            if ((currentItem as FeedAdItem).ad == null){
+                loadedAd.observe(lifecycleOwner, object : Observer<NativeAd>{
+                    override fun onChanged(ad: NativeAd?) {
+                        if (ad == null){
+                            loadedAd.removeObserver(this)
+                            return
+                        }
 
-                    loadedAd?.destroy()
-                    loadedAd = ad
+                        (items[position] as FeedAdItem).ad = ad
+                        adList.add(items[position] as FeedAdItem)
+                        setAd(ad)
 
-                    if (ad.icon!= null)  adAppIconView.setImageDrawable(ad.icon!!.drawable)
-
-                    if (ad.headline != null || ad.advertiser!= null){
-                        adTextHolderView.visibility = View.VISIBLE
-                    }
-                    else{
-                        adTextHolderView.visibility = View.GONE
-                    }
-
-                    adHeaderView.text = ad.headline
-                    adAdvertiserNameView.text = ad.advertiser
-
-                    itemView as NativeAdView
-                    itemView.setNativeAd(ad)
-                }
-                .withAdListener(object : AdListener(){
-                    override fun onAdFailedToLoad(error: LoadAdError) {
-                        Log.d("MYAD", "failed to load ad ${error}")
+                        loadedAd.removeObserver(this)
                     }
                 })
-                .withNativeAdOptions(
-                    NativeAdOptions.Builder()
-                        .build()
-                )
-                .build()
 
-            adloader.loadAd(AdRequest.Builder().build())
-
+                GlobalScope.launch(Dispatchers.IO) {
+                    adLoader.loadAd(adRequest)
+                }
+            }
+            else{
+                setAd(currentItem.ad!!)
+            }
         }
+
+        private fun setAd(ad : NativeAd){
+            if (ad.icon!= null)  adAppIconView.setImageDrawable(ad.icon!!.drawable)
+
+            if (ad.headline != null || ad.advertiser!= null){
+                adTextHolderView.visibility = View.VISIBLE
+            }
+            else{
+                adTextHolderView.visibility = View.GONE
+            }
+
+            adHeaderView.text = ad.headline
+            adAdvertiserNameView.text = ad.advertiser
+
+            itemView as NativeAdView
+            itemView.setNativeAd(ad)
+        }
+
     }
+
 
     override fun getItemViewType(position: Int): Int {
         return when (items[position]) {
@@ -174,12 +214,11 @@ class FeedAdapter(
         }
     }
 
-    fun updateData(newItems : MutableList<FeedItem>){
+    fun updateData(newItems : List<FeedItem>){
         val diffUtil = FeedDiffUtil(items, newItems)
         val diffResult = DiffUtil.calculateDiff(diffUtil)
         items = newItems
         diffResult.dispatchUpdatesTo(this)
-        //notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int = items.size
