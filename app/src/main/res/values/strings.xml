@@ -8,7 +8,8 @@
     <string name="error_missing_image"> A kép feltöltése kötelező!</string>
     <string name="error_missing_description"> A leírás kötelező!</string>
     <string name="error_missing_location"> A vállalkozás létrehozásához szükséges a helyadatok megadása! </string>
-    <string name="error_failed_picture_upload"> "Nem sikerült feltölteni a képet. Próbálja újra később" </string>
+    <string name="error_failed_picture_upload"> "Nem sikerült feltölteni a képet. Próbálja újra később!" </string>
+    <string name="error_picture_share"> "Nem sikerült a kép megosztása!" </string>
     <string name="error_business_name">A vállalkozás nevének legalább 3 karakterből kell állnia!</string>
     <string name="error_business_description">A vállalkozás leírása kötelező!</string>
 

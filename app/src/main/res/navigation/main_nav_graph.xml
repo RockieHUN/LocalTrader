@@ -177,9 +177,6 @@
         <action
             android:id="@+id/action_productBottomModalFragment_to_productGridFragment"
             app:destination="@id/productGridFragment" />
-        <action
-            android:id="@+id/action_productBottomModalFragment_to_productProfileFragment"
-            app:destination="@id/productProfileFragment" />
     </dialog>
     <fragment
         android:id="@+id/createOrderFragment"

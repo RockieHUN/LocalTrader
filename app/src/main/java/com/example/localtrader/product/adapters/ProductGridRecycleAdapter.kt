@@ -40,7 +40,6 @@ class ProductGridRecycleAdapter (
     }
 
     interface OnItemClickListener {
-        fun onItemClick(position: Int)
         fun myOnItemClick(product : Product)
     }
 

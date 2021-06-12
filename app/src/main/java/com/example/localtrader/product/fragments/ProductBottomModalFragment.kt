@@ -1,6 +1,8 @@
 package com.example.localtrader.product.fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.localtrader.R
 import com.example.localtrader.YesNoDialogFragment
 import com.example.localtrader.databinding.FragmentProductBottomModalBinding
+import com.example.localtrader.utils.MySnackBar
 import com.example.localtrader.viewmodels.ProductViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.firestore.ktx.firestore
@@ -18,7 +21,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 
 
-class ProductBottomModalFragment : BottomSheetDialogFragment(), YesNoDialogFragment.NoticeDialogListener {
+class ProductBottomModalFragment(
+    val listener : OnModalButtonClickListener
+) : BottomSheetDialogFragment(), YesNoDialogFragment.NoticeDialogListener {
 
     private lateinit var binding : FragmentProductBottomModalBinding
     private val productViewModel : ProductViewModel by activityViewModels()
@@ -26,6 +31,10 @@ class ProductBottomModalFragment : BottomSheetDialogFragment(), YesNoDialogFragm
     private val storage = Firebase.storage
 
 
+    interface OnModalButtonClickListener{
+        fun onViewProductClick(window : ProductBottomModalFragment)
+        fun onShareProductClick(window : ProductBottomModalFragment)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,18 +45,23 @@ class ProductBottomModalFragment : BottomSheetDialogFragment(), YesNoDialogFragm
         return binding.root
     }
 
+    
 
     private fun setUpListeners()
     {
         binding.showProductButton.setOnClickListener {
-            findNavController().navigate(R.id.action_productBottomModalFragment_to_productProfileFragment)
+            listener.onViewProductClick(this)
         }
 
         binding.deleteProductButton.setOnClickListener {
             deleteProduct()
         }
 
+        binding.shareProductButton.setOnClickListener {
+            listener.onShareProductClick(this)
+        }
     }
+
 
     private fun deleteProduct()
     {
