@@ -106,6 +106,9 @@
     <string name="order_button"> Rendelés </string>
     <string name="like_failed"> Nem sikerült hozzáadni a kedvencekhez </string>
 
+    <!-- Product Grid -->
+    <string name="product_grid_no_items"> A termékek galériája jelenleg üres! </string>
+
     <!-- Modal dialog -->
     <string name="view"> Megtekintés </string>
     <string name="share"> Megosztás </string>

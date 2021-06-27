@@ -222,12 +222,12 @@
 
                             <ImageButton
                                 android:id="@+id/more_button"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp"
                                 android:layout_marginEnd="10dp"
                                 android:layout_marginBottom="5dp"
                                 android:background="@null"
-                                android:src="@drawable/ic_baseline_more_horiz_24"
+                                android:src="@drawable/ic_baseline_collections_24"
                                 android:tint="@color/white"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent" />

@@ -57,10 +57,10 @@ class ProductGridFragment : Fragment(),
     ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_product_grid, container, false)
-
         setRecycle()
         return binding.root
     }
+
 
     private fun setRecycle() {
 
@@ -71,9 +71,20 @@ class ProductGridFragment : Fragment(),
         binding.recycleView.layoutManager = gridLayout
         binding.recycleView.setHasFixedSize(true)
 
-        productViewModel.businessProducts.observe(viewLifecycleOwner, { products ->
-            val sortedList = products.sortedWith(DateComparator)
-            adapter.updateData(sortedList)
+        productViewModel.businessProducts.observe(viewLifecycleOwner, object : Observer<List<Product>>{
+
+            override fun onChanged(products: List<Product>?) {
+                if (products == null) {
+                    productViewModel.businessProducts.removeObserver(this)
+                    return
+                }
+
+                if (products.isNotEmpty()){
+                    binding.productGridPlaceholder.visibility = View.GONE
+                }
+                val sortedList = products.sortedWith(DateComparator)
+                adapter.updateData(sortedList)
+            }
         })
 
         productViewModel.loadBusinessProducts(businessId)
